@@ -1,0 +1,112 @@
+/**
+ * DESIGN TOKENS — STUDIO MIOTTI · Lex Minimal
+ * Variabili CSS che alimentano sia Tailwind sia componenti custom.
+ * Modificare i valori qui propaga ovunque.
+ */
+
+@layer base {
+  :root {
+    /* ─── COLOR TOKENS ─────────────────────────────────────── */
+    --color-ink: 14 17 22;             /* #0E1116 */
+    --color-paper: 250 250 247;        /* #FAFAF7 */
+    --color-paper-warm: 241 237 227;   /* #F1EDE3 */
+    --color-cobalt: 30 58 95;          /* #1E3A5F */
+    --color-cobalt-deep: 15 34 64;     /* #0F2240 */
+    --color-graphite: 58 63 71;        /* #3A3F47 */
+    --color-rule: 217 213 201;         /* #D9D5C9 */
+    --color-gold: 168 145 92;          /* #A8915C */
+
+    --color-success: 46 93 58;         /* #2E5D3A */
+    --color-warn: 176 122 43;          /* #B07A2B */
+    --color-error: 140 42 47;          /* #8C2A2F */
+
+    /* ─── TYPOGRAPHY ───────────────────────────────────────── */
+    --font-display: 'Tiempos Headline', 'Fraunces', 'PT Serif', Georgia, serif;
+    --font-sans: 'Söhne', 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'Cascadia Code', monospace;
+
+    /* Type scale (fluido, mobile-first) */
+    --fs-display-xl: clamp(3.5rem, 6vw + 1rem, 6rem);
+    --fs-display-l: clamp(3rem, 5vw + 0.5rem, 4.5rem);
+    --fs-display-m: clamp(2.5rem, 4vw + 0.5rem, 3.5rem);
+    --fs-h1: clamp(2.25rem, 3vw + 0.5rem, 2.75rem);
+    --fs-h2: clamp(1.75rem, 2vw + 0.5rem, 2rem);
+    --fs-h3: 1.5rem;
+    --fs-h4: 1.25rem;
+    --fs-body-l: 1.125rem;
+    --fs-body-m: 1rem;
+    --fs-body-s: 0.875rem;
+    --fs-micro: 0.75rem;
+
+    /* Line-heights */
+    --lh-tight: 1.05;
+    --lh-snug: 1.18;
+    --lh-normal: 1.5;
+    --lh-relaxed: 1.7;
+
+    /* ─── SPACING (8pt grid) ───────────────────────────────── */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
+
+    /* ─── LAYOUT ────────────────────────────────────────────── */
+    --container-max: 1280px;
+    --container-prose: 65ch;
+    --container-narrow: 720px;
+    --gutter: clamp(1.25rem, 4vw, 2.5rem);
+
+    /* ─── RADIUS — tutto squadrato, niente smussature finte ── */
+    --radius-none: 0;
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+
+    /* ─── SHADOWS — ombre soft, mai dramatiche ─────────────── */
+    --shadow-card: 0 1px 3px rgba(15, 34, 64, 0.04), 0 4px 12px rgba(15, 34, 64, 0.04);
+    --shadow-card-hover: 0 2px 6px rgba(15, 34, 64, 0.06), 0 12px 32px rgba(15, 34, 64, 0.08);
+    --shadow-modal: 0 8px 24px rgba(15, 34, 64, 0.12), 0 24px 64px rgba(15, 34, 64, 0.18);
+
+    /* ─── MOTION ────────────────────────────────────────────── */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+    --dur-quick: 180ms;
+    --dur-medium: 320ms;
+    --dur-slow: 720ms;
+    --dur-cinematic: 1400ms;
+
+    /* ─── Z-INDEX ──────────────────────────────────────────── */
+    --z-base: 0;
+    --z-elevated: 10;
+    --z-sticky: 100;
+    --z-overlay: 1000;
+    --z-modal: 1100;
+    --z-toast: 1200;
+    --z-lex: 900;  /* assistente AI */
+  }
+
+  /* Reduced motion: tutti gli ease tornano a "linear" rapidi */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --dur-quick: 0ms;
+      --dur-medium: 0ms;
+      --dur-slow: 0ms;
+      --dur-cinematic: 0ms;
+    }
+
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

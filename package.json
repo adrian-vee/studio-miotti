@@ -1,0 +1,31 @@
+{
+  "name": "studio-miotti",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sito web Studio Legale Avv. Massimiliano Miotti — San Bonifacio (VR)",
+  "author": "Adrian Vee <hello@adrianvee.dev>",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.10.0",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @miotti/web dev",
+    "build": "pnpm --filter @miotti/web build",
+    "preview": "pnpm --filter @miotti/web preview",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md,mdx,json,css}\"",
+    "worker:dev": "pnpm --filter @miotti/lex-worker dev",
+    "worker:deploy": "pnpm --filter @miotti/lex-worker deploy",
+    "supabase:types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > apps/web/lib/database.types.ts",
+    "lighthouse": "lhci autorun"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.14.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "typescript": "^5.6.3"
+  }
+}
