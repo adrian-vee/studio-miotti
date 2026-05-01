@@ -42,14 +42,14 @@ export function SectionMarker({
       aria-hidden
       className={cn(
         'hidden md:flex flex-col pointer-events-none select-none',
-        'absolute top-12 z-0',
-        align === 'right' ? 'right-12 items-end text-right' : 'left-12 items-start text-left',
+        'absolute top-8 z-0',
+        align === 'right' ? 'right-8 items-end text-right' : 'left-8 items-start text-left',
       )}
     >
       <span
         className="font-display leading-none"
         style={{
-          fontSize: 'clamp(80px, 10vw, 140px)',
+          fontSize: 'clamp(48px, 6vw, 88px)',
           fontWeight: 300,
           color: numeralColor,
           opacity: numeralOpacity,

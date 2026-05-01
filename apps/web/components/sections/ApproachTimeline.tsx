@@ -42,7 +42,6 @@ export function ApproachTimeline() {
   return (
     <section
       ref={ref}
-      data-rule-anchor="metodo"
       className="relative bg-ink text-paper py-24 md:py-32"
       aria-labelledby="metodo-heading"
     >

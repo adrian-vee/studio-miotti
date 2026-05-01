@@ -3,7 +3,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import { SectionMarker } from './SectionMarker';
 
 /**
@@ -30,7 +29,6 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
-      data-rule-anchor="hero"
       className="relative isolate overflow-hidden bg-paper pt-32 pb-24 md:pt-40 md:pb-32"
       aria-labelledby="hero-headline"
     >
@@ -149,12 +147,16 @@ export function Hero() {
                 transition={{ duration: 0.7, delay: 1, ease: [0.16, 1, 0.3, 1] }}
                 className="col-span-12 md:col-span-5 flex flex-col gap-4 md:items-end"
               >
-                <Link href="/prenota" className="btn-primary group">
-                  <span>Prenota un primo confronto</span>
-                  <ArrowRight
-                    size={16}
-                    className="transition-transform group-hover:translate-x-1"
-                  />
+                <Link
+                  href="/prenota"
+                  className="group inline-flex items-baseline gap-3 text-ink"
+                >
+                  <span className="font-display text-xl border-b border-ink pb-1 group-hover:border-cobalt group-hover:opacity-70 transition-colors">
+                    Prenota un primo confronto
+                  </span>
+                  <span className="text-cobalt transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
                 </Link>
                 <Link href="/aree-di-competenza" className="link-inline text-sm">
                   Le aree di competenza dello Studio

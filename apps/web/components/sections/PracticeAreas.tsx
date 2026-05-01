@@ -75,7 +75,6 @@ const areas = [
 export function PracticeAreas() {
   return (
     <section
-      data-rule-anchor="aree"
       className="bg-paper py-20 md:py-28 relative overflow-hidden"
       aria-labelledby="aree-heading"
     >

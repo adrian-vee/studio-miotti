@@ -9,7 +9,6 @@ import { SectionMarker } from './SectionMarker';
 export function ContactCTA() {
   return (
     <section
-      data-rule-anchor="contatti"
       className="bg-cobalt-deep text-paper py-24 md:py-32 relative overflow-hidden"
       aria-labelledby="contatti-heading"
     >

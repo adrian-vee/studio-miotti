@@ -1,3 +1,6 @@
+// DEPRECATED — rimosso da layout.tsx il 2 maggio 2026.
+// Lasciato per riferimento futuro, non utilizzato.
+
 'use client';
 
 import { useEffect, useState } from 'react';

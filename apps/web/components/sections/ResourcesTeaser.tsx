@@ -32,7 +32,6 @@ const guides = [
 export function ResourcesTeaser() {
   return (
     <section
-      data-rule-anchor="risorse"
       className="relative bg-paper-warm py-20 md:py-28"
       aria-labelledby="risorse-heading"
     >
