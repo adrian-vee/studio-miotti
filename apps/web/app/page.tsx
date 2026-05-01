@@ -3,7 +3,10 @@ import { Manifesto } from '@/components/sections/Manifesto';
 import { PracticeAreas } from '@/components/sections/PracticeAreas';
 import { ApproachTimeline } from '@/components/sections/ApproachTimeline';
 import { ResourcesTeaser } from '@/components/sections/ResourcesTeaser';
-import { TestimonialsMarquee } from '@/components/sections/TestimonialsMarquee';
+// TODO: riabilitare quando avremo testimonianze reali approvate
+// dall'avvocato. Le testimonianze fittizie facevano apparire il
+// sito non credibile.
+// import { TestimonialsMarquee } from '@/components/sections/TestimonialsMarquee';
 import { ContactCTA } from '@/components/sections/ContactCTA';
 import { LocalSchema } from '@/components/seo/LocalSchema';
 
@@ -22,7 +25,7 @@ export default function HomePage() {
       <PracticeAreas />
       <ApproachTimeline />
       <ResourcesTeaser />
-      <TestimonialsMarquee />
+      {/* <TestimonialsMarquee /> — disattivato finché non abbiamo testimonianze reali */}
       <ContactCTA />
     </>
   );

@@ -74,7 +74,7 @@ const areas = [
 export function PracticeAreas() {
   return (
     <section
-      className="bg-paper py-24 md:py-32 relative overflow-hidden"
+      className="bg-paper py-20 md:py-28 relative overflow-hidden"
       aria-labelledby="aree-heading"
     >
       <div className="container-page relative">

@@ -31,7 +31,7 @@ const guides = [
 export function ResourcesTeaser() {
   return (
     <section
-      className="bg-paper-warm py-24 md:py-32"
+      className="bg-paper-warm py-20 md:py-28"
       aria-labelledby="risorse-heading"
     >
       <div className="container-page">

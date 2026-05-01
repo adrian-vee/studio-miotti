@@ -6,15 +6,15 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 /**
- * HERO — Studio Miotti
+ * HERO — Studio Miotti (editorial v2)
  *
- * Direzione: editoriale-architettonica.
- * - Composizione asimmetrica con griglia 12 colonne palese (linee guida visibili al 4% opacity)
- * - Headline serif gigante "spezzata" su due linee con reveal word-by-word
- * - Filetto orizzontale che si disegna a 1.2s
- * - Numero capitolo tipografico ("§ 1") in cobalt come ancoraggio editoriale
- * - Parallax leggero su scroll del numero § (NO sul testo, perché distrae)
- * - Eyebrow con coordinate geografiche dello studio (dettaglio "luxury hotel")
+ * Densità informativa alzata, tipografia gerarchizzata:
+ * - § cobalt + label "Cap. 01 / Lo Studio" in col 1-2, baseline-aligned
+ *   con la prima riga della headline
+ * - Headline su 2 righe gerarchizzate: "Diritto come dialogo," (display-l, ink)
+ *   poi "non come distanza." (display-m, italic, cobalt, opacity 0.85)
+ * - "San Bonifacio · Verona" baseline della seconda riga, a destra
+ * - Lead paragraph + CTA in fondo, con info card 3-stats sopra (border-top rule)
  */
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ export function Hero() {
     offset: ['start start', 'end start'],
   });
 
-  const numeroY = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const numeroY = useTransform(scrollYProgress, [0, 1], [0, -80]);
 
   return (
     <section
@@ -49,70 +49,83 @@ export function Hero() {
       </div>
 
       <div className="container-page relative">
-        {/* Eyebrow: coordinate + posizione */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-12 gap-x-[var(--gutter)] mb-16 md:mb-24"
-        >
-          <div className="col-span-12 md:col-span-6 flex items-center gap-3 text-graphite">
-            <span className="font-mono text-xs tracking-widest">
-              45.391°N · 11.275°E
-            </span>
-            <span className="h-px w-8 bg-rule" />
-            <span className="text-xs uppercase tracking-[0.18em] font-medium">
-              San Bonifacio · Verona
-            </span>
-          </div>
-          <div className="hidden md:flex col-span-6 justify-end items-center gap-3 text-graphite">
-            <span className="text-xs uppercase tracking-[0.18em] font-medium">
-              Anno {new Date().getFullYear()}
-            </span>
-            <span className="h-px w-8 bg-rule" />
-            <span className="font-mono text-xs">Vol. I</span>
-          </div>
-        </motion.div>
-
-        {/* Numero capitolo + headline */}
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12">
-          {/* § 01 — paragrafo legale, parallax leggero */}
+        {/* § + headline */}
+        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-10">
+          {/* § col 1-2 — parallax leggero, baseline-aligned con la prima riga headline */}
           <motion.div
             style={{ y: numeroY }}
-            className="col-span-12 md:col-span-2 flex md:flex-col items-baseline md:items-start gap-3"
+            className="col-span-12 md:col-span-2 flex md:flex-col items-baseline md:items-stretch gap-4 md:gap-0"
           >
-            <span className="font-display text-cobalt text-[5rem] md:text-[7rem] leading-none">
+            <span
+              className="font-display text-cobalt leading-none md:pt-3"
+              style={{ fontSize: 'clamp(4rem, 7vw, 6rem)' }}
+            >
               §
             </span>
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-graphite md:mt-4">
-              Cap. 01
-              <br className="hidden md:block" />
-              <span className="md:block">Lo Studio</span>
-            </span>
+            <div className="md:mt-12 md:text-right">
+              <span
+                aria-hidden
+                className="hidden md:inline-block h-px w-6 bg-rule mb-2"
+              />
+              <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-graphite">
+                Cap. 01 / Lo Studio
+              </span>
+            </div>
           </motion.div>
 
-          {/* Headline */}
+          {/* Headline col 3-12 */}
           <div className="col-span-12 md:col-span-10">
-            <h1
-              id="hero-headline"
-              className="font-display tracking-tight"
-              style={{ fontSize: 'var(--fs-display-xl)', lineHeight: 0.95 }}
-            >
-              <RevealWord delay={0}>Diritto come dialogo,</RevealWord>
-              <br />
-              <span className="block italic text-cobalt">
-                <RevealWord delay={0.16}>non come distanza.</RevealWord>
+            <h1 id="hero-headline" className="font-display">
+              <RevealWord delay={0}>
+                <span
+                  className="block text-ink"
+                  style={{
+                    fontSize: 'var(--fs-display-l)',
+                    lineHeight: 1.0,
+                    letterSpacing: '-0.02em',
+                    fontWeight: 400,
+                  }}
+                >
+                  Diritto come dialogo,
+                </span>
+              </RevealWord>
+
+              <span className="flex items-baseline justify-between gap-6 mt-2 md:mt-3">
+                <RevealWord delay={0.16}>
+                  <span
+                    className="italic text-cobalt"
+                    style={{
+                      fontSize: 'var(--fs-display-m)',
+                      lineHeight: 1.0,
+                      letterSpacing: '-0.015em',
+                      fontWeight: 400,
+                      opacity: 0.85,
+                    }}
+                  >
+                    non come distanza.
+                  </span>
+                </RevealWord>
+
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.9 }}
+                  className="hidden md:inline-block shrink-0 not-italic font-mono text-[10px] uppercase tracking-[0.18em] text-graphite whitespace-nowrap"
+                >
+                  San Bonifacio · Verona
+                </motion.span>
               </span>
             </h1>
 
-            {/* Filetto disegnato */}
+            {/* Filetto */}
             <motion.div
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.9, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="my-10 h-px w-full origin-left bg-ink/30"
+              className="my-10 md:my-12 h-px w-full origin-left bg-ink/30"
             />
 
+            {/* Lead + CTA row */}
             <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8">
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
@@ -121,10 +134,10 @@ export function Hero() {
                 className="col-span-12 md:col-span-7 text-graphite"
                 style={{ fontSize: 'var(--fs-body-l)', lineHeight: 1.55 }}
               >
-                Lo Studio dell'Avv. Massimiliano Miotti assiste
-                privati e imprese nella Bassa Veronese con un metodo
-                che mette al primo posto la chiarezza: del problema, della
-                strategia, e del costo.
+                Lo Studio dell'Avv. Massimiliano Miotti assiste privati e
+                imprese nella Bassa Veronese con un metodo che mette al primo
+                posto la chiarezza: del problema, della strategia, e del
+                costo.
               </motion.p>
 
               <motion.div
@@ -145,6 +158,20 @@ export function Hero() {
                 </Link>
               </motion.div>
             </div>
+
+            {/* Info card 3 mini-stats — border-top rule */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-14 md:mt-16 pt-6 border-t border-rule"
+            >
+              <dl className="grid grid-cols-3 gap-x-8 gap-y-4">
+                <Stat label="Foro di Verona" value="Iscritto dal 2003" />
+                <Stat label="Lingue" value="Italiano · Inglese" />
+                <Stat label="Risposta media" value="Entro 24 ore" />
+              </dl>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -152,12 +179,29 @@ export function Hero() {
   );
 }
 
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col gap-1.5 min-w-0">
+      <dt className="font-mono text-[9px] uppercase tracking-[0.16em] text-graphite">
+        {label}
+      </dt>
+      <dd className="font-display text-[16px] sm:text-[18px] leading-tight text-ink">
+        {value}
+      </dd>
+    </div>
+  );
+}
+
 /**
  * Sub-component: parola che entra con clip-path bottom→top.
- * `whitespace-pre` sul wrapper esterno preserva eventuali spazi adiacenti
- * tra RevealWord — senza quello, l'inline-block li collassa.
  */
-function RevealWord({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function RevealWord({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
   return (
     <span className="inline-block overflow-hidden align-baseline whitespace-pre">
       <motion.span
