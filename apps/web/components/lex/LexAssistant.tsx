@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SITE_DATA } from '@/lib/site-data';
 
 /**
  * LEX — Assistente digitale dello Studio Miotti
@@ -91,8 +92,7 @@ export function LexAssistant() {
         ...m,
         {
           role: 'assistant',
-          content:
-            "Mi scuso, ho avuto un problema tecnico. Può scrivermi più tardi o contattare direttamente lo studio al 045 95 86 116.",
+          content: `Mi scuso, ho avuto un problema tecnico. Può scrivermi più tardi o contattare direttamente lo studio al ${SITE_DATA.phoneDisplay}.`,
           ts: Date.now(),
         },
       ]);
@@ -112,7 +112,7 @@ export function LexAssistant() {
         onClick={() => setOpen(true)}
         aria-label="Apri assistente Lex"
         className={cn(
-          'fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[var(--z-lex)]',
+          'fixed bottom-8 right-8 md:bottom-10 md:right-10 z-[var(--z-lex)]',
           'group flex items-center gap-3 pl-3 pr-5 py-3',
           'bg-ink text-paper hover:bg-cobalt-deep',
           'shadow-[0_8px_24px_rgba(15,34,64,0.18)] hover:shadow-[0_12px_32px_rgba(15,34,64,0.28)]',

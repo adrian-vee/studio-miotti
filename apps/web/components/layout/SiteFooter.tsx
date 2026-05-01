@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { SITE_DATA } from '@/lib/site-data';
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
+  const { address, hours, email, pec, piva, cf, barNumber, barYear } = SITE_DATA;
+
   return (
-    <footer className="bg-paper border-t border-rule" role="contentinfo">
+    <footer className="bg-paper border-t border-rule pb-24 md:pb-28" role="contentinfo">
       <div className="container-page py-20 md:py-24">
         {/* Big logotype + tagline */}
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12 pb-16 border-b border-rule">
@@ -16,7 +19,7 @@ export function SiteFooter() {
               MIOTTI
             </p>
             <p className="mt-6 italic text-cobalt text-lg">
-              Diritto come dialogo, non come distanza.
+              {SITE_DATA.tagline}
             </p>
           </div>
 
@@ -28,7 +31,6 @@ export function SiteFooter() {
               <FooterLink href="/studio">Chi siamo</FooterLink>
               <FooterLink href="/aree-di-competenza">Aree di competenza</FooterLink>
               <FooterLink href="/tariffe">Trasparenza onorari</FooterLink>
-              <FooterLink href="/casi-studio">Casi studio</FooterLink>
               <FooterLink href="/domande-frequenti">Domande frequenti</FooterLink>
             </ul>
           </div>
@@ -41,7 +43,6 @@ export function SiteFooter() {
               <FooterLink href="/guide">Guide gratuite</FooterLink>
               <FooterLink href="/risorse-gratuite">PDF scaricabili</FooterLink>
               <FooterLink href="/newsletter">Newsletter</FooterLink>
-              <FooterLink href="/glossario-legale">Glossario</FooterLink>
             </ul>
           </div>
 
@@ -53,32 +54,34 @@ export function SiteFooter() {
               <li className="flex gap-2">
                 <MapPin size={14} className="text-cobalt mt-0.5 shrink-0" />
                 <span>
-                  Via S. Giovanni Bosco 29/E
+                  {address.street}
                   <br />
-                  37047 San Bonifacio (VR)
+                  {address.cap} {address.city} ({address.province})
                 </span>
               </li>
               <li>
                 <a
-                  href="tel:+390459586116"
+                  href={`tel:${SITE_DATA.phoneTel}`}
                   className="flex gap-2 hover:text-cobalt transition-colors"
                 >
                   <Phone size={14} className="text-cobalt mt-0.5 shrink-0" />
-                  045 95 86 116
+                  {SITE_DATA.phoneDisplay}
                 </a>
               </li>
-              <li>
-                <a
-                  href="mailto:{{TODO_EMAIL}}"
-                  className="flex gap-2 hover:text-cobalt transition-colors"
-                >
-                  <Mail size={14} className="text-cobalt mt-0.5 shrink-0" />
-                  {`{{TODO_EMAIL}}`}
-                </a>
-              </li>
+              {email && (
+                <li>
+                  <a
+                    href={`mailto:${email}`}
+                    className="flex gap-2 hover:text-cobalt transition-colors"
+                  >
+                    <Mail size={14} className="text-cobalt mt-0.5 shrink-0" />
+                    {email}
+                  </a>
+                </li>
+              )}
               <li className="flex gap-2">
                 <Clock size={14} className="text-cobalt mt-0.5 shrink-0" />
-                <span>Lun–Ven · 9–13 / 15–19</span>
+                <span>{hours.short}</span>
               </li>
             </ul>
           </div>
@@ -88,16 +91,21 @@ export function SiteFooter() {
         <div className="pt-12 grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8">
           <div className="col-span-12 md:col-span-7 space-y-2 text-xs text-graphite leading-relaxed">
             <p>
-              <strong className="text-ink">Avv. Massimiliano Miotti</strong> · Iscritto
-              all'Ordine degli Avvocati di Verona dal {`{{TODO_BAR_YEAR}}`} ·
-              N. {`{{TODO_BAR_NUMBER}}`}
+              <strong className="text-ink">{SITE_DATA.legalName}</strong>
+              {' · '}Iscritto all'Ordine degli Avvocati di Verona
+              {barYear ? ` dal ${barYear}` : ''}
+              {barNumber ? ` · N. ${barNumber}` : ''}
             </p>
             <p>
-              Foro di Verona · P. IVA {`{{TODO_PIVA}}`} · CF MTTMSM75D07H783Q
+              Foro di Verona
+              {piva ? ` · P. IVA ${piva}` : ''}
+              {' · '}CF {cf}
             </p>
-            <p>
-              PEC: <a href="mailto:{{TODO_PEC}}" className="link-inline">{`{{TODO_PEC}}`}</a>
-            </p>
+            {pec && (
+              <p>
+                PEC: <a href={`mailto:${pec}`} className="link-inline">{pec}</a>
+              </p>
+            )}
             <p className="pt-2">
               Onorari concordati nel rispetto del DM 55/2014 e successive modificazioni.
               I contenuti del sito non costituiscono parere legale.
@@ -117,7 +125,7 @@ export function SiteFooter() {
 
         {/* Bottom credit */}
         <div className="mt-12 pt-8 border-t border-rule flex flex-wrap items-center justify-between gap-4 text-xs text-graphite">
-          <p>© {year} Avv. Massimiliano Miotti · Tutti i diritti riservati</p>
+          <p>© {year} {SITE_DATA.legalName} · Tutti i diritti riservati</p>
           <p>
             Sito sviluppato da{' '}
             <a

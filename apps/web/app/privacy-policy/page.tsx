@@ -1,5 +1,6 @@
 import { pageMeta } from '@/lib/seo';
 import { LegalLayout } from '@/components/layout/LegalLayout';
+import { SITE_DATA } from '@/lib/site-data';
 
 export const metadata = pageMeta({
   title: 'Privacy Policy',
@@ -24,10 +25,12 @@ export default function PrivacyPage() {
 
       <h2>1. Titolare del trattamento</h2>
       <p>
-        <strong>Avv. Massimiliano Miotti</strong><br />
-        Via S. Giovanni Bosco, 29/E – 37047 San Bonifacio (VR)<br />
-        CF: MTTMSM75D07H783Q · P.IVA: {`{{TODO_PIVA}}`}<br />
-        Tel: 045 95 86 116 · Email: {`{{TODO_EMAIL}}`} · PEC: {`{{TODO_PEC}}`}
+        <strong>{SITE_DATA.legalName}</strong><br />
+        {SITE_DATA.address.street} – {SITE_DATA.address.cap} {SITE_DATA.address.city} ({SITE_DATA.address.province})<br />
+        CF: {SITE_DATA.cf}{SITE_DATA.piva ? ` · P.IVA: ${SITE_DATA.piva}` : ''}<br />
+        Tel: {SITE_DATA.phoneDisplay}
+        {SITE_DATA.email && <> · Email: {SITE_DATA.email}</>}
+        {SITE_DATA.pec && <> · PEC: {SITE_DATA.pec}</>}
       </p>
 
       <h2>2. Tipologie di dati trattati</h2>
@@ -90,7 +93,17 @@ export default function PrivacyPage() {
         <li>Proporre reclamo al Garante per la protezione dei dati personali.</li>
       </ul>
       <p>
-        Per esercitare tali diritti scrivere a {`{{TODO_EMAIL}}`} o a mezzo PEC a {`{{TODO_PEC}}`}.
+        Per esercitare tali diritti{' '}
+        {SITE_DATA.email || SITE_DATA.pec ? (
+          <>
+            scrivere
+            {SITE_DATA.email && <> a {SITE_DATA.email}</>}
+            {SITE_DATA.email && SITE_DATA.pec && ' o'}
+            {SITE_DATA.pec && <> a mezzo PEC a {SITE_DATA.pec}</>}.
+          </>
+        ) : (
+          <>contattare lo Studio al {SITE_DATA.phoneDisplay} o tramite il modulo nella pagina contatti.</>
+        )}
       </p>
 
       <h2>8. Modifiche</h2>

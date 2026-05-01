@@ -1,6 +1,7 @@
 import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { SITE_DATA } from '@/lib/site-data';
 
 export const metadata = pageMeta({
   title: "Lo Studio · Avv. Massimiliano Miotti",
@@ -37,22 +38,16 @@ export default function StudioPage() {
 
               <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8">
                 <div className="col-span-12 md:col-span-7 space-y-6 text-graphite text-lg leading-relaxed">
-                  <p className="text-ink">
-                    {`{{TODO_BIO_INTRO}}`} — Lead paragrafo: 2-3 frasi che riassumano chi è l'avvocato,
-                    la sua formazione e la filosofia del lavoro.
-                  </p>
-                  <p>
-                    {`{{TODO_BIO_FORMAZIONE}}`} — Università, eventuali specializzazioni (master,
-                    Scuola di Specializzazione per le Professioni Legali), anno iscrizione albo.
-                  </p>
-                  <p>
-                    {`{{TODO_BIO_ESPERIENZA}}`} — Anni di esperienza, principali aree di pratica
-                    consolidate negli anni, eventuali ruoli accademici/associativi.
-                  </p>
-                  <p>
-                    {`{{TODO_BIO_FILOSOFIA}}`} — La visione del lavoro: perché ha scelto la libera
-                    professione, cosa lo distingue da uno studio di città.
-                  </p>
+                  {SITE_DATA.bio.intro ? (
+                    <p className="text-ink">{SITE_DATA.bio.intro}</p>
+                  ) : (
+                    <p className="text-ink italic text-graphite">
+                      Profilo professionale in aggiornamento.
+                    </p>
+                  )}
+                  {SITE_DATA.bio.formazione && <p>{SITE_DATA.bio.formazione}</p>}
+                  {SITE_DATA.bio.esperienza && <p>{SITE_DATA.bio.esperienza}</p>}
+                  {SITE_DATA.bio.filosofia && <p>{SITE_DATA.bio.filosofia}</p>}
                 </div>
 
                 <aside className="col-span-12 md:col-span-5 md:pl-8 md:border-l border-rule">
@@ -64,21 +59,27 @@ export default function StudioPage() {
                       <dt className="text-graphite mb-1">Foro di iscrizione</dt>
                       <dd>Ordine degli Avvocati di Verona</dd>
                     </div>
-                    <div>
-                      <dt className="text-graphite mb-1">N. iscrizione</dt>
-                      <dd className="font-mono">{`{{TODO_BAR_NUMBER}}`}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-graphite mb-1">Anno iscrizione</dt>
-                      <dd className="font-mono">{`{{TODO_BAR_YEAR}}`}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-graphite mb-1">Lingue di lavoro</dt>
-                      <dd>{`{{TODO_LANGUAGES}}`}</dd>
-                    </div>
+                    {SITE_DATA.barNumber && (
+                      <div>
+                        <dt className="text-graphite mb-1">N. iscrizione</dt>
+                        <dd className="font-mono">{SITE_DATA.barNumber}</dd>
+                      </div>
+                    )}
+                    {SITE_DATA.barYear && (
+                      <div>
+                        <dt className="text-graphite mb-1">Anno iscrizione</dt>
+                        <dd className="font-mono">{SITE_DATA.barYear}</dd>
+                      </div>
+                    )}
+                    {SITE_DATA.languages && (
+                      <div>
+                        <dt className="text-graphite mb-1">Lingue di lavoro</dt>
+                        <dd>{SITE_DATA.languages}</dd>
+                      </div>
+                    )}
                     <div>
                       <dt className="text-graphite mb-1">Codice Fiscale</dt>
-                      <dd className="font-mono text-xs">MTTMSM75D07H783Q</dd>
+                      <dd className="font-mono text-xs">{SITE_DATA.cf}</dd>
                     </div>
                   </dl>
 

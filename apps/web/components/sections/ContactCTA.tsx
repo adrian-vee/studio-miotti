@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ArrowRight, Phone, MapPin, Clock } from 'lucide-react';
+import { SITE_DATA } from '@/lib/site-data';
 
 export function ContactCTA() {
   return (
@@ -93,13 +94,7 @@ export function ContactCTA() {
               <ContactRow
                 icon={<Clock size={18} />}
                 label="Orari"
-                value={
-                  <>
-                    Lun–Ven · 9:00–13:00 / 15:00–19:00
-                    <br />
-                    <span className="text-paper/50 text-sm">{`{{TODO_HOURS — confermare con avvocato}}`}</span>
-                  </>
-                }
+                value={SITE_DATA.hours.long}
               />
             </div>
 
@@ -109,8 +104,12 @@ export function ContactCTA() {
               </p>
               <p className="font-mono text-sm">
                 Ordine degli Avvocati di Verona
-                <br />
-                <span className="text-paper/60">N° {`{{TODO_BAR_NUMBER}}`}</span>
+                {SITE_DATA.barNumber && (
+                  <>
+                    <br />
+                    <span className="text-paper/60">N° {SITE_DATA.barNumber}</span>
+                  </>
+                )}
               </p>
             </div>
           </div>

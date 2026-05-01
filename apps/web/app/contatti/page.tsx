@@ -1,6 +1,7 @@
 import { pageMeta } from '@/lib/seo';
 import { ContactForm } from '@/components/forms/ContactForm';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { SITE_DATA } from '@/lib/site-data';
 
 export const metadata = pageMeta({
   title: 'Contatti · Studio Legale Miotti · San Bonifacio',
@@ -71,16 +72,22 @@ export default function ContattiPage() {
                 </p>
               </div>
 
-              <div>
-                <h2 className="text-xs uppercase tracking-[0.18em] text-graphite mb-4">Email & PEC</h2>
-                <a href="mailto:{{TODO_EMAIL}}" className="flex gap-3 mb-2 hover:text-cobalt transition-colors">
-                  <Mail size={18} className="text-cobalt mt-0.5 shrink-0" />
-                  <span>{`{{TODO_EMAIL}}`}</span>
-                </a>
-                <a href="mailto:{{TODO_PEC}}" className="flex gap-3 hover:text-cobalt transition-colors text-sm text-graphite">
-                  <span className="ml-9 font-mono">PEC: {`{{TODO_PEC}}`}</span>
-                </a>
-              </div>
+              {(SITE_DATA.email || SITE_DATA.pec) && (
+                <div>
+                  <h2 className="text-xs uppercase tracking-[0.18em] text-graphite mb-4">Email & PEC</h2>
+                  {SITE_DATA.email && (
+                    <a href={`mailto:${SITE_DATA.email}`} className="flex gap-3 mb-2 hover:text-cobalt transition-colors">
+                      <Mail size={18} className="text-cobalt mt-0.5 shrink-0" />
+                      <span>{SITE_DATA.email}</span>
+                    </a>
+                  )}
+                  {SITE_DATA.pec && (
+                    <a href={`mailto:${SITE_DATA.pec}`} className="flex gap-3 hover:text-cobalt transition-colors text-sm text-graphite">
+                      <span className="ml-9 font-mono">PEC: {SITE_DATA.pec}</span>
+                    </a>
+                  )}
+                </div>
+              )}
 
               <div>
                 <h2 className="text-xs uppercase tracking-[0.18em] text-graphite mb-4">Orari</h2>

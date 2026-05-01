@@ -1,3 +1,5 @@
+import { SITE_DATA } from '@/lib/site-data';
+
 /**
  * Schema più ricco per la homepage.
  * Si aggiunge sopra OrganizationSchema (che è in layout.tsx).
@@ -8,23 +10,23 @@ export function LocalSchema() {
     '@context': 'https://schema.org',
     '@type': 'Attorney',
     '@id': 'https://studiomiotti.it/#attorney',
-    name: 'Avv. Massimiliano Miotti',
+    name: SITE_DATA.legalName,
     image: 'https://studiomiotti.it/avvocato-miotti.jpg',
-    telephone: '+39-045-9586116',
-    email: '{{TODO_EMAIL}}',
+    telephone: SITE_DATA.phone,
+    ...(SITE_DATA.email ? { email: SITE_DATA.email } : {}),
     url: 'https://studiomiotti.it',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Via S. Giovanni Bosco, 29/E',
-      addressLocality: 'San Bonifacio',
-      addressRegion: 'VR',
-      postalCode: '37047',
+      streetAddress: SITE_DATA.address.street,
+      addressLocality: SITE_DATA.address.city,
+      addressRegion: SITE_DATA.address.province,
+      postalCode: SITE_DATA.address.cap,
       addressCountry: 'IT',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 45.3919,
-      longitude: 11.2747,
+      latitude: SITE_DATA.geo.lat,
+      longitude: SITE_DATA.geo.lng,
     },
     openingHoursSpecification: [
       {

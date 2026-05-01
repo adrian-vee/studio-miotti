@@ -34,7 +34,7 @@ export function Manifesto() {
   return (
     <section
       ref={ref}
-      className="bg-paper-warm py-24 md:py-32"
+      className="relative isolate overflow-hidden bg-paper-warm py-24 md:py-32"
       aria-labelledby="manifesto-heading"
     >
       <div className="container-page">

@@ -1,6 +1,7 @@
 import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { Sparkles, MessageCircle, Calendar, Phone } from 'lucide-react';
+import { SITE_DATA } from '@/lib/site-data';
 
 export const metadata = pageMeta({
   title: 'Prenota un Primo Confronto · 15 minuti gratuiti',
@@ -9,7 +10,17 @@ export const metadata = pageMeta({
   path: '/prenota/',
 });
 
-const channels = [
+type Channel = {
+  icon: React.ReactNode;
+  title: string;
+  duration: string;
+  body: string;
+  cta: string;
+  style?: 'feature';
+  href: string;
+};
+
+const channels: Channel[] = [
   {
     icon: <Sparkles size={24} className="text-gold" />,
     title: 'Parla con Lex',
@@ -19,21 +30,25 @@ const channels = [
     style: 'feature',
     href: '#open-lex',
   },
-  {
-    icon: <Calendar size={20} />,
-    title: 'Calendario online',
-    duration: 'Slot in tempo reale',
-    body: "Sceglie data e ora compatibili con la disponibilità dello studio. Conferma immediata via email.",
-    cta: 'Apri calendario',
-    href: '{{TODO_CALENDLY_URL}}',
-  },
+  ...(SITE_DATA.calendlyUrl
+    ? [
+        {
+          icon: <Calendar size={20} />,
+          title: 'Calendario online',
+          duration: 'Slot in tempo reale',
+          body: "Sceglie data e ora compatibili con la disponibilità dello studio. Conferma immediata via email.",
+          cta: 'Apri calendario',
+          href: SITE_DATA.calendlyUrl,
+        } satisfies Channel,
+      ]
+    : []),
   {
     icon: <Phone size={20} />,
     title: 'Telefono',
-    duration: 'Lun-Ven 9-13 / 15-19',
+    duration: SITE_DATA.hours.short,
     body: 'Chiamata diretta con la segreteria dello studio. Risposta in giornata.',
-    cta: '045 95 86 116',
-    href: 'tel:+390459586116',
+    cta: SITE_DATA.phoneDisplay,
+    href: `tel:${SITE_DATA.phoneTel}`,
   },
   {
     icon: <MessageCircle size={20} />,

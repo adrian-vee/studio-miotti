@@ -1,5 +1,6 @@
 import { pageMeta } from '@/lib/seo';
 import { LegalLayout } from '@/components/layout/LegalLayout';
+import { SITE_DATA } from '@/lib/site-data';
 
 export const metadata = pageMeta({
   title: 'Dichiarazione di Accessibilità',
@@ -51,8 +52,14 @@ export default function AccessibilitaPage() {
       <h2>Feedback</h2>
       <p>
         Se incontri difficoltà nell'utilizzo del sito o vuoi segnalare un problema
-        di accessibilità, scrivi a {`{{TODO_EMAIL}}`} oppure chiama lo studio al
-        045 95 86 116. Ci impegniamo a rispondere entro <strong>10 giorni lavorativi</strong>.
+        di accessibilità,{' '}
+        {SITE_DATA.email ? (
+          <>scrivi a {SITE_DATA.email} oppure chiama</>
+        ) : (
+          <>chiama</>
+        )}{' '}
+        lo studio al {SITE_DATA.phoneDisplay}. Ci impegniamo a rispondere entro{' '}
+        <strong>10 giorni lavorativi</strong>.
       </p>
 
       <h2>Aggiornamenti</h2>
