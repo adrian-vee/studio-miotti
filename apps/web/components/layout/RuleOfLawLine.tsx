@@ -4,26 +4,26 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const ANCHORS = [
-  { id: 'hero', numeral: 'I', label: 'Studio' },
-  { id: 'manifesto', numeral: 'II', label: 'Manifesto' },
-  { id: 'aree', numeral: 'III', label: 'Aree' },
-  { id: 'metodo', numeral: 'IV', label: 'Metodo' },
-  { id: 'risorse', numeral: 'V', label: 'Risorse' },
-  { id: 'contatti', numeral: 'VI', label: 'Contatti' },
+  { id: 'hero', numeral: 'I', label: 'Studio', top: '16%' },
+  { id: 'manifesto', numeral: 'II', label: 'Manifesto', top: '32%' },
+  { id: 'aree', numeral: 'III', label: 'Aree', top: '48%' },
+  { id: 'metodo', numeral: 'IV', label: 'Metodo', top: '64%' },
+  { id: 'risorse', numeral: 'V', label: 'Risorse', top: '80%' },
+  { id: 'contatti', numeral: 'VI', label: 'Contatti', top: '96%' },
 ] as const;
 
 /**
  * RuleOfLawLine — sottile filetto verticale fisso a sinistra del viewport.
  *
- * Renderizzato una sola volta in app/layout.tsx. Mostra un piccolo tick
- * + label per ogni sezione della home identificata via
- * data-rule-anchor="<id>". Il tick attivo (sezione corrente in viewport)
- * cambia colore.
+ * Visibilità soft: la linea + i 6 tick sono sempre presenti ma molto
+ * smorzati; solo la label della sezione corrente è visibile (le altre
+ * 5 sono opacità 0 → niente rumore visivo, niente sovrapposizione col
+ * logo MIOTTI o col § dell'hero).
  *
- * - hidden su < lg (1024px), per non interferire su mobile/tablet
- * - z-index 5: sotto al floating button di Lex
- * - i tick sono distribuiti uniformemente lungo la linea (no layout
- *   shift), l'IntersectionObserver determina solo quale è attivo
+ * - hidden < xl (1280px) → laptop 13" non lo vedono
+ * - z-index 1 → DIETRO al wordmark/logo
+ * - left: 32px → fuori dal container-page
+ * - label orizzontali (mai ruotate) sotto il tick, solo l'attiva visibile
  */
 export function RuleOfLawLine() {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -42,7 +42,6 @@ export function RuleOfLawLine() {
     }
     setHasAnchors(true);
 
-    // Tracker: quale sezione occupa la maggior parte del viewport.
     const visibility = new Map<string, number>();
 
     const observer = new IntersectionObserver(
@@ -64,7 +63,6 @@ export function RuleOfLawLine() {
         if (bestId) setActiveId(bestId);
       },
       {
-        // multipli threshold per granularità nel decidere chi domina
         threshold: [0, 0.25, 0.5, 0.75, 1],
       },
     );
@@ -80,8 +78,8 @@ export function RuleOfLawLine() {
   return (
     <aside
       aria-hidden
-      className="hidden lg:block fixed top-0 bottom-0 pointer-events-none"
-      style={{ left: '48px', width: '1px', zIndex: 5 }}
+      className="hidden xl:block fixed top-0 bottom-0 pointer-events-none"
+      style={{ left: '32px', width: '1px', zIndex: 1 }}
     >
       <div
         className="absolute top-0 bottom-0 left-0 w-px bg-ink"
@@ -89,35 +87,38 @@ export function RuleOfLawLine() {
       />
 
       <ul className="absolute top-0 bottom-0 left-0">
-        {ANCHORS.map((anchor, i) => {
-          const top = `${((i + 0.5) / ANCHORS.length) * 100}%`;
+        {ANCHORS.map((anchor) => {
           const active = activeId === anchor.id;
           return (
             <li
               key={anchor.id}
               className="absolute -translate-y-1/2"
-              style={{ top, left: 0 }}
+              style={{ top: anchor.top, left: 0 }}
             >
+              {/* Tick */}
               <span
                 className={cn(
-                  'block h-px transition-colors duration-200 motion-reduce:transition-none',
-                  active ? 'bg-cobalt' : 'bg-ink/60',
-                )}
-                style={{ width: '16px' }}
-              />
-              <span
-                className={cn(
-                  'absolute font-mono whitespace-nowrap transition-colors duration-200 motion-reduce:transition-none',
-                  active ? 'text-cobalt opacity-100' : 'text-graphite opacity-70',
+                  'block h-px bg-ink transition-opacity duration-200 motion-reduce:transition-none',
                 )}
                 style={{
-                  top: '50%',
-                  left: '24px',
-                  transform: 'translateY(-50%) rotate(-90deg)',
-                  transformOrigin: 'left center',
+                  width: '12px',
+                  opacity: active ? 1 : 0.3,
+                }}
+              />
+
+              {/* Label — orizzontale, sotto al tick, visibile solo se attiva */}
+              <span
+                className={cn(
+                  'absolute font-mono whitespace-nowrap text-cobalt uppercase',
+                  'transition-opacity duration-200 motion-reduce:transition-none',
+                )}
+                style={{
+                  top: '12px',
+                  left: '6px',
+                  transform: 'translateX(-50%)',
                   fontSize: '9px',
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
+                  letterSpacing: '0.16em',
+                  opacity: active ? 1 : 0,
                 }}
               >
                 {anchor.numeral} · {anchor.label}
