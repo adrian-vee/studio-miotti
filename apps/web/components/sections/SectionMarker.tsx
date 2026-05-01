@@ -17,8 +17,9 @@ interface Props {
  * - pointer-events none → mai cliccabile
  * - hidden su mobile (< md)
  *
- * variant 'dark' usato su sezioni con bg scuro (ApproachTimeline,
- * ContactCTA): graphite + opacity più bassa per non bucare il colore.
+ * variant 'dark' su sezioni bg scuro: numerale + label color paper
+ * con opacità basse, perché su graphite scuro (bg-ink, bg-cobalt-deep)
+ * il graphite stesso si fonde col fondo e diventa invisibile.
  */
 export function SectionMarker({
   numeral,
@@ -26,35 +27,43 @@ export function SectionMarker({
   align = 'right',
   variant = 'light',
 }: Props) {
+  const isDark = variant === 'dark';
+
+  // Numerale: chiaro su dark, paper-warm su light.
+  const numeralColor = isDark ? 'rgb(var(--color-paper))' : 'rgb(var(--color-paper-warm))';
+  const numeralOpacity = isDark ? 0.08 : 0.5;
+
+  // Label: paper soft su dark, graphite pieno su light.
+  const labelColor = isDark ? 'rgb(var(--color-paper))' : 'rgb(var(--color-graphite))';
+  const labelOpacity = isDark ? 0.5 : 1;
+
   return (
     <aside
       aria-hidden
       className={cn(
-        'hidden md:flex flex-col items-end pointer-events-none select-none',
+        'hidden md:flex flex-col pointer-events-none select-none',
         'absolute top-12 z-0',
         align === 'right' ? 'right-12 items-end text-right' : 'left-12 items-start text-left',
       )}
     >
       <span
-        className={cn(
-          'font-display leading-none',
-          variant === 'dark' ? 'text-graphite/25' : 'text-paper-warm/50',
-        )}
+        className="font-display leading-none"
         style={{
           fontSize: 'clamp(80px, 10vw, 140px)',
           fontWeight: 300,
+          color: numeralColor,
+          opacity: numeralOpacity,
         }}
       >
         {numeral}
       </span>
       <span
-        className={cn(
-          'mt-2 font-mono uppercase',
-          variant === 'dark' ? 'text-paper/40' : 'text-graphite',
-        )}
+        className="mt-2 font-mono uppercase"
         style={{
           fontSize: '9px',
           letterSpacing: '0.2em',
+          color: labelColor,
+          opacity: labelOpacity,
         }}
       >
         {label}
