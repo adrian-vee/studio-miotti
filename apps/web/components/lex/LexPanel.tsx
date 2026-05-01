@@ -103,37 +103,41 @@ export function LexPanel({
         opacity: { duration: 0.22 },
       }}
       className={cn(
-        'fixed z-[var(--z-modal)] flex flex-col',
+        'fixed z-[var(--z-modal)] flex flex-col overflow-hidden',
         'bg-paper text-ink',
         'shadow-[0_24px_60px_rgba(15,34,64,0.18)]',
         'border-l border-rule',
-        // Mobile fullscreen
-        'inset-x-3 top-3 bottom-3',
-        // Desktop dock bottom-right
+        // Mobile: 12px su tutti i lati, max-h calcolata su 100dvh
+        'inset-3 max-h-[calc(100dvh-1.5rem)]',
+        // Desktop: dock bottom-right, 420×min(640, 100dvh-3rem)
         'md:inset-auto md:bottom-6 md:right-6',
-        'md:w-[420px] md:h-[640px] md:max-h-[calc(100vh-3rem)]',
+        'md:w-[420px] md:h-[min(640px,calc(100dvh-3rem))] md:max-h-[calc(100dvh-3rem)]',
       )}
       style={{ originX: 1, originY: 1 }}
     >
       {/* 4px cobalt accent rule sopra */}
       <div className="h-1 w-full bg-cobalt shrink-0" aria-hidden />
 
-      <LexHeader
-        titleId={titleId}
-        onClose={onClose}
-        onReset={onReset}
-        canReset={hasUserSpoken}
-      />
-
-      {/* Toast feedback */}
-      <div className="px-6 pt-3">
-        <LexToast toast={toast} onDismiss={onDismissToast} />
+      <div className="shrink-0">
+        <LexHeader
+          titleId={titleId}
+          onClose={onClose}
+          onReset={onReset}
+          canReset={hasUserSpoken}
+        />
       </div>
 
-      {/* Body chat */}
+      {/* Toast feedback — il wrapper esiste solo se c'è un toast da mostrare */}
+      {toast && (
+        <div className="shrink-0 px-6 pt-3">
+          <LexToast toast={toast} onDismiss={onDismissToast} />
+        </div>
+      )}
+
+      {/* Body chat — flex-1 + min-h-0 è critico per overflow corretto in flex column */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-6 py-5 lex-scroll"
+        className="flex-1 min-h-0 overflow-y-auto px-6 py-5 lex-scroll"
         aria-live="polite"
         aria-relevant="additions text"
       >
@@ -148,12 +152,14 @@ export function LexPanel({
       </div>
 
       {/* Disclaimer permanente */}
-      <p className="px-6 py-2 border-t border-rule font-mono text-[9px] uppercase tracking-[0.15em] text-graphite leading-snug">
+      <p className="shrink-0 px-6 py-2 border-t border-rule font-mono text-[9px] uppercase tracking-[0.15em] text-graphite leading-snug bg-paper">
         Lex fornisce informazioni generali. Non sostituisce un parere legale
         dell'Avv. Miotti.
       </p>
 
-      <LexInput busy={busy} onSubmit={onSubmit} inputRef={inputRef} />
+      <div className="shrink-0">
+        <LexInput busy={busy} onSubmit={onSubmit} inputRef={inputRef} />
+      </div>
     </motion.div>
   );
 }

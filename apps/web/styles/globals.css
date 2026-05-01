@@ -1,8 +1,15 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
-/* ─── TAILWIND v4 THEME — bind tokens al sistema utility ────────── */
-@theme {
+/* ─── TAILWIND v4 THEME — bind tokens al sistema utility ──────────
+ * `inline` = il valore va sostituito letteralmente nelle utility,
+ * SENZA emettere `--color-X: rgb(var(--color-X))` in :root (sarebbe
+ * ricorsivo e renderebbe `bg-paper` invalido → trasparente).
+ * Così Tailwind genera `.bg-paper { background-color: rgb(var(--color-paper)) }`
+ * e `--color-paper` (definito in tokens.css come `250 250 247`) viene
+ * risolto correttamente dentro l'rgb().
+ */
+@theme inline {
   --color-ink: rgb(var(--color-ink));
   --color-paper: rgb(var(--color-paper));
   --color-paper-warm: rgb(var(--color-paper-warm));
