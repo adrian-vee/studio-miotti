@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { SectionMarker } from './SectionMarker';
 
 /**
  * HERO — Studio Miotti (editorial v2)
@@ -29,9 +30,12 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
+      data-rule-anchor="hero"
       className="relative isolate overflow-hidden bg-paper pt-32 pb-24 md:pt-40 md:pb-32"
       aria-labelledby="hero-headline"
     >
+      <SectionMarker numeral="I" label="Lo Studio" align="right" />
+
       {/* Grid guides — 12 colonne sottili, statement editoriale */}
       <div
         aria-hidden

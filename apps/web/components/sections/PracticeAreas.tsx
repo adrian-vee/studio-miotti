@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { SectionMarker } from './SectionMarker';
 
 /**
  * AREE DI COMPETENZA — Hub SEO
@@ -74,9 +75,12 @@ const areas = [
 export function PracticeAreas() {
   return (
     <section
+      data-rule-anchor="aree"
       className="bg-paper py-20 md:py-28 relative overflow-hidden"
       aria-labelledby="aree-heading"
     >
+      <SectionMarker numeral="III" label="Aree" align="right" />
+
       <div className="container-page relative">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 mb-16 md:mb-20">
           <div className="col-span-12 md:col-span-4">

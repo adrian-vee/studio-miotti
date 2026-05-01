@@ -4,6 +4,7 @@ import { OrganizationSchema } from '@/components/seo/OrganizationSchema';
 import { LexAssistant } from '@/components/lex/LexAssistant';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
+import { RuleOfLawLine } from '@/components/layout/RuleOfLawLine';
 import { SmoothScrollProvider } from '@/components/motion/SmoothScrollProvider';
 import '@/styles/globals.css';
 
@@ -121,6 +122,7 @@ export default function RootLayout({
           <SiteFooter />
         </SmoothScrollProvider>
 
+        <RuleOfLawLine />
         <LexAssistant />
       </body>
     </html>

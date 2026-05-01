@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useRef } from 'react';
+import { SectionMarker } from './SectionMarker';
 
 const steps = [
   {
@@ -41,9 +42,12 @@ export function ApproachTimeline() {
   return (
     <section
       ref={ref}
-      className="bg-ink text-paper py-24 md:py-32"
+      data-rule-anchor="metodo"
+      className="relative bg-ink text-paper py-24 md:py-32"
       aria-labelledby="metodo-heading"
     >
+      <SectionMarker numeral="IV" label="Metodo" align="right" variant="dark" />
+
       <div className="container-page">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 mb-20">
           <div className="col-span-12 md:col-span-4">

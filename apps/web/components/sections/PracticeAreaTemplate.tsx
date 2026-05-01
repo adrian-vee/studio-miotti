@@ -16,6 +16,14 @@ export interface PracticeAreaPageProps {
   relatedKeywords: string[];
 }
 
+function askLex(question: string) {
+  if (typeof window === 'undefined') return;
+  const prompt = `Mi può fare un esempio concreto su: ${question}`;
+  window.dispatchEvent(
+    new CustomEvent('lex:open', { detail: { prompt } }),
+  );
+}
+
 export function PracticeAreaTemplate(props: PracticeAreaPageProps) {
   return (
     <>
@@ -126,7 +134,21 @@ export function PracticeAreaTemplate(props: PracticeAreaPageProps) {
                       +
                     </span>
                   </summary>
-                  <dd className="px-6 pb-6 text-graphite leading-relaxed">{f.a}</dd>
+                  <dd className="px-6 pb-6 text-graphite leading-relaxed">
+                    {f.a}
+                    <button
+                      type="button"
+                      onClick={() => askLex(f.q)}
+                      className="mt-4 inline-block font-mono text-cobalt hover:underline hover:opacity-85 cursor-pointer"
+                      style={{
+                        fontSize: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.18em',
+                      }}
+                    >
+                      Chiedere a Lex un esempio concreto →
+                    </button>
+                  </dd>
                 </details>
               ))}
             </dl>

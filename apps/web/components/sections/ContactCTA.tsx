@@ -4,13 +4,17 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ArrowRight, Phone, MapPin, Clock } from 'lucide-react';
 import { SITE_DATA } from '@/lib/site-data';
+import { SectionMarker } from './SectionMarker';
 
 export function ContactCTA() {
   return (
     <section
+      data-rule-anchor="contatti"
       className="bg-cobalt-deep text-paper py-24 md:py-32 relative overflow-hidden"
       aria-labelledby="contatti-heading"
     >
+      <SectionMarker numeral="VI" label="Contatti" align="right" variant="dark" />
+
       {/* Pattern grid sottile sullo sfondo */}
       <div
         aria-hidden

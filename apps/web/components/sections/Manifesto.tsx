@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
 import { useRef } from 'react';
+import { SectionMarker } from './SectionMarker';
 
 const pillars = [
   {
@@ -34,9 +35,12 @@ export function Manifesto() {
   return (
     <section
       ref={ref}
+      data-rule-anchor="manifesto"
       className="relative isolate overflow-hidden bg-paper-warm py-20 md:py-28"
       aria-labelledby="manifesto-heading"
     >
+      <SectionMarker numeral="II" label="Manifesto" align="right" />
+
       <div className="container-page">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12 mb-16 md:mb-20">
           <div className="col-span-12 md:col-span-4">

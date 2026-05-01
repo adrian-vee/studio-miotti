@@ -21,6 +21,19 @@ export function LexAssistant() {
     };
   }, []);
 
+  // Listener per evento esterno `lex:open` (es. dalle FAQ "Chiedere a Lex")
+  useEffect(() => {
+    function handler(e: Event) {
+      const detail = (e as CustomEvent<{ prompt: string }>).detail;
+      const prompt = detail?.prompt;
+      if (!prompt) return;
+      setOpen(true);
+      void chat.send(prompt);
+    }
+    window.addEventListener('lex:open', handler);
+    return () => window.removeEventListener('lex:open', handler);
+  }, [chat]);
+
   return (
     <>
       <LexFloatingButton hidden={open} onClick={() => setOpen(true)} />

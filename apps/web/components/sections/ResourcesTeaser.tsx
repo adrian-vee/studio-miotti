@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ArrowUpRight, FileText } from 'lucide-react';
+import { SectionMarker } from './SectionMarker';
 
 const guides = [
   {
@@ -31,9 +32,12 @@ const guides = [
 export function ResourcesTeaser() {
   return (
     <section
-      className="bg-paper-warm py-20 md:py-28"
+      data-rule-anchor="risorse"
+      className="relative bg-paper-warm py-20 md:py-28"
       aria-labelledby="risorse-heading"
     >
+      <SectionMarker numeral="V" label="Risorse" align="right" />
+
       <div className="container-page">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 mb-16">
           <div className="col-span-12 md:col-span-4">
