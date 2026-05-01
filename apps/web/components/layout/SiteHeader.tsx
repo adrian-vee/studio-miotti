@@ -13,7 +13,6 @@ const navLinks: readonly NavLink[] = [
   { label: 'Lo Studio', href: '/studio' },
   { label: 'Aree', href: '/aree-di-competenza', mega: true },
   { label: 'Guide', href: '/guide' },
-  { label: 'Tariffe', href: '/tariffe' },
   { label: 'Contatti', href: '/contatti' },
 ];
 
@@ -125,22 +124,17 @@ export function SiteHeader() {
         {/* Main row */}
         <div className="container-page">
           <div className="flex items-center justify-between h-20 md:h-24">
-            {/* Logotype + sottotitolo */}
+            {/* Logotype */}
             <Link
               href="/"
-              className="group flex flex-col gap-1"
+              className="group flex items-baseline gap-3"
               aria-label="Studio Legale Miotti — homepage"
             >
-              <span className="flex items-baseline gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite hidden sm:inline">
-                  Studio Legale
-                </span>
-                <span className="font-display text-2xl tracking-[0.18em] text-ink group-hover:text-cobalt transition-colors">
-                  MIOTTI
-                </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite hidden sm:inline">
+                Studio Legale
               </span>
-              <span className="hidden sm:block font-mono text-[9px] uppercase tracking-[0.2em] text-graphite">
-                Studio Legale · Avvocato in Verona
+              <span className="font-display text-2xl tracking-[0.18em] text-ink group-hover:text-cobalt transition-colors">
+                MIOTTI
               </span>
             </Link>
 
@@ -188,7 +182,7 @@ export function SiteHeader() {
                 href="/prenota"
                 className="hidden md:inline-flex btn-primary !py-2.5 !text-sm"
               >
-                Prenota
+                Primo confronto
               </Link>
               <button
                 type="button"

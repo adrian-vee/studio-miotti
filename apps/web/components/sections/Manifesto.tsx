@@ -18,7 +18,7 @@ const pillars = [
   {
     n: '03',
     title: 'Trasparenza',
-    body: 'Onorari concordati per iscritto secondo i parametri del DM 55/2014. Nessuna sorpresa a fine pratica.',
+    body: 'Le strade possibili e quelle non percorribili, dette con chiarezza fin dal primo incontro.',
   },
   {
     n: '04',

@@ -12,7 +12,7 @@ export const metadata = pageMeta({
 const faqs = [
   {
     q: 'Quanto costa una separazione consensuale?',
-    a: "I costi variano in base alla complessità del patrimonio e alla presenza di figli minori. In media, una separazione consensuale senza patrimonio rilevante può rientrare in 1.500-2.500 euro per parte (oltre IVA, CPA e contributo unificato). Ne parliamo nel primo incontro con cifre concrete riferite alla Sua situazione.",
+    a: "I costi variano in base alla complessità del patrimonio e alla presenza di figli minori. Le cifre concrete riferite alla Sua situazione le definiamo nel primo incontro, dopo aver letto la documentazione e chiarito i punti aperti.",
   },
   {
     q: 'Quanto tempo ci vuole per arrivare al divorzio?',

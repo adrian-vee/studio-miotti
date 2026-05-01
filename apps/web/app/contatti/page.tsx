@@ -46,18 +46,19 @@ export default function ContattiPage() {
                 <h2 className="text-xs uppercase tracking-[0.18em] text-graphite mb-4">Dove siamo</h2>
                 <div className="flex gap-3">
                   <MapPin size={18} className="text-cobalt mt-1 shrink-0" />
-                  <p className="text-ink leading-relaxed">
-                    Via S. Giovanni Bosco, 29/E<br />
-                    37047 San Bonifacio (VR)<br />
+                  <address className="not-italic text-ink leading-relaxed">
+                    <span className="block">Via S. Giovanni Bosco, 29/E</span>
+                    <span className="block">37047 San Bonifacio</span>
+                    <span className="block">Provincia di Verona</span>
                     <a
                       href="https://www.google.com/maps?q=Via+San+Giovanni+Bosco+29+San+Bonifacio+VR"
                       target="_blank"
                       rel="noopener"
-                      className="link-inline text-sm mt-2 inline-block"
+                      className="link-inline text-sm mt-3 inline-block"
                     >
                       Apri in Google Maps →
                     </a>
-                  </p>
+                  </address>
                 </div>
               </div>
 

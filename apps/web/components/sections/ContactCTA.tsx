@@ -52,7 +52,7 @@ export function ContactCTA() {
                 href="/prenota"
                 className="inline-flex items-center justify-center gap-2 bg-paper text-ink px-7 py-4 text-sm font-medium hover:bg-gold transition-colors duration-300 group"
               >
-                Prenota online
+                Primo confronto
                 <ArrowRight
                   size={16}
                   className="transition-transform group-hover:translate-x-1"
@@ -79,11 +79,11 @@ export function ContactCTA() {
                 icon={<MapPin size={18} />}
                 label="Studio"
                 value={
-                  <>
-                    Via S. Giovanni Bosco 29/E
-                    <br />
-                    37047 San Bonifacio (VR)
-                  </>
+                  <span className="block leading-relaxed">
+                    <span className="block">Via S. Giovanni Bosco, 29/E</span>
+                    <span className="block">37047 San Bonifacio</span>
+                    <span className="block">Provincia di Verona</span>
+                  </span>
                 }
               />
               <ContactRow
@@ -98,20 +98,6 @@ export function ContactCTA() {
               />
             </div>
 
-            <div className="mt-10 pt-8 border-t border-paper/15">
-              <p className="text-xs uppercase tracking-[0.18em] text-paper/40 mb-2">
-                Iscrizione
-              </p>
-              <p className="font-mono text-sm">
-                Ordine degli Avvocati di Verona
-                {SITE_DATA.barNumber && (
-                  <>
-                    <br />
-                    <span className="text-paper/60">N° {SITE_DATA.barNumber}</span>
-                  </>
-                )}
-              </p>
-            </div>
           </div>
         </div>
       </div>

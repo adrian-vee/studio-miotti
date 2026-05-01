@@ -135,9 +135,8 @@ export function Hero() {
                 style={{ fontSize: 'var(--fs-body-l)', lineHeight: 1.55 }}
               >
                 Lo Studio dell'Avv. Massimiliano Miotti assiste privati e
-                imprese nella Bassa Veronese con un metodo che mette al primo
-                posto la chiarezza: del problema, della strategia, e del
-                costo.
+                imprese con un metodo che mette al primo posto la chiarezza:
+                del problema, della strategia.
               </motion.p>
 
               <motion.div
@@ -158,37 +157,10 @@ export function Hero() {
                 </Link>
               </motion.div>
             </div>
-
-            {/* Info card 3 mini-stats — border-top rule */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-14 md:mt-16 pt-6 border-t border-rule"
-            >
-              <dl className="grid grid-cols-3 gap-x-8 gap-y-4">
-                <Stat label="Foro di Verona" value="Iscritto dal 2003" />
-                <Stat label="Lingue" value="Italiano · Inglese" />
-                <Stat label="Risposta media" value="Entro 24 ore" />
-              </dl>
-            </motion.div>
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1.5 min-w-0">
-      <dt className="font-mono text-[9px] uppercase tracking-[0.16em] text-graphite">
-        {label}
-      </dt>
-      <dd className="font-display text-[16px] sm:text-[18px] leading-tight text-ink">
-        {value}
-      </dd>
-    </div>
   );
 }
 

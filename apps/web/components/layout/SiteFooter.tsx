@@ -32,9 +32,6 @@ export function SiteFooter() {
             <p className="mt-3 text-[13px] text-ink leading-snug">
               Studio Legale · Avv. Massimiliano Miotti
             </p>
-            <p className="mt-3 text-[13px] italic text-graphite leading-snug">
-              {SITE_DATA.tagline}
-            </p>
             <p className="mt-8 font-mono text-[10px] uppercase tracking-[0.18em] text-graphite">
               Foro di Verona · Iscritto albo dal 2003
             </p>
@@ -50,7 +47,7 @@ export function SiteFooter() {
               <FooterLink href="/aree-di-competenza">
                 Aree di competenza
               </FooterLink>
-              <FooterLink href="/tariffe">Trasparenza onorari</FooterLink>
+              <FooterLink href="/tariffe">Metodo e onorari</FooterLink>
               <FooterLink href="/guide">Domande frequenti</FooterLink>
               <FooterPlaceholder>Lavora con noi</FooterPlaceholder>
             </ul>

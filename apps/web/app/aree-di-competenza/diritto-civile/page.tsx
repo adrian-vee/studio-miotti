@@ -12,7 +12,7 @@ export const metadata = pageMeta({
 const faqs = [
   {
     q: 'Quanto tempo ci vuole per recuperare un credito non pagato?',
-    a: "Dipende dalla volontà del debitore. Con un decreto ingiuntivo non opposto si possono ottenere titoli esecutivi in 60-90 giorni. Se il debitore si oppone, il giudizio ordinario può durare 18-24 mesi in primo grado. Per somme sopra i 5.000 euro, vale quasi sempre la pena procedere.",
+    a: "Dipende dalla volontà del debitore. Con un decreto ingiuntivo non opposto si possono ottenere titoli esecutivi in 60-90 giorni. Se il debitore si oppone, il giudizio ordinario può durare 18-24 mesi in primo grado. Quando l'importo lo giustifica, vale quasi sempre la pena procedere.",
   },
   {
     q: 'Posso impugnare un contratto firmato senza leggerlo?',

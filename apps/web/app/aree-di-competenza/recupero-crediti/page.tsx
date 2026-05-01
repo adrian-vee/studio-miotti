@@ -12,7 +12,7 @@ export const metadata = pageMeta({
 const faqs = [
   {
     q: "Per quale importo conviene attivare la procedura?",
-    a: "Indicativamente sopra i 1.500-2.000 euro per privati e 3.000-5.000 euro per aziende, considerando i costi di procedura e contributo unificato. Per importi minori valutiamo prima diffida stragiudiziale, conciliazione obbligatoria o ricorso al Giudice di Pace.",
+    a: "Quando l'importo lo giustifica rispetto ai costi di procedura e al contributo unificato, conviene attivare la procedura giudiziale. Per importi minori valutiamo prima diffida stragiudiziale, conciliazione obbligatoria o ricorso al Giudice di Pace. La valutazione costo/beneficio la facciamo caso per caso nel primo incontro.",
   },
   {
     q: 'Quanto dura un decreto ingiuntivo?',
