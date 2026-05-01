@@ -11,6 +11,9 @@
   --color-graphite: rgb(var(--color-graphite));
   --color-rule: rgb(var(--color-rule));
   --color-gold: rgb(var(--color-gold));
+  --color-success: rgb(var(--color-success));
+  --color-warn: rgb(var(--color-warn));
+  --color-error: rgb(var(--color-error));
 
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
@@ -257,6 +260,31 @@
   .section-snap {
     scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+}
+
+/* ─── LEX SCROLLBAR (panel chat) ────────────────────────────────── */
+@layer utilities {
+  .lex-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-rule)) transparent;
+  }
+
+  .lex-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .lex-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .lex-scroll::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-rule));
+    border-radius: 0;
+  }
+
+  .lex-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-graphite) / 0.6);
   }
 }
 

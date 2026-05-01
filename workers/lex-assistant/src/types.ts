@@ -22,8 +22,14 @@ export interface ChatRequest {
   messages: ChatMessage[];
 }
 
+export type Outcome =
+  | 'lead_captured'
+  | 'booking_requested'
+  | 'no_action'
+  | 'escalated_human';
+
 export interface ChatResponse {
   reply: string;
-  outcome?: 'lead_captured' | 'booking_requested' | 'no_action' | 'escalated_human';
+  outcome?: Outcome;
   session_id: string;
 }

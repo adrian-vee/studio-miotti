@@ -18,8 +18,9 @@ app.use('*', async (c, next) => {
 
   return cors({
     origin: allowed.includes(origin) ? origin : allowed[0] ?? '*',
-    allowMethods: ['POST', 'OPTIONS'],
-    allowHeaders: ['Content-Type'],
+    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Accept', 'Cache-Control'],
+    exposeHeaders: ['Content-Type'],
     maxAge: 86400,
   })(c, next);
 });
