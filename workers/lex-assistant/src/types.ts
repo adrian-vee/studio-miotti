@@ -17,9 +17,35 @@ export interface ChatMessage {
   content: string;
 }
 
+export type LegalArea =
+  | 'famiglia'
+  | 'civile'
+  | 'lavoro'
+  | 'crediti'
+  | 'immobiliare'
+  | 'responsabilita'
+  | 'altro';
+
+export type Urgency = 'alta' | 'media' | 'bassa';
+
+export interface SessionContext {
+  userName?: string;
+  legalArea?: LegalArea;
+  urgency?: Urgency;
+  documentsAnalyzed?: string[];
+}
+
+export interface Attachment {
+  name: string;
+  type: string; // mime type
+  base64: string;
+}
+
 export interface ChatRequest {
   session_id: string;
   messages: ChatMessage[];
+  sessionContext?: SessionContext;
+  attachments?: Attachment[];
 }
 
 export type Outcome =

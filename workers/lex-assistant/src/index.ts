@@ -4,6 +4,7 @@ import { logger } from 'hono/logger';
 import { secureHeaders } from 'hono/secure-headers';
 import { handleChat } from './chat';
 import { rateLimitMiddleware } from './rate-limit';
+import { upload } from './upload';
 import type { Env } from './types';
 
 const app = new Hono<{ Bindings: Env }>();
@@ -31,6 +32,10 @@ app.get('/health', (c) => c.json({ ok: true, ts: Date.now() }));
 
 // Chat endpoint
 app.post('/chat', rateLimitMiddleware, handleChat);
+
+// Upload endpoint (rate-limited like chat)
+app.use('/upload', rateLimitMiddleware);
+app.route('/', upload);
 
 // 404
 app.notFound((c) => c.json({ error: 'not_found' }, 404));
