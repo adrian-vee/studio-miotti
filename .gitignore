@@ -36,6 +36,13 @@ pnpm-debug.log*
 .vercel/
 coverage/
 
+# Python
+__pycache__/
+*.pyc
+
+# Claude Code: skill bundles installati per-progetto restano locali
+.claude/skills/
+
 # Lighthouse
 .lighthouseci/
 
