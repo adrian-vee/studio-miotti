@@ -8,7 +8,7 @@ import { LexBubble } from './LexBubble';
 import { LexInput } from './LexInput';
 import { LexQuickActions } from './LexQuickActions';
 import { LexToast } from './LexToast';
-import type { LexMsg, LexToastData } from './types';
+import type { LexAttachment, LexMsg, LexToastData } from './types';
 
 interface Props {
   open: boolean;
@@ -16,10 +16,13 @@ interface Props {
   busy: boolean;
   toast: LexToastData | null;
   hasUserSpoken: boolean;
+  pendingAttachments: LexAttachment[];
   onClose: () => void;
   onSubmit: (text: string) => void;
   onReset: () => void;
   onDismissToast: () => void;
+  onUpload: (file: File) => Promise<void>;
+  onRemoveAttachment: (id: string) => void;
 }
 
 export function LexPanel({
@@ -28,10 +31,13 @@ export function LexPanel({
   busy,
   toast,
   hasUserSpoken,
+  pendingAttachments,
   onClose,
   onSubmit,
   onReset,
   onDismissToast,
+  onUpload,
+  onRemoveAttachment,
 }: Props) {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -158,7 +164,14 @@ export function LexPanel({
       </p>
 
       <div className="shrink-0">
-        <LexInput busy={busy} onSubmit={onSubmit} inputRef={inputRef} />
+        <LexInput
+          busy={busy}
+          onSubmit={onSubmit}
+          inputRef={inputRef}
+          pendingAttachments={pendingAttachments}
+          onUpload={onUpload}
+          onRemoveAttachment={onRemoveAttachment}
+        />
       </div>
     </motion.div>
   );

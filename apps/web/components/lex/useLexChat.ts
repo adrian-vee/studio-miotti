@@ -1,11 +1,19 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { LexMsg, LexOutcome, LexStreamEvent, LexToastData } from './types';
+import type {
+  LexAttachment,
+  LexMsg,
+  LexOutcome,
+  LexSessionContext,
+  LexStreamEvent,
+  LexToastData,
+} from './types';
 import { SITE_DATA } from '@/lib/site-data';
 
 const SESSION_KEY = 'lex-session-id';
 const CHAT_KEY_PREFIX = 'lex-chat-';
+const CONTEXT_KEY = 'lex-context';
 
 const INITIAL_GREETING = (): LexMsg => ({
   id: cryptoId(),
@@ -25,9 +33,13 @@ interface UseLexChatReturn {
   sessionId: string;
   toast: LexToastData | null;
   hasUserSpoken: boolean;
+  pendingAttachments: LexAttachment[];
+  sessionContext: LexSessionContext;
   send: (text: string) => Promise<void>;
   reset: () => void;
   dismissToast: () => void;
+  uploadFile: (file: File) => Promise<void>;
+  removeAttachment: (id: string) => void;
 }
 
 export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
@@ -35,12 +47,28 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
   const [messages, setMessages] = useState<LexMsg[]>(() => readMessages(sessionId));
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<LexToastData | null>(null);
+  const [pendingAttachments, setPendingAttachments] = useState<LexAttachment[]>(
+    [],
+  );
+  const [sessionContext, setSessionContext] = useState<LexSessionContext>(() =>
+    readSessionContext(),
+  );
   const abortRef = useRef<AbortController | null>(null);
 
   // Persist messages on every change
   useEffect(() => {
     persistMessages(sessionId, messages);
   }, [sessionId, messages]);
+
+  // Persist sessionContext
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      window.sessionStorage.setItem(CONTEXT_KEY, JSON.stringify(sessionContext));
+    } catch {
+      // ignore quota
+    }
+  }, [sessionContext]);
 
   const showToast = useCallback((data: LexToastData) => {
     setToast(data);
@@ -49,16 +77,93 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
     }, 8000);
   }, []);
 
+  const uploadFile = useCallback(
+    async (file: File): Promise<void> => {
+      const id = cryptoId();
+      setPendingAttachments((prev) => [
+        ...prev,
+        {
+          id,
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          status: 'uploading',
+        },
+      ]);
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch(`${workerUrl}/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const errBody = (await res.json().catch(() => ({}))) as {
+            error?: string;
+          };
+          throw new Error(errBody.error || `Upload fallito (${res.status})`);
+        }
+
+        const data = (await res.json()) as {
+          file: { name: string; type: string; size: number; base64: string };
+        };
+
+        setPendingAttachments((prev) =>
+          prev.map((a) =>
+            a.id === id
+              ? {
+                  ...a,
+                  base64: data.file.base64,
+                  status: 'ready' as const,
+                }
+              : a,
+          ),
+        );
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Upload fallito';
+        setPendingAttachments((prev) =>
+          prev.map((a) =>
+            a.id === id
+              ? { ...a, status: 'error' as const, error: message }
+              : a,
+          ),
+        );
+      }
+    },
+    [workerUrl],
+  );
+
+  const removeAttachment = useCallback((id: string) => {
+    setPendingAttachments((prev) => prev.filter((a) => a.id !== id));
+  }, []);
+
   const send = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
-      if (!trimmed || busy) return;
+      const readyAttachments = pendingAttachments.filter(
+        (a) => a.status === 'ready' && a.base64,
+      );
+      // serve almeno testo o un allegato pronto
+      if ((!trimmed && readyAttachments.length === 0) || busy) return;
 
       const userMsg: LexMsg = {
         id: cryptoId(),
         role: 'user',
         content: trimmed,
         ts: Date.now(),
+        attachments:
+          readyAttachments.length > 0
+            ? readyAttachments.map((a) => ({
+                id: a.id,
+                name: a.name,
+                type: a.type,
+                size: a.size,
+                status: 'ready',
+              }))
+            : undefined,
       };
       const assistantId = cryptoId();
       const assistantMsg: LexMsg = {
@@ -72,6 +177,18 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
 
       const baseMessages = [...messages, userMsg];
       setMessages([...baseMessages, assistantMsg]);
+      // pulisci pending in coda
+      setPendingAttachments([]);
+      // marca documenti come analizzati
+      if (readyAttachments.length > 0) {
+        setSessionContext((prev) => ({
+          ...prev,
+          documentsAnalyzed: [
+            ...(prev.documentsAnalyzed ?? []),
+            ...readyAttachments.map((a) => a.name),
+          ],
+        }));
+      }
       setBusy(true);
 
       const controller = new AbortController();
@@ -87,6 +204,12 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
           body: JSON.stringify({
             session_id: sessionId,
             messages: baseMessages.map(({ role, content }) => ({ role, content })),
+            sessionContext,
+            attachments: readyAttachments.map((a) => ({
+              name: a.name,
+              type: a.type,
+              base64: a.base64!,
+            })),
           }),
           signal: controller.signal,
         });
@@ -104,6 +227,8 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
                   : m,
               ),
             );
+          } else if (event.type === 'context_update') {
+            setSessionContext((prev) => ({ ...prev, ...event.context }));
           } else if (event.type === 'done') {
             setMessages((prev) =>
               prev.map((m) =>
@@ -149,7 +274,7 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
         abortRef.current = null;
       }
     },
-    [busy, messages, sessionId, workerUrl, showToast],
+    [busy, messages, pendingAttachments, sessionContext, sessionId, workerUrl, showToast],
   );
 
   const reset = useCallback(() => {
@@ -157,6 +282,7 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
     abortRef.current = null;
     if (typeof window !== 'undefined') {
       window.sessionStorage.removeItem(`${CHAT_KEY_PREFIX}${sessionId}`);
+      window.sessionStorage.removeItem(CONTEXT_KEY);
     }
     const fresh = makeSessionId();
     if (typeof window !== 'undefined') {
@@ -164,6 +290,8 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
     }
     setSessionId(fresh);
     setMessages([INITIAL_GREETING()]);
+    setPendingAttachments([]);
+    setSessionContext({});
     setToast(null);
     setBusy(false);
   }, [sessionId]);
@@ -178,9 +306,13 @@ export function useLexChat({ workerUrl }: UseLexChatOptions): UseLexChatReturn {
     sessionId,
     toast,
     hasUserSpoken,
+    pendingAttachments,
+    sessionContext,
     send,
     reset,
     dismissToast,
+    uploadFile,
+    removeAttachment,
   };
 }
 
@@ -257,6 +389,18 @@ function readMessages(sessionId: string): LexMsg[] {
     return parsed.map((m) => ({ ...m, streaming: false, pending: false }));
   } catch {
     return [INITIAL_GREETING()];
+  }
+}
+
+function readSessionContext(): LexSessionContext {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.sessionStorage.getItem(CONTEXT_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
   }
 }
 

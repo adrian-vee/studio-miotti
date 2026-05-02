@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import type { LexMsg } from './types';
 import { LexTypingDots } from './LexTypingDots';
+import { LexAttachmentChip } from './LexAttachmentChip';
 
 interface Props {
   msg: LexMsg;
@@ -11,6 +12,7 @@ interface Props {
 
 export function LexBubble({ msg }: Props) {
   const isUser = msg.role === 'user';
+  const hasAttachments = !!msg.attachments && msg.attachments.length > 0;
 
   return (
     <motion.div
@@ -27,14 +29,22 @@ export function LexBubble({ msg }: Props) {
             : 'bg-paper-warm text-ink border-l-2 border-cobalt text-[15px]',
         )}
       >
+        {hasAttachments && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {msg.attachments!.map((a) => (
+              <LexAttachmentChip key={a.id} attachment={a} variant="sent" />
+            ))}
+          </div>
+        )}
+
         {msg.pending ? (
           <LexTypingDots />
-        ) : (
+        ) : msg.content ? (
           <span className="whitespace-pre-wrap">
             {msg.content}
             {msg.streaming && !isUser && <BlinkingCursor />}
           </span>
-        )}
+        ) : null}
       </div>
     </motion.div>
   );

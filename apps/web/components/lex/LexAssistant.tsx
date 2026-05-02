@@ -47,10 +47,13 @@ export function LexAssistant() {
             busy={chat.busy}
             toast={chat.toast}
             hasUserSpoken={chat.hasUserSpoken}
+            pendingAttachments={chat.pendingAttachments}
             onClose={() => setOpen(false)}
             onSubmit={chat.send}
             onReset={chat.reset}
             onDismissToast={chat.dismissToast}
+            onUpload={chat.uploadFile}
+            onRemoveAttachment={chat.removeAttachment}
           />
         )}
       </AnimatePresence>
