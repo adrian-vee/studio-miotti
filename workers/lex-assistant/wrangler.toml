@@ -3,29 +3,34 @@ main = "src/index.ts"
 compatibility_date = "2024-10-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Production environment
-[env.production]
-name = "miotti-lex"
-routes = [
-  { pattern = "lex.studiomiotti.it", custom_domain = true }
-]
+# Variabili pubbliche di default (le secret si settano con `wrangler secret put`)
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"
+ALLOWED_ORIGINS = "https://adrian-vee.github.io"
 
 # Rate limiting via KV (per anti-abuso)
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
-id = "{{TODO_KV_NAMESPACE_ID}}"
+id = "3ac6a11acf934a469b1e8172c2b11d34"
+
+# Production environment
+[env.production]
+name = "miotti-lex"
+
+[env.production.vars]
+SUPABASE_URL = "https://placeholder.supabase.co"
+ALLOWED_ORIGINS = "https://adrian-vee.github.io"
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "3ac6a11acf934a469b1e8172c2b11d34"
 
 # Durable Objects per session state (opzionale, fase 2)
 # [[durable_objects.bindings]]
 # name = "LEX_SESSION"
 # class_name = "LexSession"
 
-# Variabili pubbliche (le secret si settano con `wrangler secret put`)
-[vars]
-SUPABASE_URL = "https://{{TODO_PROJECT_REF}}.supabase.co"
-ALLOWED_ORIGINS = "https://studiomiotti.it,https://adrian-vee.github.io"
-
-# Secret da configurare con: wrangler secret put NOME_SECRET
+# Secret da configurare con: wrangler secret put NOME_SECRET --env production
 # - ANTHROPIC_API_KEY
 # - SUPABASE_SERVICE_ROLE_KEY
 # - RESEND_API_KEY
