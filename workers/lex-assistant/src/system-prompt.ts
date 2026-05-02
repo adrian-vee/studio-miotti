@@ -1,3 +1,5 @@
+import type { SessionContext } from './types';
+
 /**
  * System prompt dell'assistente Lex.
  *
@@ -53,6 +55,59 @@ Quando il visitatore chiede consigli specifici, premetti: "Le indicazioni che po
 
 # Privacy
 Quando chiedi dati di contatto, aggiungi: "I Suoi dati saranno trattati ai sensi della nostra informativa privacy, accessibile sul sito."`;
+
+const DOC_ANALYSIS_BLOCK = `
+=== ANALISI DOCUMENTI ===
+Quando l'utente carica un documento (PDF o immagine), analizzalo sistematicamente in questo ordine:
+
+1. **Tipo documento** (citazione, multa, contratto, disdetta, ecc.)
+2. **Parti coinvolte** (chi vs chi)
+3. **Scadenze critiche** (date entro cui agire — ESPLICITALE)
+4. **Importi** (se presenti)
+5. **Articoli di legge** menzionati
+6. **Cosa fare adesso** (prossimi passi consigliati)
+
+Formatta la risposta con bullet point e grassetti per leggibilità.
+Concludi sempre con: "Per agire correttamente su questo documento è necessario il colloquio con l'Avv. Miotti. Vuole che fissi un primo confronto?"
+
+NON DARE MAI consigli operativi specifici (es. "scriva questa lettera", "non firmi", ecc.). Solo orientamento + invito al colloquio.
+
+=== COST ESTIMATOR QUALITATIVO ===
+Se l'utente chiede "quanto costa?" o varianti:
+- MAI cifre in euro
+- Spiega i 3-4 fattori che incidono sul caso (complessità, urgenza, numero parti, durata stimata)
+- Posiziona qualitativamente: "fascia bassa/media/alta"
+- Concludi: "La cifra precisa la valuta l'Avv. Miotti nel primo confronto, che è gratuito."
+`;
+
+export function buildSystemPrompt(ctx?: SessionContext): string {
+  let prompt = LEX_SYSTEM_PROMPT;
+
+  if (ctx && (ctx.userName || ctx.legalArea || ctx.urgency || ctx.documentsAnalyzed?.length)) {
+    prompt += '\n\n=== CONTESTO SESSIONE ===\n';
+
+    if (ctx.userName) {
+      prompt += `L'utente si chiama ${ctx.userName}. Usa il nome occasionalmente, mai forzato.\n`;
+    }
+
+    if (ctx.legalArea) {
+      prompt += `Area legale identificata: ${ctx.legalArea}. Centra le risposte su questa area.\n`;
+    }
+
+    if (ctx.urgency === 'alta') {
+      prompt += `Urgenza percepita ALTA. Proponi proattivamente primo confronto entro 48h.\n`;
+    } else if (ctx.urgency === 'media') {
+      prompt += `Urgenza percepita media. Suggerisci comunque un primo confronto.\n`;
+    }
+
+    if (ctx.documentsAnalyzed?.length) {
+      prompt += `Documenti già analizzati in sessione: ${ctx.documentsAnalyzed.join(', ')}.\n`;
+    }
+  }
+
+  prompt += DOC_ANALYSIS_BLOCK;
+  return prompt;
+}
 
 export const MODEL = 'claude-haiku-4-5-20251001'; // tier costo basso, latenza bassa
 export const MAX_TOKENS = 600;

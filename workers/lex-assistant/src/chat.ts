@@ -2,13 +2,22 @@ import type { Context } from 'hono';
 import { streamSSE } from 'hono/streaming';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { LEX_SYSTEM_PROMPT, MODEL, MAX_TOKENS } from './system-prompt';
+import { buildSystemPrompt, MODEL, MAX_TOKENS } from './system-prompt';
 import { LEX_TOOLS } from './tools';
-import type { ChatRequest, Env, Outcome } from './types';
+import type {
+  Attachment,
+  ChatRequest,
+  Env,
+  LegalArea,
+  Outcome,
+  SessionContext,
+  Urgency,
+} from './types';
 
 type StreamEvent =
   | { type: 'text'; value: string }
   | { type: 'tool'; name: string; outcome: Outcome }
+  | { type: 'context_update'; context: Partial<SessionContext> }
   | { type: 'error'; message: string }
   | {
       type: 'done';
@@ -17,12 +26,37 @@ type StreamEvent =
       session_id: string;
     };
 
+const AREA_MAP: Record<string, LegalArea> = {
+  'diritto-civile': 'civile',
+  'diritto-famiglia': 'famiglia',
+  'diritto-lavoro': 'lavoro',
+  'recupero-crediti': 'crediti',
+  'diritto-immobiliare': 'immobiliare',
+  'responsabilita-civile': 'responsabilita',
+  altro: 'altro',
+};
+
+const URGENCY_MAP: Record<string, Urgency> = {
+  immediate: 'alta',
+  days: 'alta',
+  weeks: 'media',
+  no_urgency: 'bassa',
+};
+
+const SUPPORTED_IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+]);
+
 /**
  * Endpoint SSE: Lex risponde in streaming, emette eventi tipizzati.
- * - `text`   → ogni delta di testo prodotto da Claude
- * - `tool`   → un tool è stato eseguito e ha aggiornato l'outcome
- * - `done`   → fine dello stream con outcome finale e session_id
- * - `error`  → errore tecnico (UX: mostra fallback, mantieni la chat)
+ * - `text`           → ogni delta di testo prodotto da Claude
+ * - `tool`           → un tool è stato eseguito e ha aggiornato l'outcome
+ * - `context_update` → metadata di sessione da sincronizzare lato client
+ * - `done`           → fine dello stream con outcome finale e session_id
+ * - `error`          → errore tecnico (UX: mostra fallback, mantieni la chat)
  */
 export async function handleChat(c: Context<{ Bindings: Env }>) {
   const body = await c.req.json<ChatRequest>().catch(() => null);
@@ -30,10 +64,24 @@ export async function handleChat(c: Context<{ Bindings: Env }>) {
     return c.json({ error: 'invalid_payload' }, 400);
   }
 
-  const inputMessages = body.messages.slice(-20).map((m) => ({
-    role: m.role,
-    content: typeof m.content === 'string' ? m.content.slice(0, 4000) : '',
-  })) satisfies Anthropic.MessageParam[];
+  const allMsgs = body.messages.slice(-20);
+  const lastIdx = allMsgs.length - 1;
+  const lastMsg = allMsgs[lastIdx];
+  if (!lastMsg) {
+    return c.json({ error: 'invalid_payload' }, 400);
+  }
+
+  const historyMessages: Anthropic.MessageParam[] = allMsgs
+    .slice(0, lastIdx)
+    .map((m) => ({
+      role: m.role,
+      content: typeof m.content === 'string' ? m.content.slice(0, 4000) : '',
+    }));
+
+  const inputMessages: Anthropic.MessageParam[] = [
+    ...historyMessages,
+    buildLastUserMessage(lastMsg.role, lastMsg.content, body.attachments),
+  ];
 
   const anthropic = new Anthropic({ apiKey: c.env.ANTHROPIC_API_KEY });
   const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -43,7 +91,6 @@ export async function handleChat(c: Context<{ Bindings: Env }>) {
     let leadId: string | null = null;
     let assistantTextAggregate = '';
 
-    // Conversazione tool-use loop, ogni round produce uno stream Anthropic
     let conversation: Anthropic.MessageParam[] = [...inputMessages];
     let rounds = 0;
 
@@ -52,7 +99,7 @@ export async function handleChat(c: Context<{ Bindings: Env }>) {
         const stream = anthropic.messages.stream({
           model: MODEL,
           max_tokens: MAX_TOKENS,
-          system: LEX_SYSTEM_PROMPT,
+          system: buildSystemPrompt(body.sessionContext),
           tools: LEX_TOOLS,
           messages: conversation,
         });
@@ -91,6 +138,10 @@ export async function handleChat(c: Context<{ Bindings: Env }>) {
             if (block.name === 'capture_lead') {
               outcome = 'lead_captured';
               leadId = (result as { lead_id?: string }).lead_id ?? null;
+              const ctxUpdate = deriveContextFromCaptureLead(block.input);
+              if (Object.keys(ctxUpdate).length > 0) {
+                await emit(sse, { type: 'context_update', context: ctxUpdate });
+              }
             } else if (block.name === 'propose_booking') {
               outcome = 'booking_requested';
             } else if (block.name === 'escalate_to_human') {
@@ -129,12 +180,19 @@ export async function handleChat(c: Context<{ Bindings: Env }>) {
         session_id: body.session_id,
       });
 
-      // Log conversazione async DOPO la chiusura dello stream
+      // Log conversazione async DOPO la chiusura dello stream.
+      // Per i log Supabase teniamo solo content stringa (ignoriamo attachments raw).
+      const lastUserText =
+        typeof lastMsg.content === 'string' ? lastMsg.content : '';
       c.executionCtx.waitUntil(
         logConversation(supabase, {
           session_id: body.session_id,
           messages: [
-            ...inputMessages,
+            ...historyMessages.map((m) => ({
+              role: m.role,
+              content: typeof m.content === 'string' ? m.content : '[blocks]',
+            })),
+            { role: 'user', content: lastUserText },
             { role: 'assistant', content: assistantTextAggregate },
           ],
           outcome,
@@ -153,6 +211,71 @@ export async function handleChat(c: Context<{ Bindings: Env }>) {
       });
     }
   });
+}
+
+function buildLastUserMessage(
+  role: 'user' | 'assistant',
+  text: string,
+  attachments?: Attachment[],
+): Anthropic.MessageParam {
+  const safeText = typeof text === 'string' ? text.slice(0, 4000) : '';
+
+  if (!attachments || attachments.length === 0) {
+    return { role, content: safeText };
+  }
+
+  // Anthropic accetta blocks solo per role=user con multimodal.
+  if (role !== 'user') {
+    return { role, content: safeText };
+  }
+
+  const blocks: Anthropic.ContentBlockParam[] = [];
+  for (const att of attachments) {
+    if (att.type === 'application/pdf') {
+      blocks.push({
+        type: 'document',
+        source: {
+          type: 'base64',
+          media_type: 'application/pdf',
+          data: att.base64,
+        },
+      });
+    } else if (SUPPORTED_IMAGE_TYPES.has(att.type)) {
+      blocks.push({
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: att.type as
+            | 'image/jpeg'
+            | 'image/png'
+            | 'image/webp'
+            | 'image/gif',
+          data: att.base64,
+        },
+      });
+    }
+  }
+  blocks.push({ type: 'text', text: safeText || 'Analizza il documento allegato.' });
+  return { role: 'user', content: blocks };
+}
+
+function deriveContextFromCaptureLead(input: unknown): Partial<SessionContext> {
+  const data = (input ?? {}) as Record<string, unknown>;
+  const update: Partial<SessionContext> = {};
+
+  if (typeof data.name === 'string' && data.name.trim()) {
+    update.userName = data.name.trim().split(/\s+/)[0];
+  }
+
+  if (typeof data.area_diritto === 'string' && AREA_MAP[data.area_diritto]) {
+    update.legalArea = AREA_MAP[data.area_diritto];
+  }
+
+  if (typeof data.urgency === 'string' && URGENCY_MAP[data.urgency]) {
+    update.urgency = URGENCY_MAP[data.urgency];
+  }
+
+  return update;
 }
 
 async function emit(
