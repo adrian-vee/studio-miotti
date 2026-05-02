@@ -1,27 +1,62 @@
 'use client';
 
+import { useRef } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ArrowRight, Phone, MapPin, Clock } from 'lucide-react';
 import { SITE_DATA } from '@/lib/site-data';
 import { SectionMarker } from './SectionMarker';
 
+/**
+ * CONTACT CTA · v2026
+ *
+ * - Background: cobalt-deep + mesh aurora (gold + cobalt-soft) sobria
+ * - CTA primaria magnetica (bg paper, hover gold)
+ * - Indicatore SLA "risposta entro 24 h" pulsante
+ * - Pattern grid sottile sotto, non più finto-tech ma editoriale
+ */
 export function ContactCTA() {
+  const ctaRef = useRef<HTMLAnchorElement>(null);
+
+  function handleMagnetic(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = ctaRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    el.style.transform = `translate(${x * 0.18}px, ${y * 0.22}px)`;
+  }
+  function resetMagnetic() {
+    if (ctaRef.current) ctaRef.current.style.transform = '';
+  }
+
   return (
     <section
-      className="bg-cobalt-deep text-paper py-24 md:py-32 relative overflow-hidden"
+      className="relative isolate overflow-hidden bg-aurora-dark text-paper py-24 md:py-32"
       aria-labelledby="contatti-heading"
     >
-      <SectionMarker numeral="VI" label="Contatti" align="right" variant="dark" />
+      <SectionMarker numeral="VII" label="Contatti" align="right" variant="dark" />
 
       {/* Pattern grid sottile sullo sfondo */}
       <div
         aria-hidden
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage:
             'linear-gradient(rgb(var(--color-paper)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--color-paper)) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+          backgroundSize: '64px 64px',
+        }}
+      />
+
+      {/* Hairline gold top */}
+      <div
+        aria-hidden
+        className="absolute top-0 inset-x-0 h-px"
+        style={{
+          background:
+            'linear-gradient(90deg, transparent, rgb(var(--color-gold)/0.6) 50%, transparent)',
         }}
       />
 
@@ -50,9 +85,12 @@ export function ContactCTA() {
               indicarle se la sua è davvero una questione legale.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link
+                ref={ctaRef}
                 href="/prenota"
+                onMouseMove={handleMagnetic}
+                onMouseLeave={resetMagnetic}
                 className="inline-flex items-center justify-center gap-2 bg-paper text-ink px-7 py-4 text-sm font-medium hover:bg-gold transition-colors duration-300 group"
               >
                 Primo confronto
@@ -63,16 +101,17 @@ export function ContactCTA() {
               </Link>
               <a
                 href="tel:+390459586116"
-                className="inline-flex items-center justify-center gap-2 border border-paper/30 text-paper px-7 py-4 text-sm font-medium hover:bg-paper/10 transition-colors duration-300"
+                className="btn-ghost"
               >
                 <Phone size={16} />
                 045 95 86 116
               </a>
             </div>
 
-            <p className="text-xs text-paper/40 font-mono uppercase tracking-wider">
-              Risposta garantita entro 24 ore lavorative
-            </p>
+            {/* SLA pill — animata, professionale */}
+            <span className="eyebrow-live text-paper/70" data-status="open">
+              Risposta entro 24 h lavorative · Riservatezza professionale
+            </span>
           </div>
 
           {/* Colonna laterale: info studio */}
@@ -92,7 +131,11 @@ export function ContactCTA() {
               <ContactRow
                 icon={<Phone size={18} />}
                 label="Telefono"
-                value={<a href="tel:+390459586116" className="hover:text-gold">045 95 86 116</a>}
+                value={
+                  <a href="tel:+390459586116" className="hover:text-gold transition-colors">
+                    045 95 86 116
+                  </a>
+                }
               />
               <ContactRow
                 icon={<Clock size={18} />}
@@ -100,7 +143,6 @@ export function ContactCTA() {
                 value={SITE_DATA.hours.long}
               />
             </div>
-
           </div>
         </div>
       </div>

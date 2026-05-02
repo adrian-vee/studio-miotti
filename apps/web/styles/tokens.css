@@ -1,24 +1,61 @@
 /**
- * DESIGN TOKENS — STUDIO MIOTTI · Lex Minimal
+ * DESIGN TOKENS — STUDIO MIOTTI · Lex Minimal · v2026
  * Variabili CSS che alimentano sia Tailwind sia componenti custom.
  * Modificare i valori qui propaga ovunque.
  */
 
 @layer base {
   :root {
-    /* ─── COLOR TOKENS ─────────────────────────────────────── */
+    /* ─── COLOR TOKENS — base editoriale ───────────────────── */
     --color-ink: 14 17 22;             /* #0E1116 */
+    --color-ink-soft: 28 32 40;        /* #1C2028 — variante per dark sub-bg */
     --color-paper: 250 250 247;        /* #FAFAF7 */
     --color-paper-warm: 241 237 227;   /* #F1EDE3 */
+    --color-vellum: 246 240 224;       /* #F6F0E0 — tono caldo per accenti */
     --color-cobalt: 30 58 95;          /* #1E3A5F */
     --color-cobalt-deep: 15 34 64;     /* #0F2240 */
+    --color-cobalt-soft: 79 109 152;   /* #4F6D98 — per testo su scuro */
     --color-graphite: 58 63 71;        /* #3A3F47 */
     --color-rule: 217 213 201;         /* #D9D5C9 */
+    --color-rule-soft: 234 230 220;    /* #EAE6DC */
     --color-gold: 168 145 92;          /* #A8915C */
+    --color-gold-bright: 196 168 102;  /* #C4A866 — highlight */
+    --color-gold-deep: 130 109 64;     /* #826D40 — pressed/dark */
 
     --color-success: 46 93 58;         /* #2E5D3A */
     --color-warn: 176 122 43;          /* #B07A2B */
     --color-error: 140 42 47;          /* #8C2A2F */
+
+    /* ─── GRADIENTS / MESH 2026 ────────────────────────────── */
+    /* Aurora editoriale: cobalto-oro-paper, opacità minima, sobria */
+    --mesh-aurora:
+      radial-gradient(at 22% 18%, rgb(var(--color-gold) / 0.08) 0%, transparent 38%),
+      radial-gradient(at 78% 12%, rgb(var(--color-cobalt) / 0.07) 0%, transparent 42%),
+      radial-gradient(at 50% 92%, rgb(var(--color-paper-warm) / 0.6) 0%, transparent 55%);
+
+    --mesh-aurora-dark:
+      radial-gradient(at 25% 25%, rgb(var(--color-gold) / 0.12) 0%, transparent 45%),
+      radial-gradient(at 75% 80%, rgb(var(--color-cobalt-soft) / 0.18) 0%, transparent 50%);
+
+    /* Conic gold hairline — usata per focus accent / ornamenti */
+    --conic-gold:
+      conic-gradient(from 220deg at 50% 50%,
+        rgb(var(--color-gold) / 0) 0deg,
+        rgb(var(--color-gold-bright)) 90deg,
+        rgb(var(--color-gold)) 180deg,
+        rgb(var(--color-gold) / 0) 360deg
+      );
+
+    /* Gradient testo cobalt → oro (uso parsimonioso, solo display) */
+    --grad-display:
+      linear-gradient(115deg,
+        rgb(var(--color-cobalt-deep)) 0%,
+        rgb(var(--color-cobalt)) 35%,
+        rgb(var(--color-gold)) 100%
+      );
+
+    /* Spotlight mask (cursore card) */
+    --spotlight-radius: 360px;
 
     /* ─── TYPOGRAPHY ───────────────────────────────────────── */
     --font-display: 'Tiempos Headline', 'Fraunces', 'PT Serif', Georgia, serif;
@@ -37,6 +74,9 @@
     --fs-body-m: 1rem;
     --fs-body-s: 0.875rem;
     --fs-micro: 0.75rem;
+
+    /* Numerali — counter animati */
+    --fs-counter: clamp(3rem, 6vw, 5rem);
 
     /* Line-heights */
     --lh-tight: 1.05;
@@ -71,13 +111,16 @@
     /* ─── SHADOWS — ombre soft, mai dramatiche ─────────────── */
     --shadow-card: 0 1px 3px rgba(15, 34, 64, 0.04), 0 4px 12px rgba(15, 34, 64, 0.04);
     --shadow-card-hover: 0 2px 6px rgba(15, 34, 64, 0.06), 0 12px 32px rgba(15, 34, 64, 0.08);
+    --shadow-card-spotlight: 0 8px 24px rgba(168, 145, 92, 0.08), 0 24px 64px rgba(15, 34, 64, 0.08);
     --shadow-modal: 0 8px 24px rgba(15, 34, 64, 0.12), 0 24px 64px rgba(15, 34, 64, 0.18);
 
     /* ─── MOTION ────────────────────────────────────────────── */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
     --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
+    --dur-instant: 80ms;
     --dur-quick: 180ms;
     --dur-medium: 320ms;
     --dur-slow: 720ms;
@@ -96,6 +139,7 @@
   /* Reduced motion: tutti gli ease tornano a "linear" rapidi */
   @media (prefers-reduced-motion: reduce) {
     :root {
+      --dur-instant: 0ms;
       --dur-quick: 0ms;
       --dur-medium: 0ms;
       --dur-slow: 0ms;

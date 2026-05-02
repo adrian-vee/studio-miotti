@@ -1,5 +1,8 @@
 import { Hero } from '@/components/sections/Hero';
+import { TrustStrip } from '@/components/sections/TrustStrip';
+import { StudioByNumbers } from '@/components/sections/StudioByNumbers';
 import { Manifesto } from '@/components/sections/Manifesto';
+import { PullQuote } from '@/components/sections/PullQuote';
 import { PracticeAreas } from '@/components/sections/PracticeAreas';
 import { ApproachTimeline } from '@/components/sections/ApproachTimeline';
 import { ResourcesTeaser } from '@/components/sections/ResourcesTeaser';
@@ -21,7 +24,10 @@ export default function HomePage() {
     <>
       <LocalSchema />
       <Hero />
+      <TrustStrip />
+      <StudioByNumbers />
       <Manifesto />
+      <PullQuote />
       <PracticeAreas />
       <ApproachTimeline />
       <ResourcesTeaser />

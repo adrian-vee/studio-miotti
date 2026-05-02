@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 
-type Numeral = 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI';
+type Numeral = 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII';
 
 interface Props {
   numeral: Numeral;

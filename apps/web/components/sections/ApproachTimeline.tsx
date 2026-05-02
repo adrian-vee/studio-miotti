@@ -45,12 +45,12 @@ export function ApproachTimeline() {
       className="relative bg-ink text-paper py-24 md:py-32"
       aria-labelledby="metodo-heading"
     >
-      <SectionMarker numeral="IV" label="Metodo" align="right" variant="dark" />
+      <SectionMarker numeral="V" label="Metodo" align="right" variant="dark" />
 
       <div className="container-page">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 mb-20">
           <div className="col-span-12 md:col-span-4">
-            <span className="eyebrow text-paper/60">§ 04 · Metodo</span>
+            <span className="eyebrow text-paper/60">§ 05 · Metodo</span>
           </div>
           <div className="col-span-12 md:col-span-8">
             <h2

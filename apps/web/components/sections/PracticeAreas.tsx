@@ -1,18 +1,22 @@
 'use client';
 
+import { useRef } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { SectionMarker } from './SectionMarker';
 
 /**
- * AREE DI COMPETENZA — Hub SEO
+ * AREE DI COMPETENZA — Hub SEO · v2026
  *
- * Ogni card è la porta d'ingresso a una pagina dedicata, ottimizzata per keyword
- * tier 2 (es. "avvocato divorzio verona", "recupero crediti san bonifacio").
+ * Le card adottano il pattern "card-spotlight": un radial gold segue il
+ * cursore (custom property --mx/--my aggiornata via JS), creando un
+ * effetto di luce locale senza glassmorphism. Su touch è semplicemente
+ * statico.
  *
- * Le icone sono SVG inline custom — niente icon pack standard.
- * Nascono da forme geometriche pure: cerchi, linee, angoli.
+ * Ogni card è la porta d'ingresso a una pagina dedicata, ottimizzata per
+ * keyword tier 2 (es. "avvocato divorzio verona", "recupero crediti
+ * san bonifacio"). Le icone sono SVG geometriche custom.
  */
 
 const areas = [
@@ -75,15 +79,15 @@ const areas = [
 export function PracticeAreas() {
   return (
     <section
-      className="bg-paper py-20 md:py-28 relative overflow-hidden"
+      className="relative bg-paper-warm py-20 md:py-28 overflow-hidden"
       aria-labelledby="aree-heading"
     >
-      <SectionMarker numeral="III" label="Aree" align="right" />
+      <SectionMarker numeral="IV" label="Aree" align="right" />
 
       <div className="container-page relative">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 mb-16 md:mb-20">
           <div className="col-span-12 md:col-span-4">
-            <span className="eyebrow">§ 03 · Aree</span>
+            <span className="eyebrow">§ 04 · Aree</span>
           </div>
           <div className="col-span-12 md:col-span-8">
             <h2
@@ -103,11 +107,11 @@ export function PracticeAreas() {
           </div>
         </div>
 
-        <ol className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-px bg-rule/40 border-y border-rule/40">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-rule/40 border border-rule/40">
           {areas.map((area, i) => (
             <PracticeCard key={area.slug} area={area} index={i} />
           ))}
-        </ol>
+        </ul>
 
         <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-sm text-graphite">
@@ -129,20 +133,36 @@ function PracticeCard({
   area: (typeof areas)[number];
   index: number;
 }) {
+  const cardRef = useRef<HTMLLIElement>(null);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLLIElement>) {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    el.style.setProperty('--mx', `${x}%`);
+    el.style.setProperty('--my', `${y}%`);
+  }
+
   return (
     <motion.li
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="col-span-12 sm:col-span-6 lg:col-span-4 bg-paper hover:bg-paper-warm transition-colors duration-500"
+      className="card-spotlight group"
     >
       <Link
         href={`/aree-di-competenza/${area.slug}` as never}
-        className="group block p-8 md:p-10 h-full"
+        className="block p-8 md:p-10 h-full focus:outline-none"
       >
         <div className="flex items-start justify-between mb-8">
-          <div className="text-cobalt">{area.icon}</div>
+          <div className="text-cobalt transition-transform duration-500 group-hover:-translate-y-0.5">
+            {area.icon}
+          </div>
           <span className="font-mono text-xs text-graphite tabular-nums">
             {area.n} / 06
           </span>
@@ -159,7 +179,7 @@ function PracticeCard({
           {area.keywords.map((kw) => (
             <span
               key={kw}
-              className="font-mono text-[10px] uppercase tracking-wider text-graphite border border-rule px-2 py-1"
+              className="font-mono text-[10px] uppercase tracking-wider text-graphite border border-rule px-2 py-1 transition-colors group-hover:border-cobalt/40"
             >
               {kw}
             </span>
@@ -167,10 +187,12 @@ function PracticeCard({
         </div>
 
         <div className="inline-flex items-center gap-2 text-cobalt text-sm font-medium">
-          <span>Approfondisci l'area</span>
+          <span className="border-b border-cobalt/0 group-hover:border-cobalt transition-colors">
+            Approfondisci l'area
+          </span>
           <ArrowUpRight
             size={14}
-            className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
           />
         </div>
       </Link>

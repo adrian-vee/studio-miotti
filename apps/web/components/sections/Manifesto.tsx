@@ -39,7 +39,7 @@ export function Manifesto() {
       aria-labelledby="manifesto-heading"
     >
       <SectionMarker
-        numeral="II"
+        numeral="III"
         label="Manifesto"
         align="left"
         showLabel={false}
@@ -49,7 +49,7 @@ export function Manifesto() {
       <div className="container-page">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12 mb-16 md:mb-20">
           <div className="col-span-12 md:col-span-4">
-            <span className="eyebrow">§ 02 · Manifesto</span>
+            <span className="eyebrow">§ 03 · Manifesto</span>
           </div>
           <div className="col-span-12 md:col-span-8">
             <h2
