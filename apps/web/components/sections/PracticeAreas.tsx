@@ -4,121 +4,120 @@ import { useRef } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { SectionMarker } from './SectionMarker';
 
 /**
- * AREE DI COMPETENZA — Hub SEO · v2026
+ * AREE DI ATTIVITÀ — formulate come PROBLEMI CONCRETI
  *
- * Le card adottano il pattern "card-spotlight": un radial gold segue il
- * cursore (custom property --mx/--my aggiornata via JS), creando un
- * effetto di luce locale senza glassmorphism. Su touch è semplicemente
- * statico.
+ * Brief: «NON usare categorie astratte. Usare problemi concreti.»
  *
- * Ogni card è la porta d'ingresso a una pagina dedicata, ottimizzata per
- * keyword tier 2 (es. "avvocato divorzio verona", "recupero crediti
- * san bonifacio"). Le icone sono SVG geometriche custom.
+ * Ogni card parte dalla situazione reale del cliente ("Un cliente non
+ * paga", "Devi firmare un contratto") e non dalla categoria giuridica
+ * ("Diritto dei contratti"). Linguaggio diretto, da imprenditore.
+ *
+ * Le card sono link alle pagine /aree-di-competenza/[slug] esistenti.
  */
 
-const areas = [
+const problems = [
   {
-    slug: 'diritto-civile',
+    slug: 'recupero-crediti',
     n: '01',
-    title: 'Diritto Civile',
-    short: 'Contratti, obbligazioni, responsabilità.',
-    body: 'Redazione e analisi contratti, controversie commerciali, tutela del credito, risarcimento danni, diritto immobiliare e condominiale.',
-    keywords: ['contratti', 'risarcimenti', 'condominio', 'recupero crediti'],
-    icon: <CivileIcon />,
+    problem: 'Un cliente non paga.',
+    label: 'Recupero crediti',
+    body: 'Diffide, decreti ingiuntivi, pignoramenti. Recuperiamo somme da debitori privati e aziende, anche con misure cautelari quando serve essere veloci.',
+    keywords: ['Diffida', 'Decreto ingiuntivo', 'Pignoramento'],
   },
   {
-    slug: 'diritto-famiglia',
+    slug: 'diritto-civile',
     n: '02',
-    title: 'Diritto di Famiglia',
-    short: 'Separazioni, divorzi, minori, successioni.',
-    body: 'Separazioni consensuali e giudiziali, divorzio, affidamento e mantenimento dei figli, successioni testamentarie e legittime, divisioni ereditarie.',
-    keywords: ['separazione', 'divorzio', 'affidamento', 'eredità'],
-    icon: <FamigliaIcon />,
+    problem: 'Devi firmare (o contestare) un contratto.',
+    label: 'Contratti & responsabilità',
+    body: 'Verifichiamo, redigiamo e contestiamo contratti commerciali, locazioni, preliminari di vendita. Tuteliamo chi ha subìto un danno da inadempimento.',
+    keywords: ['Contratti', 'Risarcimenti', 'Condominio'],
   },
   {
     slug: 'diritto-lavoro',
     n: '03',
-    title: 'Diritto del Lavoro',
-    short: 'Tutele del lavoratore e dell\'azienda.',
-    body: 'Impugnazione licenziamenti, vertenze sindacali, mobbing, mansioni dequalificanti, contenziosi previdenziali, contrattualistica del lavoro per imprese.',
-    keywords: ['licenziamento', 'mobbing', 'vertenze', 'INPS'],
-    icon: <LavoroIcon />,
+    problem: 'Hai una vertenza di lavoro.',
+    label: 'Diritto del lavoro',
+    body: 'Licenziamenti, mobbing, mansioni dequalificanti, vertenze sindacali. Assistiamo lavoratori e aziende, dalla conciliazione al ricorso giudiziale.',
+    keywords: ['Licenziamento', 'Mobbing', 'Vertenze sindacali'],
   },
   {
-    slug: 'recupero-crediti',
+    slug: 'diritto-famiglia',
     n: '04',
-    title: 'Recupero Crediti',
-    short: 'Dalla diffida al pignoramento.',
-    body: 'Procedure stragiudiziali e giudiziali, decreti ingiuntivi, pignoramenti mobiliari e immobiliari, recupero da debitori privati e aziende, anche con metodo cautelare.',
-    keywords: ['decreto ingiuntivo', 'diffida', 'pignoramento'],
-    icon: <CreditiIcon />,
-  },
-  {
-    slug: 'diritto-immobiliare',
-    n: '05',
-    title: 'Diritto Immobiliare',
-    short: 'Compravendita, locazioni, usucapione.',
-    body: 'Verifica e redazione preliminari, contenziosi tra venditore e acquirente, sfratti, locazioni commerciali, controversie di confine, usucapione.',
-    keywords: ['compravendita', 'sfratto', 'usucapione', 'preliminare'],
-    icon: <ImmobiliareIcon />,
+    problem: 'Una separazione, un divorzio, un\'eredità.',
+    label: 'Famiglia & successioni',
+    body: 'Separazioni consensuali e giudiziali, divorzi, affidamento dei figli, divisioni ereditarie. Approccio rispettoso, focus sui figli quando ci sono.',
+    keywords: ['Separazione', 'Divorzio', 'Eredità'],
   },
   {
     slug: 'responsabilita-civile',
+    n: '05',
+    problem: 'Hai avuto un incidente o un danno.',
+    label: 'Risarcimento danni',
+    body: 'Sinistri stradali, infortuni, responsabilità medica, danni da prodotti. Recuperiamo dalle assicurazioni il giusto risarcimento, in tempi rapidi.',
+    keywords: ['Incidente', 'Infortunio', 'Malasanità'],
+  },
+  {
+    slug: 'diritto-immobiliare',
     n: '06',
-    title: 'Responsabilità Civile',
-    short: 'Danni alla persona e ai beni.',
-    body: 'Sinistri stradali, infortunistica, responsabilità sanitaria, danni da prodotti, recupero risarcimenti dalle assicurazioni con copertura completa del contenzioso.',
-    keywords: ['incidente', 'infortunio', 'risarcimento', 'malasanità'],
-    icon: <ResponsabilitaIcon />,
+    problem: 'Una casa, un confine, uno sfratto.',
+    label: 'Immobiliare',
+    body: 'Compravendite, locazioni, sfratti, controversie di confine, usucapione. Verifichiamo i preliminari prima della firma per evitare problemi dopo.',
+    keywords: ['Compravendita', 'Sfratto', 'Confine'],
   },
 ];
 
 export function PracticeAreas() {
   return (
     <section
-      className="relative bg-paper-warm py-20 md:py-28 overflow-hidden"
+      className="relative bg-paper py-20 md:py-28 overflow-hidden"
       aria-labelledby="aree-heading"
     >
-      <SectionMarker numeral="IV" label="Aree" align="right" />
-
       <div className="container-page relative">
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 mb-16 md:mb-20">
-          <div className="col-span-12 md:col-span-4">
-            <span className="eyebrow">§ 04 · Aree</span>
-          </div>
-          <div className="col-span-12 md:col-span-8">
+        {/* Header */}
+        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-6 mb-14 md:mb-20">
+          <div className="col-span-12 md:col-span-5">
+            <span className="eyebrow">03 — Aree</span>
             <h2
               id="aree-heading"
-              className="font-display text-balance"
-              style={{ fontSize: 'var(--fs-display-m)', lineHeight: 1.05 }}
+              className="font-display text-balance mt-5 text-ink"
+              style={{
+                fontSize: 'var(--fs-display-m)',
+                lineHeight: 1.08,
+                letterSpacing: '-0.018em',
+                fontWeight: 500,
+              }}
             >
-              Sei aree, un metodo:
-              <br />
-              <span className="italic text-cobalt">capire prima di rispondere.</span>
+              In cosa possiamo{' '}
+              <span className="italic text-cobalt">davvero esserle utili.</span>
             </h2>
-            <p className="mt-6 text-graphite max-w-xl text-lg leading-relaxed">
-              Lo Studio segue privati e imprese in tutto il diritto civile.
-              Ogni pratica viene aperta solo dopo un'analisi preliminare gratuita
-              che valuta la praticabilità dell'azione e i suoi costi.
+          </div>
+
+          <div className="col-span-12 md:col-span-6 md:col-start-7 self-end">
+            <p className="text-graphite text-lg leading-relaxed max-w-xl">
+              Sei aree di intervento, descritte come problemi concreti che
+              incontra ogni giorno chi gestisce un'azienda o una famiglia.
+              Trovi quella che la riguarda? Ne parliamo nei primi 15 minuti
+              gratuitamente.
             </p>
           </div>
         </div>
 
+        {/* Problem cards */}
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-rule/40 border border-rule/40">
-          {areas.map((area, i) => (
-            <PracticeCard key={area.slug} area={area} index={i} />
+          {problems.map((p, i) => (
+            <ProblemCard key={p.slug} item={p} index={i} />
           ))}
         </ul>
 
         <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-sm text-graphite">
-            Ogni area è descritta in una pagina dedicata con casi tipici, tempistiche e onorari indicativi.
+            Non si riconosce in queste situazioni? Ce lo chieda lo stesso —
+            spesso il problema è risolvibile, ci servono solo i dettagli.
           </p>
           <Link href="/aree-di-competenza" className="link-inline">
-            Esplora tutte le aree →
+            Vedi tutte le aree →
           </Link>
         </div>
       </div>
@@ -126,11 +125,11 @@ export function PracticeAreas() {
   );
 }
 
-function PracticeCard({
-  area,
+function ProblemCard({
+  item: p,
   index,
 }: {
-  area: (typeof areas)[number];
+  item: (typeof problems)[number] extends infer T ? T : never;
   index: number;
 }) {
   const cardRef = useRef<HTMLLIElement>(null);
@@ -156,27 +155,36 @@ function PracticeCard({
       className="card-spotlight group"
     >
       <Link
-        href={`/aree-di-competenza/${area.slug}` as never}
-        className="block p-8 md:p-10 h-full focus:outline-none"
+        href={`/aree-di-competenza/${(p as { slug: string }).slug}` as never}
+        className="block p-7 md:p-9 h-full focus:outline-none"
       >
-        <div className="flex items-start justify-between mb-8">
-          <div className="text-cobalt transition-transform duration-500 group-hover:-translate-y-0.5">
-            {area.icon}
-          </div>
+        <div className="flex items-start justify-between mb-6">
+          <span className="pill" data-variant="gold">
+            {(p as { label: string }).label}
+          </span>
           <span className="font-mono text-xs text-graphite tabular-nums">
-            {area.n} / 06
+            {(p as { n: string }).n} / 06
           </span>
         </div>
 
-        <h3 className="font-display text-2xl md:text-[1.75rem] leading-snug mb-3">
-          {area.title}
-        </h3>
-        <p className="text-cobalt italic mb-6 text-sm">{area.short}</p>
+        <p
+          className="font-display text-cobalt mb-3"
+          style={{
+            fontSize: 'clamp(1.375rem, 1.6vw + 0.5rem, 1.75rem)',
+            lineHeight: 1.15,
+            fontWeight: 500,
+            letterSpacing: '-0.01em',
+          }}
+        >
+          {(p as { problem: string }).problem}
+        </p>
 
-        <p className="text-graphite text-sm leading-relaxed mb-8">{area.body}</p>
+        <p className="text-graphite leading-relaxed text-[15px] mb-6">
+          {(p as { body: string }).body}
+        </p>
 
-        <div className="flex flex-wrap gap-2 mb-8">
-          {area.keywords.map((kw) => (
+        <div className="flex flex-wrap gap-1.5 mb-7">
+          {(p as { keywords: string[] }).keywords.map((kw) => (
             <span
               key={kw}
               className="font-mono text-[10px] uppercase tracking-wider text-graphite border border-rule px-2 py-1 transition-colors group-hover:border-cobalt/40"
@@ -186,9 +194,9 @@ function PracticeCard({
           ))}
         </div>
 
-        <div className="inline-flex items-center gap-2 text-cobalt text-sm font-medium">
+        <div className="inline-flex items-center gap-2 text-cobalt text-sm font-medium pt-5 border-t border-rule w-full">
           <span className="border-b border-cobalt/0 group-hover:border-cobalt transition-colors">
-            Approfondisci l'area
+            Approfondisci
           </span>
           <ArrowUpRight
             size={14}
@@ -197,65 +205,5 @@ function PracticeCard({
         </div>
       </Link>
     </motion.li>
-  );
-}
-
-/* ─── ICONE CUSTOM SVG ─────────────────────────────────────────── */
-/* Stile: stroke 1.25, geometriche pure, no fill se non per dettaglio. */
-
-function CivileIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25">
-      <rect x="6" y="8" width="28" height="24" />
-      <line x1="6" y1="14" x2="34" y2="14" />
-      <line x1="12" y1="20" x2="28" y2="20" />
-      <line x1="12" y1="25" x2="22" y2="25" />
-    </svg>
-  );
-}
-function FamigliaIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25">
-      <circle cx="14" cy="13" r="4" />
-      <circle cx="26" cy="13" r="4" />
-      <path d="M6 32c0-5 3.5-8 8-8s8 3 8 8" />
-      <path d="M22 32c0-5 3-7 6-7s4 2 4 7" />
-    </svg>
-  );
-}
-function LavoroIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25">
-      <rect x="6" y="14" width="28" height="18" />
-      <path d="M14 14V10h12v4" />
-      <line x1="20" y1="20" x2="20" y2="26" />
-    </svg>
-  );
-}
-function CreditiIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25">
-      <rect x="6" y="12" width="28" height="18" />
-      <line x1="6" y1="18" x2="34" y2="18" />
-      <circle cx="13" cy="24" r="2" />
-      <line x1="20" y1="24" x2="30" y2="24" />
-    </svg>
-  );
-}
-function ImmobiliareIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25">
-      <path d="M6 20L20 8l14 12" />
-      <path d="M10 20v12h20V20" />
-      <rect x="17" y="24" width="6" height="8" />
-    </svg>
-  );
-}
-function ResponsabilitaIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25">
-      <path d="M20 4l14 6v10c0 8-6 14-14 16-8-2-14-8-14-16V10z" />
-      <path d="M14 20l4 4 8-8" />
-    </svg>
   );
 }

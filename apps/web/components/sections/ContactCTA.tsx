@@ -1,22 +1,38 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import { ArrowRight, Phone, MapPin, Clock } from 'lucide-react';
+import { ArrowRight, Phone, MapPin, Clock, Mail } from 'lucide-react';
 import { SITE_DATA } from '@/lib/site-data';
-import { SectionMarker } from './SectionMarker';
 
 /**
- * CONTACT CTA · v2026
+ * CTA FINALE — "Parla con un avvocato"
  *
- * - Background: cobalt-deep + mesh aurora (gold + cobalt-soft) sobria
- * - CTA primaria magnetica (bg paper, hover gold)
- * - Indicatore SLA "risposta entro 24 h" pulsante
- * - Pattern grid sottile sotto, non più finto-tech ma editoriale
+ * Sezione finale forte: invito al primo confronto + telefono diretto.
+ * Sfondo cobalt scuro con mesh aurora calda. CTA primaria magnetica
+ * (segue cursore), CTA secondaria col numero diretto.
+ *
+ * Colonna laterale: indirizzo, telefono, orari, email (quando disponibile).
  */
 export function ContactCTA() {
   const ctaRef = useRef<HTMLAnchorElement>(null);
+  const [openStatus, setOpenStatus] = useState<'open' | 'closed'>('open');
+
+  useEffect(() => {
+    function compute() {
+      const now = new Date();
+      const day = now.getDay();
+      const minutes = now.getHours() * 60 + now.getMinutes();
+      const isWeekday = day >= 1 && day <= 5;
+      const morningOpen = minutes >= 9 * 60 && minutes < 13 * 60;
+      const afternoonOpen = minutes >= 15 * 60 && minutes < 19 * 60;
+      setOpenStatus(isWeekday && (morningOpen || afternoonOpen) ? 'open' : 'closed');
+    }
+    compute();
+    const id = window.setInterval(compute, 60_000);
+    return () => window.clearInterval(id);
+  }, []);
 
   function handleMagnetic(e: React.MouseEvent<HTMLAnchorElement>) {
     if (typeof window === 'undefined') return;
@@ -37,9 +53,7 @@ export function ContactCTA() {
       className="relative isolate overflow-hidden bg-aurora-dark text-paper py-24 md:py-32"
       aria-labelledby="contatti-heading"
     >
-      <SectionMarker numeral="VII" label="Contatti" align="right" variant="dark" />
-
-      {/* Pattern grid sottile sullo sfondo */}
+      {/* Pattern grid sottile */}
       <div
         aria-hidden
         className="absolute inset-0 opacity-[0.04]"
@@ -62,86 +76,113 @@ export function ContactCTA() {
 
       <div className="container-page relative">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-16">
-          {/* Colonna principale: headline + CTA */}
           <div className="col-span-12 lg:col-span-7">
-            <span className="eyebrow text-paper/60 mb-8">§ 07 · Contatti</span>
+            <span className="eyebrow text-paper/60 mb-7">07 — Contatti</span>
+
             <motion.h2
               id="contatti-heading"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="font-display mb-8 text-balance"
-              style={{ fontSize: 'var(--fs-display-l)', lineHeight: 1 }}
+              className="font-display mt-2 mb-6 text-balance text-paper"
+              style={{
+                fontSize: 'var(--fs-display-l)',
+                lineHeight: 1.05,
+                letterSpacing: '-0.018em',
+                fontWeight: 500,
+              }}
             >
-              Il primo passo
+              Parla con un avvocato.
               <br />
-              <span className="italic text-gold">è una conversazione.</span>
+              <span className="italic text-gold">Oggi, non fra una settimana.</span>
             </motion.h2>
 
-            <p className="text-paper/70 text-lg leading-relaxed max-w-xl mb-10">
-              Quindici minuti, in studio o al telefono, per capire se posso
-              esserle utile. Senza impegno, senza costo. Anche solo per
-              indicarle se la sua è davvero una questione legale.
+            <p className="text-paper/75 text-lg leading-relaxed max-w-xl mb-10">
+              Quindici minuti, in studio o al telefono, per capire se possiamo
+              esserle utili. Senza impegno, senza costo. Anche solo per
+              indicarle se la sua è davvero una questione legale o se può
+              risolversi diversamente.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-10">
+            <div className="flex flex-col sm:flex-row gap-3 mb-10">
               <Link
                 ref={ctaRef}
                 href="/prenota"
                 onMouseMove={handleMagnetic}
                 onMouseLeave={resetMagnetic}
                 className="inline-flex items-center justify-center gap-2 bg-paper text-ink px-7 py-4 text-sm font-medium hover:bg-gold transition-colors duration-300 group"
+                style={{ borderRadius: 'var(--radius-xs)' }}
               >
-                Primo confronto
+                Richiedi consulenza
                 <ArrowRight
                   size={16}
                   className="transition-transform group-hover:translate-x-1"
                 />
               </Link>
-              <a
-                href="tel:+390459586116"
-                className="btn-ghost"
-              >
+              <a href="tel:+390459586116" className="btn-ghost">
                 <Phone size={16} />
                 045 95 86 116
               </a>
             </div>
 
-            {/* SLA pill — animata, professionale */}
-            <span className="eyebrow-live text-paper/70" data-status="open">
-              Risposta entro 24 h lavorative · Riservatezza professionale
+            <span className="eyebrow-live text-paper/70" data-status={openStatus}>
+              {openStatus === 'open'
+                ? 'Studio aperto adesso · Risposta entro la giornata'
+                : 'Studio chiuso · Risposta entro 24 h lavorative'}
             </span>
           </div>
 
-          {/* Colonna laterale: info studio */}
-          <div className="col-span-12 lg:col-span-5 lg:pl-12">
-            <div className="border-t border-paper/15 pt-8 space-y-8">
-              <ContactRow
-                icon={<MapPin size={18} />}
-                label="Studio"
-                value={
-                  <span className="block leading-relaxed">
-                    <span className="block">Via S. Giovanni Bosco, 29/E</span>
-                    <span className="block">37047 San Bonifacio</span>
-                    <span className="block">Provincia di Verona</span>
-                  </span>
-                }
-              />
-              <ContactRow
-                icon={<Phone size={18} />}
-                label="Telefono"
-                value={
-                  <a href="tel:+390459586116" className="hover:text-gold transition-colors">
-                    045 95 86 116
-                  </a>
-                }
-              />
-              <ContactRow
-                icon={<Clock size={18} />}
-                label="Orari"
-                value={SITE_DATA.hours.long}
-              />
+          {/* Info studio */}
+          <div className="col-span-12 lg:col-span-5 lg:pl-10">
+            <div className="border border-paper/15 p-7 md:p-8" style={{ borderRadius: 'var(--radius-md)' }}>
+              <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50 mb-6">
+                Studio Legale Miotti
+              </h3>
+
+              <div className="space-y-7">
+                <ContactRow
+                  icon={<MapPin size={18} />}
+                  label="Sede"
+                  value={
+                    <span className="block leading-relaxed">
+                      <span className="block">Via S. Giovanni Bosco, 29/E</span>
+                      <span className="block">37047 San Bonifacio (VR)</span>
+                    </span>
+                  }
+                />
+                <ContactRow
+                  icon={<Phone size={18} />}
+                  label="Telefono"
+                  value={
+                    <a
+                      href="tel:+390459586116"
+                      className="hover:text-gold transition-colors"
+                    >
+                      045 95 86 116
+                    </a>
+                  }
+                />
+                {SITE_DATA.email && (
+                  <ContactRow
+                    icon={<Mail size={18} />}
+                    label="Email"
+                    value={
+                      <a
+                        href={`mailto:${SITE_DATA.email}`}
+                        className="hover:text-gold transition-colors break-all"
+                      >
+                        {SITE_DATA.email}
+                      </a>
+                    }
+                  />
+                )}
+                <ContactRow
+                  icon={<Clock size={18} />}
+                  label="Orari"
+                  value={SITE_DATA.hours.long}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -161,8 +202,8 @@ function ContactRow({
 }) {
   return (
     <div className="flex gap-4">
-      <span className="text-gold mt-0.5">{icon}</span>
-      <div>
+      <span className="text-gold mt-0.5 shrink-0">{icon}</span>
+      <div className="min-w-0">
         <p className="text-xs uppercase tracking-[0.18em] text-paper/40 mb-1">
           {label}
         </p>

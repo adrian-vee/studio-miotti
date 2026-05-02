@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, Inter_Tight } from 'next/font/google';
+import { Playfair_Display, Inter } from 'next/font/google';
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema';
 import { LexAssistant } from '@/components/lex/LexAssistant';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -7,26 +7,32 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SmoothScrollProvider } from '@/components/motion/SmoothScrollProvider';
 import '@/styles/globals.css';
 
-// Fallback font Google Fonts (gratis) — equivalenti a Tiempos / Söhne
-const display = Fraunces({
+/**
+ * Brand fonts (allineati al brief):
+ *  · Playfair Display — titoli, autorevolezza editoriale calda
+ *  · Inter — testo, leggibilità moderna a tutte le dimensioni
+ */
+const display = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-display-google',
-  axes: ['opsz', 'SOFT'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
 });
 
-const sans = Inter_Tight({
+const sans = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-sans-google',
+  weight: ['300', '400', '500', '600', '700'],
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiomiotti.it';
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FAFAF7' },
-    { media: '(prefers-color-scheme: dark)', color: '#0E1116' },
+    { media: '(prefers-color-scheme: light)', color: '#F7F5F2' },
+    { media: '(prefers-color-scheme: dark)', color: '#1E2A38' },
   ],
   width: 'device-width',
   initialScale: 1,

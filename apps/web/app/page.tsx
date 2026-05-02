@@ -1,37 +1,38 @@
 import { Hero } from '@/components/sections/Hero';
-import { TrustStrip } from '@/components/sections/TrustStrip';
-import { StudioByNumbers } from '@/components/sections/StudioByNumbers';
-import { Manifesto } from '@/components/sections/Manifesto';
-import { PullQuote } from '@/components/sections/PullQuote';
+import { Credibility } from '@/components/sections/Credibility';
+import { Approach } from '@/components/sections/Approach';
 import { PracticeAreas } from '@/components/sections/PracticeAreas';
-import { ApproachTimeline } from '@/components/sections/ApproachTimeline';
+import { Differentiation } from '@/components/sections/Differentiation';
+import { DigitalInnovation } from '@/components/sections/DigitalInnovation';
 import { ResourcesTeaser } from '@/components/sections/ResourcesTeaser';
-// TODO: riabilitare quando avremo testimonianze reali approvate
-// dall'avvocato. Le testimonianze fittizie facevano apparire il
-// sito non credibile.
-// import { TestimonialsMarquee } from '@/components/sections/TestimonialsMarquee';
 import { ContactCTA } from '@/components/sections/ContactCTA';
 import { LocalSchema } from '@/components/seo/LocalSchema';
 
 export const metadata = {
   title: 'Avvocato a San Bonifacio · Avv. Massimiliano Miotti',
   description:
-    'Studio legale a San Bonifacio (VR). Diritto civile, di famiglia, del lavoro e d\'impresa. Prima consulenza gratuita di 15 minuti.',
+    'Studio legale a San Bonifacio (VR). Soluzioni concrete per imprese e privati. Diritto civile, di famiglia, del lavoro, recupero crediti. Prima consulenza gratuita.',
 };
 
 export default function HomePage() {
   return (
     <>
       <LocalSchema />
+      {/* 1. HERO — soluzioni concrete */}
       <Hero />
-      <TrustStrip />
-      <StudioByNumbers />
-      <Manifesto />
-      <PullQuote />
+      {/* 2. CREDIBILITÀ — esperienza, clienti, territorio */}
+      <Credibility />
+      {/* 3. APPROCCIO — semplicità, velocità, trasparenza */}
+      <Approach />
+      {/* 4. AREE DI ATTIVITÀ — problemi concreti */}
       <PracticeAreas />
-      <ApproachTimeline />
+      {/* 5. DIFFERENZIAZIONE — rapidità + supporto digitale */}
+      <Differentiation />
+      {/* 6. INNOVAZIONE DIGITALE — strumenti, automazioni, GDPR */}
+      <DigitalInnovation />
+      {/* 7. CONTENUTI / GUIDE */}
       <ResourcesTeaser />
-      {/* <TestimonialsMarquee /> — disattivato finché non abbiamo testimonianze reali */}
+      {/* 8. CTA FINALE — Parla con un avvocato */}
       <ContactCTA />
     </>
   );

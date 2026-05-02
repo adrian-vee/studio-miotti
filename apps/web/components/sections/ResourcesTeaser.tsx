@@ -3,19 +3,16 @@
 import { useRef } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import { ArrowUpRight, FileText, Download } from 'lucide-react';
-import { SectionMarker } from './SectionMarker';
+import { ArrowUpRight, FileText, BookOpen, Clock } from 'lucide-react';
 
 /**
- * RESOURCES TEASER · v2026
+ * GUIDE & CONTENUTI
  *
- * Card con cursor spotlight (gold radial) e CTA "Scarica" inline.
- * Indicatore "PDF · N pagine · IT" più una progress hairline che cresce
- * al hover (100% delle pagine già scritte = 100% disponibile).
+ * Articoli/guide pratiche, linguaggio semplice, orientati SEO long-tail
+ * (es. "come fare diffida ad adempiere", "incidente stradale cosa fare").
  *
- * Le risorse sono pensate per intercettare keyword di problema
- * ("come funziona la separazione consensuale", "modello diffida ad
- * adempiere"). Niente lead-magnet aggressivi.
+ * Le card mostrano: categoria, titolo, tempo di lettura, formato.
+ * Cursor spotlight + hairline gold progress su hover.
  */
 
 const guides = [
@@ -23,25 +20,28 @@ const guides = [
     slug: 'separazione-consensuale-checklist',
     cat: 'Famiglia',
     title: 'Separazione consensuale: la checklist degli 8 passi',
+    excerpt: 'Documenti, tempi, costi e cosa concordare prima di andare dall\'avvocato.',
     pages: 12,
-    ico: '§',
-    ready: true,
+    minutes: 6,
+    ico: FileText,
   },
   {
     slug: 'diffida-ad-adempiere-modello',
     cat: 'Civile',
     title: 'Diffida ad adempiere: modello editabile e istruzioni',
+    excerpt: 'Cosa scrivere, come notificare, quando trasforma il contratto in titolo eseguibile.',
     pages: 6,
-    ico: '◊',
-    ready: true,
+    minutes: 4,
+    ico: BookOpen,
   },
   {
     slug: 'incidente-stradale-prime-24-ore',
     cat: 'Risarcimento',
     title: 'Incidente stradale: cosa fare nelle prime 24 ore',
+    excerpt: 'I 7 passaggi che proteggono il risarcimento, dal CID alla denuncia all\'assicurazione.',
     pages: 8,
-    ico: '✦',
-    ready: true,
+    minutes: 5,
+    ico: Clock,
   },
 ];
 
@@ -51,37 +51,30 @@ export function ResourcesTeaser() {
       className="relative bg-paper py-20 md:py-28 overflow-hidden"
       aria-labelledby="risorse-heading"
     >
-      <SectionMarker numeral="VI" label="Risorse" align="right" />
-
-      {/* Hairline gold orizzontale top */}
-      <div
-        aria-hidden
-        className="absolute top-0 inset-x-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent, rgb(var(--color-gold)/0.5) 50%, transparent)',
-        }}
-      />
-
       <div className="container-page">
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 mb-16">
-          <div className="col-span-12 md:col-span-4">
-            <span className="eyebrow">§ 06 · Risorse</span>
-          </div>
-          <div className="col-span-12 md:col-span-8">
+        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-6 mb-14 md:mb-20">
+          <div className="col-span-12 md:col-span-5">
+            <span className="eyebrow">06 — Guide</span>
             <h2
               id="risorse-heading"
-              className="font-display text-balance"
-              style={{ fontSize: 'var(--fs-display-m)', lineHeight: 1.05 }}
+              className="font-display text-balance mt-5 text-ink"
+              style={{
+                fontSize: 'var(--fs-display-m)',
+                lineHeight: 1.08,
+                letterSpacing: '-0.018em',
+                fontWeight: 500,
+              }}
             >
-              Guide gratuite,
-              <br />
-              <span className="italic text-cobalt">in linguaggio chiaro.</span>
+              Guide pratiche,{' '}
+              <span className="italic text-cobalt">in italiano semplice.</span>
             </h2>
-            <p className="mt-6 text-graphite text-lg leading-relaxed max-w-xl">
-              Documenti scaricabili in PDF. Argomenti pratici, modelli editabili,
-              checklist operative. Pensati perché possa orientarsi prima ancora di
-              parlare con un avvocato.
+          </div>
+
+          <div className="col-span-12 md:col-span-6 md:col-start-7 self-end">
+            <p className="text-graphite text-lg leading-relaxed max-w-xl">
+              Documenti scaricabili, modelli editabili e checklist operative.
+              Pensati per orientarsi prima ancora di prendere appuntamento —
+              gratuiti e senza richiesta di email.
             </p>
           </div>
         </div>
@@ -121,6 +114,8 @@ function GuideCard({
     el.style.setProperty('--my', `${y}%`);
   }
 
+  const Ico = g.ico;
+
   return (
     <motion.li
       ref={cardRef}
@@ -133,28 +128,44 @@ function GuideCard({
     >
       <Link
         href={`/guide/${g.slug}` as never}
-        className="block p-8 h-full focus:outline-none"
+        className="block p-7 md:p-8 h-full focus:outline-none"
       >
-        <div className="flex items-start justify-between mb-12">
-          <span className="font-display text-4xl text-cobalt leading-none transition-transform duration-500 group-hover:-translate-y-0.5">
-            {g.ico}
+        <div className="flex items-start justify-between mb-8">
+          <span
+            aria-hidden
+            className="inline-flex items-center justify-center w-11 h-11 bg-vellum border border-gold/40 text-cobalt"
+            style={{ borderRadius: 'var(--radius-sm)' }}
+          >
+            <Ico size={20} strokeWidth={1.4} />
           </span>
           <span className="pill" data-variant="gold">
             {g.cat}
           </span>
         </div>
 
-        <h3 className="font-display text-xl md:text-[1.5rem] leading-snug mb-6 text-balance">
+        <h3
+          className="font-display text-xl md:text-[1.375rem] leading-snug mb-3 text-balance text-ink"
+          style={{ fontWeight: 500, letterSpacing: '-0.01em' }}
+        >
           {g.title}
         </h3>
+        <p className="text-graphite text-sm leading-relaxed mb-7">
+          {g.excerpt}
+        </p>
 
-        <div className="pt-6 border-t border-rule">
+        <div className="pt-5 border-t border-rule">
           <div className="flex items-center justify-between mb-3">
-            <span className="flex items-center gap-2 text-xs text-graphite font-mono">
-              <FileText size={12} /> PDF · {g.pages} pp. · IT
+            <span className="flex items-center gap-3 text-xs text-graphite font-mono">
+              <span className="inline-flex items-center gap-1">
+                <FileText size={12} /> PDF · {g.pages} pp.
+              </span>
+              <span aria-hidden className="text-rule">·</span>
+              <span className="inline-flex items-center gap-1">
+                <Clock size={12} /> {g.minutes} min
+              </span>
             </span>
             <span className="inline-flex items-center gap-1.5 text-cobalt text-xs font-mono uppercase tracking-wider">
-              <Download size={12} /> Scarica
+              Leggi
               <ArrowUpRight
                 size={12}
                 className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -162,7 +173,6 @@ function GuideCard({
             </span>
           </div>
 
-          {/* Hairline progress che cresce al hover — segno che la guida è pronta */}
           <span
             aria-hidden
             className="block h-px bg-gold/30 origin-left transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] scale-x-50 group-hover:scale-x-100"
