@@ -7,6 +7,12 @@ interface Props {
   label: string;
   align?: 'left' | 'right';
   variant?: 'light' | 'dark';
+  /** Se false, renderizza solo il numerale (utile quando la sezione
+   *  è già identificata da un eyebrow o cap label). Default: true. */
+  showLabel?: boolean;
+  /** Override delle classi Tailwind di posizione (es. "top-6 left-4")
+   *  per casi in cui i default top-8/right-8/left-8 collidono col contenuto. */
+  className?: string;
 }
 
 /**
@@ -17,25 +23,26 @@ interface Props {
  * - pointer-events none → mai cliccabile
  * - hidden su mobile (< md)
  *
- * variant 'dark' su sezioni bg scuro: numerale + label color paper
- * con opacità basse, perché su graphite scuro (bg-ink, bg-cobalt-deep)
- * il graphite stesso si fonde col fondo e diventa invisibile.
+ * variant 'dark' su sezioni bg scuro: numerale watermark + label
+ * paper @ 0.85 (leggibile su graphite scuro).
  */
 export function SectionMarker({
   numeral,
   label,
   align = 'right',
   variant = 'light',
+  showLabel = true,
+  className,
 }: Props) {
   const isDark = variant === 'dark';
 
-  // Numerale: chiaro su dark, paper-warm su light.
+  // Numerale: chiaro discreto su dark, paper-warm soft su light.
   const numeralColor = isDark ? 'rgb(var(--color-paper))' : 'rgb(var(--color-paper-warm))';
-  const numeralOpacity = isDark ? 0.08 : 0.5;
+  const numeralOpacity = isDark ? 0.1 : 0.5;
 
-  // Label: paper soft su dark, graphite pieno su light.
+  // Label: paper @ 0.85 su dark (leggibile), graphite pieno su light.
   const labelColor = isDark ? 'rgb(var(--color-paper))' : 'rgb(var(--color-graphite))';
-  const labelOpacity = isDark ? 0.5 : 1;
+  const labelOpacity = isDark ? 0.85 : 1;
 
   return (
     <aside
@@ -44,6 +51,7 @@ export function SectionMarker({
         'hidden md:flex flex-col pointer-events-none select-none',
         'absolute top-8 z-0',
         align === 'right' ? 'right-8 items-end text-right' : 'left-8 items-start text-left',
+        className,
       )}
     >
       <span
@@ -57,17 +65,19 @@ export function SectionMarker({
       >
         {numeral}
       </span>
-      <span
-        className="mt-2 font-mono uppercase"
-        style={{
-          fontSize: '9px',
-          letterSpacing: '0.2em',
-          color: labelColor,
-          opacity: labelOpacity,
-        }}
-      >
-        {label}
-      </span>
+      {showLabel && (
+        <span
+          className="mt-2 font-mono uppercase"
+          style={{
+            fontSize: '9px',
+            letterSpacing: '0.2em',
+            color: labelColor,
+            opacity: labelOpacity,
+          }}
+        >
+          {label}
+        </span>
+      )}
     </aside>
   );
 }

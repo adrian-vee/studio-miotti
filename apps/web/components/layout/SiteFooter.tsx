@@ -126,23 +126,14 @@ export function SiteFooter() {
               className="block w-full border border-rule grayscale-[0.9]"
               style={{ height: '140px' }}
             />
-            <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
-              <div>
-                <dt className="font-mono text-[9px] uppercase tracking-[0.16em] text-graphite">
-                  Orari
-                </dt>
-                <dd className="text-[13px] text-ink leading-snug mt-0.5">
-                  {hours.short}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-mono text-[9px] uppercase tracking-[0.16em] text-graphite">
-                  Lingue
-                </dt>
-                <dd className="text-[13px] text-ink leading-snug mt-0.5">
-                  IT · EN
-                </dd>
-              </div>
+            <dl className="mt-4 flex items-baseline gap-2 whitespace-nowrap">
+              <dt className="font-mono text-[9px] uppercase tracking-[0.16em] text-graphite">
+                Orari
+              </dt>
+              <span className="text-graphite/60" aria-hidden>—</span>
+              <dd className="text-[12px] text-ink leading-snug">
+                {hours.short}
+              </dd>
             </dl>
           </div>
         </div>

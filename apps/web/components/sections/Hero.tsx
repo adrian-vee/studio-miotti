@@ -32,7 +32,7 @@ export function Hero() {
       className="relative isolate overflow-hidden bg-paper pt-32 pb-24 md:pt-40 md:pb-32"
       aria-labelledby="hero-headline"
     >
-      <SectionMarker numeral="I" label="Lo Studio" align="right" />
+      <SectionMarker numeral="I" label="Lo Studio" align="right" showLabel={false} />
 
       {/* Grid guides — 12 colonne sottili, statement editoriale */}
       <div

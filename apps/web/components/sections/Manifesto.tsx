@@ -38,7 +38,13 @@ export function Manifesto() {
       className="relative isolate overflow-hidden bg-paper-warm py-20 md:py-28"
       aria-labelledby="manifesto-heading"
     >
-      <SectionMarker numeral="II" label="Manifesto" align="left" />
+      <SectionMarker
+        numeral="II"
+        label="Manifesto"
+        align="left"
+        showLabel={false}
+        className="top-6 left-4"
+      />
 
       <div className="container-page">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12 mb-16 md:mb-20">
