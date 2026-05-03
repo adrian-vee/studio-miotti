@@ -1,19 +1,21 @@
 /**
- * SiteFooter — chiusura editoriale, sobria, stratificata.
+ * SiteFooter — chiusura premium, profondità visiva, niente grigio morto.
  *
- * Quattro colonne (Studio · Aree · Risorse · Contatti) + bottom row
- * con dati legali e credits.
+ * Top: blocco scuro (blu notte) con identità + colonne ordinate.
+ * Bottom: bottom bar chiara con legali e credits.
+ * Wordmark "Miotti" gigante come texture in basso, colore controllato.
  */
 
 import Link from 'next/link';
-import { Phone, MapPin } from 'lucide-react';
+import { Phone, MapPin, Clock4 } from 'lucide-react';
 import { SITE_DATA, PRACTICE_AREAS } from '@/lib/site-data';
 
 const STUDIO_LINKS = [
   { label: 'Lo Studio', href: '/studio' },
   { label: 'Metodo', href: '/#metodo' },
-  { label: 'Innovazione', href: '/#innovazione' },
+  { label: 'Studio digitale', href: '/#innovazione' },
   { label: 'Risorse e guide', href: '/guide' },
+  { label: 'Tariffe', href: '/tariffe' },
 ];
 
 const FOOTER_AREAS = PRACTICE_AREAS.slice(0, 6);
@@ -29,51 +31,75 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      className="relative overflow-hidden bg-paper-warm"
-      style={{ borderTop: '1px solid rgb(var(--color-rule) / 0.12)' }}
-    >
-      <div className="container-page py-20 md:py-24">
+    <footer className="relative overflow-hidden bg-cobalt-deep text-paper">
+      {/* Mesh aurora alto */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 40% at 50% 0%, rgb(198 168 107 / 0.10) 0%, transparent 60%)',
+        }}
+      />
+
+      <div className="container-page relative pt-24 pb-12 md:pt-28">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12">
           {/* Identità studio */}
           <div className="col-span-12 md:col-span-4">
             <div className="flex items-baseline gap-3">
               <span
                 aria-hidden
-                className="font-display italic text-cobalt"
-                style={{ fontSize: '1.5rem', lineHeight: 1 }}
+                className="font-display italic"
+                style={{ fontSize: '1.5rem', lineHeight: 1, color: 'rgb(var(--color-gold))' }}
               >
                 §
               </span>
               <span className="leading-none">
-                <span className="block font-display text-ink" style={{ fontSize: '1.05rem' }}>
-                  Studio Legale <em className="not-italic text-cobalt">Miotti</em>
+                <span className="block font-display" style={{ fontSize: '1.1rem', color: 'rgb(var(--color-paper))' }}>
+                  Studio Legale{' '}
+                  <em className="not-italic" style={{ color: 'rgb(var(--color-gold))' }}>
+                    Miotti
+                  </em>
                 </span>
-                <span className="mt-0.5 block font-mono text-[10px] tracking-[0.22em] uppercase text-graphite">
+                <span
+                  className="mt-0.5 block font-mono text-[10px] tracking-[0.22em] uppercase"
+                  style={{ color: 'rgb(var(--color-paper) / 0.55)' }}
+                >
                   San Bonifacio · VR
                 </span>
               </span>
             </div>
 
-            <p className="mt-6 max-w-sm text-[0.9375rem] leading-[1.55] text-graphite">
-              Diritto come dialogo, non come distanza. Consulenza per imprese e
-              privati nella Bassa Veronese e in tutta la provincia di Verona.
+            <p
+              className="mt-6 max-w-sm text-[0.9375rem]"
+              style={{ color: 'rgb(var(--color-paper) / 0.7)', lineHeight: 1.6 }}
+            >
+              Soluzioni legali concrete per imprese e privati. Risposta in
+              24–48 ore lavorative, costi indicati prima del mandato,
+              gestione digitale delle pratiche.
             </p>
 
             <ul className="mt-7 space-y-3 text-sm">
-              <li className="flex items-start gap-2 text-ink-soft">
-                <MapPin size={14} className="mt-0.5 shrink-0 text-graphite" />
+              <li className="flex items-start gap-2.5" style={{ color: 'rgb(var(--color-paper) / 0.85)' }}>
+                <MapPin size={14} className="mt-0.5 shrink-0" style={{ color: 'rgb(var(--color-gold))' }} />
                 <span>
                   {SITE_DATA.address.street}
                   <br />
                   {SITE_DATA.address.cap} {SITE_DATA.address.city} ({SITE_DATA.address.province})
                 </span>
               </li>
-              <li className="flex items-center gap-2 text-ink-soft">
-                <Phone size={14} className="text-graphite" />
-                <a href={`tel:${SITE_DATA.phoneTel}`} className="link-inline">
+              <li className="flex items-center gap-2.5" style={{ color: 'rgb(var(--color-paper) / 0.85)' }}>
+                <Phone size={14} style={{ color: 'rgb(var(--color-gold))' }} />
+                <a
+                  href={`tel:${SITE_DATA.phoneTel}`}
+                  className="transition-colors hover:text-[rgb(var(--color-gold))]"
+                >
                   {SITE_DATA.phoneDisplay}
                 </a>
+              </li>
+              <li className="flex items-center gap-2.5" style={{ color: 'rgb(var(--color-paper) / 0.85)' }}>
+                <Clock4 size={14} style={{ color: 'rgb(var(--color-gold))' }} />
+                <span>{SITE_DATA.hours.short}</span>
               </li>
             </ul>
           </div>
@@ -96,35 +122,47 @@ export function SiteFooter() {
 
           {/* Contatti */}
           <div className="col-span-12 md:col-span-3">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+            <h4
+              className="font-mono text-[10px] uppercase tracking-[0.28em]"
+              style={{ color: 'rgb(var(--color-gold))' }}
+            >
               Contatti
             </h4>
-            <ul className="mt-5 space-y-3 text-sm text-ink-soft">
+            <ul className="mt-5 space-y-3 text-sm" style={{ color: 'rgb(var(--color-paper) / 0.85)' }}>
               <li>
-                <Link href="/contatti" className="link-inline">
-                  Modulo richiesta
+                <Link
+                  href="/contatti"
+                  className="inline-flex items-center gap-1.5 underline-offset-4 transition-colors hover:text-[rgb(var(--color-gold))] hover:underline"
+                >
+                  Modulo richiesta →
                 </Link>
               </li>
               <li>
-                <Link href="/prenota" className="link-inline">
-                  Prenota un appuntamento
+                <Link
+                  href="/prenota"
+                  className="inline-flex items-center gap-1.5 underline-offset-4 transition-colors hover:text-[rgb(var(--color-gold))] hover:underline"
+                >
+                  Prenota appuntamento →
                 </Link>
               </li>
-              <li>{SITE_DATA.hours.long}</li>
+              <li className="text-[0.875rem]" style={{ color: 'rgb(var(--color-paper) / 0.55)' }}>
+                Risposta media: 24–48 h lavorative
+              </li>
             </ul>
           </div>
         </div>
 
-        {/* Brand statement gigante */}
+        {/* Wordmark texture */}
         <div className="mt-20 hidden md:block">
           <p
             aria-hidden
-            className="text-stroke font-display"
+            className="text-stroke-paper font-display"
             style={{
-              fontSize: 'clamp(4rem, 12vw, 11rem)',
-              lineHeight: 0.95,
+              fontSize: 'clamp(4rem, 14vw, 13rem)',
+              lineHeight: 0.92,
               letterSpacing: '-0.04em',
-              textWrap: 'balance',
+              fontStyle: 'italic',
+              fontWeight: 500,
             }}
           >
             Miotti — Studio Legale.
@@ -134,9 +172,9 @@ export function SiteFooter() {
         {/* Bottom row */}
         <div
           className="mt-12 grid grid-cols-1 gap-6 border-t pt-8 md:grid-cols-2"
-          style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
+          style={{ borderColor: 'rgb(244 242 238 / 0.12)' }}
         >
-          <div className="flex flex-col gap-2 text-xs text-graphite">
+          <div className="flex flex-col gap-2 text-xs" style={{ color: 'rgb(var(--color-paper) / 0.55)' }}>
             <span>
               © {year} {SITE_DATA.legalName} · C.F. {SITE_DATA.cf}
             </span>
@@ -145,10 +183,16 @@ export function SiteFooter() {
             </span>
           </div>
 
-          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-graphite md:justify-end">
+          <ul
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs md:justify-end"
+            style={{ color: 'rgb(var(--color-paper) / 0.55)' }}
+          >
             {LEGAL_LINKS.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="hover:text-cobalt">
+                <Link
+                  href={l.href}
+                  className="transition-colors hover:text-[rgb(var(--color-gold))]"
+                >
                   {l.label}
                 </Link>
               </li>
@@ -159,7 +203,7 @@ export function SiteFooter() {
                 href="https://adrianvee.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-cobalt"
+                className="transition-colors hover:text-[rgb(var(--color-gold))]"
               >
                 Adrian Vee
               </a>
@@ -180,7 +224,10 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+      <h4
+        className="font-mono text-[10px] uppercase tracking-[0.28em]"
+        style={{ color: 'rgb(var(--color-gold))' }}
+      >
         {title}
       </h4>
       <ul className="mt-5 space-y-3 text-sm">
@@ -188,9 +235,17 @@ function FooterColumn({
           <li key={it.href}>
             <Link
               href={it.href}
-              className="text-ink-soft transition-colors hover:text-cobalt"
+              className="group relative inline-flex items-center transition-colors"
+              style={{ color: 'rgb(var(--color-paper) / 0.85)' }}
             >
-              {it.label}
+              <span className="relative">
+                {it.label}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+                  style={{ background: 'rgb(var(--color-gold))' }}
+                />
+              </span>
             </Link>
           </li>
         ))}

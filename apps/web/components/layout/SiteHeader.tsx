@@ -22,12 +22,14 @@ import { openLex } from '@/lib/lex';
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const ctaRef = useRef<HTMLButtonElement | null>(null);
   const pathname = usePathname();
   // La home ha sequenza narrativa scuro→chiaro→scuro: l'header in cima
   // sta sopra il blu notte. Quando l'utente non ha ancora scrollato,
   // serve testo paper (chiaro su scuro). Allo scroll torna paper-aware.
   const isHomeDark = pathname === '/' && !scrolled;
+  const isHome = pathname === '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -40,6 +42,33 @@ export function SiteHeader() {
     if (!ctaRef.current) return;
     return magnetic(ctaRef.current, 14);
   }, []);
+
+  // Active section indicator (solo home): IntersectionObserver
+  useEffect(() => {
+    if (!isHome) {
+      setActiveId(null);
+      return;
+    }
+    const ids = ['metodo', 'aree', 'innovazione', 'contatti'];
+    const targets = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Prendi l'ultima entry "intersecting" più vicina al top viewport
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActiveId(visible[0].target.id);
+      },
+      { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.25, 0.5] },
+    );
+    targets.forEach((t) => observer.observe(t));
+    return () => observer.disconnect();
+  }, [isHome]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -72,13 +101,14 @@ export function SiteHeader() {
         className="sticky top-0 z-[100] w-full transition-all duration-500"
         style={{
           backgroundColor: scrolled
-            ? 'rgb(var(--color-vellum) / 0.82)'
+            ? 'rgb(var(--color-vellum) / 0.78)'
             : 'rgb(var(--color-paper) / 0)',
-          backdropFilter: scrolled ? 'saturate(140%) blur(14px)' : 'none',
-          WebkitBackdropFilter: scrolled ? 'saturate(140%) blur(14px)' : 'none',
+          backdropFilter: scrolled ? 'saturate(180%) blur(18px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'saturate(180%) blur(18px)' : 'none',
           borderBottom: scrolled
-            ? '1px solid rgb(var(--color-rule) / 0.08)'
+            ? '1px solid rgb(var(--color-rule) / 0.10)'
             : '1px solid transparent',
+          boxShadow: scrolled ? '0 1px 0 0 rgb(var(--color-paper) / 0.6) inset, 0 8px 24px rgb(11 37 58 / 0.04)' : 'none',
         }}
       >
         <div className="container-page">
@@ -144,31 +174,62 @@ export function SiteHeader() {
               className="hidden items-center gap-8 lg:flex"
               aria-label="Navigazione principale"
             >
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="group relative inline-flex items-center text-[0.875rem] font-medium transition-colors"
-                  style={{
-                    color: isHomeDark
-                      ? 'rgb(var(--color-paper) / 0.85)'
-                      : 'rgb(var(--color-ink-soft))',
-                  }}
-                >
-                  <span className="relative">
-                    {link.label}
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
-                      style={{
-                        background: isHomeDark
+              {NAV_LINKS.map((link) => {
+                // Detect attivo: link che punta a /#anchor di una sezione attiva
+                const anchor = link.href.startsWith('/#') ? link.href.slice(2) : null;
+                const isActive = isHome && anchor !== null && activeId === anchor;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={isActive ? 'true' : undefined}
+                    className="group relative inline-flex items-center gap-2 text-[0.875rem] font-medium transition-colors"
+                    style={{
+                      color: isActive
+                        ? isHomeDark
                           ? 'rgb(var(--color-gold))'
-                          : 'rgb(var(--color-cobalt))',
-                      }}
-                    />
-                  </span>
-                </Link>
-              ))}
+                          : 'rgb(var(--color-cobalt-deep))'
+                        : isHomeDark
+                          ? 'rgb(var(--color-paper) / 0.85)'
+                          : 'rgb(var(--color-ink-soft))',
+                    }}
+                  >
+                    {/* Dot oro per active */}
+                    {isActive && (
+                      <span
+                        aria-hidden
+                        className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                        style={{
+                          background: 'rgb(var(--color-gold))',
+                          boxShadow: '0 0 0 3px rgb(198 168 107 / 0.18)',
+                        }}
+                      />
+                    )}
+                    <span className="relative">
+                      {link.label}
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left transition-transform duration-500 ease-out"
+                        style={{
+                          background: isHomeDark
+                            ? 'rgb(var(--color-gold))'
+                            : 'rgb(var(--color-cobalt))',
+                          transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                        }}
+                      />
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+                        style={{
+                          background: isHomeDark
+                            ? 'rgb(var(--color-gold))'
+                            : 'rgb(var(--color-cobalt))',
+                        }}
+                      />
+                    </span>
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* ── Right cluster ── */}
