@@ -1,209 +1,130 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion } from 'motion/react';
-import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
-
 /**
- * AREE DI ATTIVITÀ — formulate come PROBLEMI CONCRETI
+ * PracticeAreas — 8 aree concrete dello studio.
  *
- * Brief: «NON usare categorie astratte. Usare problemi concreti.»
+ * Layout editoriale: griglia asimmetrica 6/12 con eyebrow numerato e
+ * link "Approfondisci" su ogni card. Icone vettoriali minimal-line custom
+ * (nessuna libreria icon esterna oltre lucide).
  *
- * Ogni card parte dalla situazione reale del cliente ("Un cliente non
- * paga", "Devi firmare un contratto") e non dalla categoria giuridica
- * ("Diritto dei contratti"). Linguaggio diretto, da imprenditore.
- *
- * Le card sono link alle pagine /aree-di-competenza/[slug] esistenti.
+ * Animazione:
+ *  · stagger reveal cards (useGsapReveal).
+ *  · hover: micro-movimento icona, bordo si scalda (gold subtle).
  */
 
-const problems = [
-  {
-    slug: 'recupero-crediti',
-    n: '01',
-    problem: 'Un cliente non paga.',
-    label: 'Recupero crediti',
-    body: 'Diffide, decreti ingiuntivi, pignoramenti. Recuperiamo somme da debitori privati e aziende, anche con misure cautelari quando serve essere veloci.',
-    keywords: ['Diffida', 'Decreto ingiuntivo', 'Pignoramento'],
-  },
-  {
-    slug: 'diritto-civile',
-    n: '02',
-    problem: 'Devi firmare (o contestare) un contratto.',
-    label: 'Contratti & responsabilità',
-    body: 'Verifichiamo, redigiamo e contestiamo contratti commerciali, locazioni, preliminari di vendita. Tuteliamo chi ha subìto un danno da inadempimento.',
-    keywords: ['Contratti', 'Risarcimenti', 'Condominio'],
-  },
-  {
-    slug: 'diritto-lavoro',
-    n: '03',
-    problem: 'Hai una vertenza di lavoro.',
-    label: 'Diritto del lavoro',
-    body: 'Licenziamenti, mobbing, mansioni dequalificanti, vertenze sindacali. Assistiamo lavoratori e aziende, dalla conciliazione al ricorso giudiziale.',
-    keywords: ['Licenziamento', 'Mobbing', 'Vertenze sindacali'],
-  },
-  {
-    slug: 'diritto-famiglia',
-    n: '04',
-    problem: 'Una separazione, un divorzio, un\'eredità.',
-    label: 'Famiglia & successioni',
-    body: 'Separazioni consensuali e giudiziali, divorzi, affidamento dei figli, divisioni ereditarie. Approccio rispettoso, focus sui figli quando ci sono.',
-    keywords: ['Separazione', 'Divorzio', 'Eredità'],
-  },
-  {
-    slug: 'responsabilita-civile',
-    n: '05',
-    problem: 'Hai avuto un incidente o un danno.',
-    label: 'Risarcimento danni',
-    body: 'Sinistri stradali, infortuni, responsabilità medica, danni da prodotti. Recuperiamo dalle assicurazioni il giusto risarcimento, in tempi rapidi.',
-    keywords: ['Incidente', 'Infortunio', 'Malasanità'],
-  },
-  {
-    slug: 'diritto-immobiliare',
-    n: '06',
-    problem: 'Una casa, un confine, uno sfratto.',
-    label: 'Immobiliare',
-    body: 'Compravendite, locazioni, sfratti, controversie di confine, usucapione. Verifichiamo i preliminari prima della firma per evitare problemi dopo.',
-    keywords: ['Compravendita', 'Sfratto', 'Confine'],
-  },
-];
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
+import { useGsapReveal } from '@/hooks/useGsapReveal';
+import { PRACTICE_AREAS } from '@/lib/site-data';
+import { PracticeGlyph } from './_glyphs/PracticeGlyph';
 
 export function PracticeAreas() {
+  const ref = useGsapReveal<HTMLElement>({ y: 36, stagger: 0.06 });
+
   return (
     <section
-      className="relative bg-paper py-20 md:py-28 overflow-hidden"
-      aria-labelledby="aree-heading"
+      ref={ref}
+      id="aree"
+      className="relative bg-paper-warm py-24 md:py-32"
+      aria-labelledby="practice-title"
     >
-      <div className="container-page relative">
+      {/* Filetto top */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px"
+        style={{ background: 'rgb(var(--color-rule) / 0.12)' }}
+      />
+
+      <div className="container-page">
         {/* Header */}
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-6 mb-14 md:mb-20">
-          <div className="col-span-12 md:col-span-5">
-            <span className="eyebrow">03 — Aree</span>
+        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8">
+          <div className="col-span-12 md:col-span-5" data-reveal>
+            <span className="eyebrow-num">
+              <strong>03 ·</strong> Aree di attività
+            </span>
             <h2
-              id="aree-heading"
-              className="font-display text-balance mt-5 text-ink"
-              style={{
-                fontSize: 'var(--fs-display-m)',
-                lineHeight: 1.08,
-                letterSpacing: '-0.018em',
-                fontWeight: 500,
-              }}
+              id="practice-title"
+              className="mt-6 font-display text-ink"
+              style={{ fontSize: 'var(--fs-display-l)', lineHeight: 1.02, letterSpacing: '-0.02em' }}
             >
-              In cosa possiamo{' '}
-              <span className="italic text-cobalt">davvero esserle utili.</span>
+              Otto aree.
+              <br />
+              <span className="italic text-cobalt">Un solo metodo.</span>
             </h2>
           </div>
-
-          <div className="col-span-12 md:col-span-6 md:col-start-7 self-end">
-            <p className="text-graphite text-lg leading-relaxed max-w-xl">
-              Sei aree di intervento, descritte come problemi concreti che
-              incontra ogni giorno chi gestisce un'azienda o una famiglia.
-              Trovi quella che la riguarda? Ne parliamo nei primi 15 minuti
-              gratuitamente.
+          <div className="col-span-12 md:col-span-6 md:col-start-7" data-reveal>
+            <p className="text-lg text-ink-soft" style={{ lineHeight: 1.55 }}>
+              Ogni area corrisponde a un problema concreto, non a un capitolo di
+              codice. Lo Studio si concentra sul diritto civile in senso ampio:
+              quando una pratica esce dal nostro perimetro, ti indichiamo un
+              collega di fiducia in Verona o nelle province limitrofe.
             </p>
+            <Link
+              href="/aree-di-competenza"
+              className="link-arrow mt-6 inline-flex"
+            >
+              Vedi tutte le aree e i casi tipici
+            </Link>
           </div>
         </div>
 
-        {/* Problem cards */}
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-rule/40 border border-rule/40">
-          {problems.map((p, i) => (
-            <ProblemCard key={p.slug} item={p} index={i} />
-          ))}
-        </ul>
+        {/* Grid 8 aree */}
+        <div className="mt-16 grid grid-cols-1 gap-px overflow-hidden border md:grid-cols-2 lg:grid-cols-4"
+          style={{ borderColor: 'rgb(var(--color-rule) / 0.12)', background: 'rgb(var(--color-rule) / 0.08)' }}>
+          {PRACTICE_AREAS.map((area, i) => (
+            <article
+              key={area.slug}
+              data-reveal
+              className="group relative bg-vellum p-7 transition-colors duration-500 hover:bg-paper md:p-8"
+            >
+              <header className="mb-5 flex items-start justify-between gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:rotate-[-4deg]"
+                  style={{
+                    color: 'rgb(var(--color-cobalt))',
+                    border: '1px solid rgb(var(--color-rule) / 0.18)',
+                    background: 'rgb(var(--color-paper))',
+                  }}
+                  aria-hidden
+                >
+                  <PracticeGlyph name={area.glyph} size={16} />
+                </span>
+              </header>
 
-        <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-sm text-graphite">
-            Non si riconosce in queste situazioni? Ce lo chieda lo stesso —
-            spesso il problema è risolvibile, ci servono solo i dettagli.
-          </p>
-          <Link href="/aree-di-competenza" className="link-inline">
-            Vedi tutte le aree →
-          </Link>
+              <h3
+                className="font-display text-ink"
+                style={{ fontSize: '1.375rem', lineHeight: 1.2 }}
+              >
+                {area.title}
+              </h3>
+              <p className="mt-3 text-[0.9375rem] leading-[1.55] text-graphite">
+                {area.body}
+              </p>
+
+              <Link
+                href={`/aree-di-competenza/${area.slug}`}
+                className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-cobalt"
+              >
+                Approfondisci
+                <ArrowUpRight
+                  size={14}
+                  className="transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </Link>
+
+              {/* Bordo animato in basso */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full origin-left scale-x-0 transition-transform duration-700 ease-out group-hover:scale-x-100"
+                style={{ background: 'rgb(var(--color-gold))' }}
+              />
+            </article>
+          ))}
         </div>
       </div>
     </section>
-  );
-}
-
-function ProblemCard({
-  item: p,
-  index,
-}: {
-  item: (typeof problems)[number] extends infer T ? T : never;
-  index: number;
-}) {
-  const cardRef = useRef<HTMLLIElement>(null);
-
-  function handleMouseMove(e: React.MouseEvent<HTMLLIElement>) {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    el.style.setProperty('--mx', `${x}%`);
-    el.style.setProperty('--my', `${y}%`);
-  }
-
-  return (
-    <motion.li
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-10%' }}
-      transition={{ duration: 0.6, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="card-spotlight group"
-    >
-      <Link
-        href={`/aree-di-competenza/${(p as { slug: string }).slug}` as never}
-        className="block p-7 md:p-9 h-full focus:outline-none"
-      >
-        <div className="flex items-start justify-between mb-6">
-          <span className="pill" data-variant="gold">
-            {(p as { label: string }).label}
-          </span>
-          <span className="font-mono text-xs text-graphite tabular-nums">
-            {(p as { n: string }).n} / 06
-          </span>
-        </div>
-
-        <p
-          className="font-display text-cobalt mb-3"
-          style={{
-            fontSize: 'clamp(1.375rem, 1.6vw + 0.5rem, 1.75rem)',
-            lineHeight: 1.15,
-            fontWeight: 500,
-            letterSpacing: '-0.01em',
-          }}
-        >
-          {(p as { problem: string }).problem}
-        </p>
-
-        <p className="text-graphite leading-relaxed text-[15px] mb-6">
-          {(p as { body: string }).body}
-        </p>
-
-        <div className="flex flex-wrap gap-1.5 mb-7">
-          {(p as { keywords: string[] }).keywords.map((kw) => (
-            <span
-              key={kw}
-              className="font-mono text-[10px] uppercase tracking-wider text-graphite border border-rule px-2 py-1 transition-colors group-hover:border-cobalt/40"
-            >
-              {kw}
-            </span>
-          ))}
-        </div>
-
-        <div className="inline-flex items-center gap-2 text-cobalt text-sm font-medium pt-5 border-t border-rule w-full">
-          <span className="border-b border-cobalt/0 group-hover:border-cobalt transition-colors">
-            Approfondisci
-          </span>
-          <ArrowUpRight
-            size={14}
-            className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          />
-        </div>
-      </Link>
-    </motion.li>
   );
 }

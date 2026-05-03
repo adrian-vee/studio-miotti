@@ -1,195 +1,75 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'motion/react';
-import { Scale, Users, Compass, MapPin } from 'lucide-react';
-
 /**
- * SEZIONE CREDIBILITÀ
+ * Credibility — 4 card statement.
  *
- * Quattro pilastri che stabiliscono affidabilità senza marketing finto:
- *  · 22 anni di esperienza (iscrizione albo dal 2003)
- *  · Centinaia di clienti seguiti (privati + imprese del territorio)
- *  · Approccio diretto: l'avvocato che incontra è quello che la segue
- *  · Focus territorio: San Bonifacio, Bassa Veronese, Verona e provincia
- *
- * Layout: header diretto + 4 card con counter animato dove sensato.
- * Tono: professionale ma vicino, niente "international firm".
+ * Stagger reveal scroll-triggered (gsap.context).
+ * Hover: lieve elevazione + filetto oro animato in basso (.card-service::before).
+ * Asimmetria: la prima card ha eyebrow bigger e occupa più spazio visivo.
  */
 
-const pillars = [
-  {
-    icon: Scale,
-    n: 22,
-    suffix: '+',
-    title: 'Anni di esperienza',
-    body: 'Iscritto all\'Albo del Foro di Verona dal 2003. Una pratica continuativa nel diritto civile, di famiglia, del lavoro e d\'impresa.',
-  },
-  {
-    icon: Users,
-    n: 600,
-    suffix: '+',
-    title: 'Clienti seguiti',
-    body: 'Privati, professionisti e PMI della Bassa Veronese accompagnati nelle loro questioni legali, dalle più semplici alle più complesse.',
-  },
-  {
-    icon: Compass,
-    n: null,
-    suffix: '',
-    inlineLabel: 'Diretto',
-    title: 'Approccio diretto',
-    body: 'Niente filtri, niente intermediari. Parla con l\'avvocato che segue il suo caso dalla prima telefonata fino alla chiusura della pratica.',
-  },
-  {
-    icon: MapPin,
-    n: null,
-    suffix: '',
-    inlineLabel: 'VR · Bassa',
-    title: 'Forte presenza locale',
-    body: 'Sede a San Bonifacio, presenza costante nei tribunali di Verona e Vicenza. Conosciamo il territorio e i suoi tempi.',
-  },
-];
+import { useGsapReveal } from '@/hooks/useGsapReveal';
+import { CREDIBILITY } from '@/lib/site-data';
 
 export function Credibility() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-15%' });
+  const ref = useGsapReveal<HTMLElement>({ y: 32, stagger: 0.09 });
 
   return (
-    <section
-      ref={ref}
-      className="relative bg-paper py-20 md:py-28"
-      aria-labelledby="credibilita-heading"
-    >
+    <section ref={ref} className="relative bg-paper py-24 md:py-32">
       <div className="container-page">
-        {/* Header */}
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-6 mb-14 md:mb-20">
-          <div className="col-span-12 md:col-span-5">
-            <span className="eyebrow">01 — Chi siamo</span>
+        {/* Header asimmetrico: 4 colonne titolo / 8 colonne lead */}
+        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8">
+          <div className="col-span-12 md:col-span-4" data-reveal>
+            <span className="eyebrow-num">
+              <strong>02 ·</strong> Credibilità
+            </span>
             <h2
-              id="credibilita-heading"
-              className="font-display text-balance mt-5 text-ink"
-              style={{
-                fontSize: 'var(--fs-display-m)',
-                lineHeight: 1.08,
-                letterSpacing: '-0.018em',
-                fontWeight: 500,
-              }}
+              className="mt-6 font-display text-ink"
+              style={{ fontSize: 'var(--fs-display-l)', lineHeight: 1.04, letterSpacing: '-0.02em' }}
             >
-              Vent'anni di pratica.{' '}
-              <span className="italic text-cobalt">Un solo riferimento</span>{' '}
-              per i suoi problemi legali.
+              Quattro punti fermi.
             </h2>
           </div>
-
-          <div className="col-span-12 md:col-span-6 md:col-start-7 self-end">
-            <p className="text-graphite text-lg leading-relaxed max-w-xl">
-              Lo Studio Legale Miotti è radicato a San Bonifacio dal 2003.
-              In questi anni abbiamo seguito famiglie, imprenditori e
-              professionisti del territorio, costruendo rapporti di fiducia
-              che durano nel tempo.
+          <div className="col-span-12 md:col-span-7 md:col-start-6" data-reveal>
+            <p className="text-lg text-ink-soft" style={{ lineHeight: 1.55 }}>
+              Niente promesse di "eccellenza". Solo il modo in cui lavoriamo,
+              ogni giorno, su ogni pratica. Quello che puoi aspettarti dal primo
+              colloquio fino alla chiusura del fascicolo.
             </p>
           </div>
         </div>
 
-        {/* Pillar cards */}
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-rule/40 border border-rule/40">
-          {pillars.map((p, i) => (
-            <li
-              key={p.title}
-              className="bg-paper p-7 md:p-8 flex flex-col"
+        {/* Griglia 4 card */}
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {CREDIBILITY.map((c, i) => (
+            <article
+              key={c.title}
+              data-reveal
+              className="card-service group flex h-full flex-col"
             >
-              <p.icon
-                size={24}
-                strokeWidth={1.4}
-                className="text-cobalt mb-6"
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3
+                className="mt-5 font-display text-ink transition-colors group-hover:text-cobalt"
+                style={{ fontSize: '1.5rem', lineHeight: 1.2 }}
+              >
+                {c.title}
+              </h3>
+              <p className="mt-4 text-[0.9375rem] leading-[1.55] text-graphite">
+                {c.body}
+              </p>
+              <span
                 aria-hidden
-              />
-              {p.n !== null ? (
-                <CounterNumber
-                  target={p.n}
-                  suffix={p.suffix}
-                  play={inView}
-                  delay={i * 120}
-                />
-              ) : (
-                <p
-                  className="font-display text-ink leading-none tabular-nums"
-                  style={{
-                    fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-                    fontWeight: 500,
-                    letterSpacing: '-0.02em',
-                  }}
-                >
-                  {p.inlineLabel}
-                </p>
-              )}
-              <p className="font-display text-xl text-ink mt-4 leading-snug">
-                {p.title}
-              </p>
-              <p className="mt-3 text-sm text-graphite leading-relaxed">
-                {p.body}
-              </p>
-            </li>
+                className="mt-auto inline-flex items-center gap-2 pt-8 font-mono text-[10px] uppercase tracking-[0.22em] text-graphite"
+              >
+                <span className="h-px w-6" style={{ background: 'rgb(var(--color-gold))' }} />
+                Punto fermo
+              </span>
+            </article>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
-  );
-}
-
-function CounterNumber({
-  target,
-  suffix = '',
-  play,
-  delay = 0,
-}: {
-  target: number;
-  suffix?: string;
-  play: boolean;
-  delay?: number;
-}) {
-  const [value, setValue] = useState<number>(0);
-
-  useEffect(() => {
-    if (!play) return;
-    const reduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) {
-      setValue(target);
-      return;
-    }
-    let raf = 0;
-    let start = 0;
-    const duration = 1800;
-    const startAt = performance.now() + delay;
-    function frame(t: number) {
-      if (t < startAt) {
-        raf = requestAnimationFrame(frame);
-        return;
-      }
-      if (!start) start = t;
-      const elapsed = t - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(target * eased));
-      if (progress < 1) raf = requestAnimationFrame(frame);
-    }
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
-  }, [play, target, delay]);
-
-  return (
-    <p
-      className="font-display text-ink leading-none tabular-nums"
-      style={{
-        fontSize: 'clamp(2.25rem, 4vw, 3rem)',
-        fontWeight: 500,
-        letterSpacing: '-0.02em',
-      }}
-    >
-      {value}
-      <span className="text-gold-deep">{suffix}</span>
-    </p>
   );
 }

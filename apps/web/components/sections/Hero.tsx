@@ -1,352 +1,542 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'motion/react';
-import Link from 'next/link';
-import { ArrowRight, Phone } from 'lucide-react';
-
 /**
- * HERO · Studio Miotti
+ * Hero — composizione editoriale asimmetrica (v2).
  *
- * Posizionamento: studio moderno, vicino al cliente, accessibile.
- * Tono diretto: niente headline poetiche o aristocratiche.
+ * Architettura tipografica:
+ *  · Headline spezzata in 4 righe sfalsate, ognuna con indentazione propria.
+ *  · Scala display-xxl (clamp fino a 9rem) — peso visivo concreto.
+ *  · Riga 2 italic + cobalt come "parola chiave".
+ *  · Riga 4 più piccola e demoted, fuori asse.
  *
- * Layout: 2 colonne desktop (testo + visual), stack mobile.
- *  · Sx — eyebrow live + headline + sub + 2 CTA + stats inline
- *  · Dx — illustrazione SVG dello studio (libreria + scrivania + lampada)
- *    line-art elegante. Si può sostituire con foto reale appena disponibile
- *    (sostituire <StudioIllustration /> con <Image src="/hero-studio.jpg" />).
+ * Elementi proprietari:
+ *  · "§" in filigrana over-sized dietro il titolo, mai stock.
+ *  · Numerali romani (I–IV) come ticker verticale a sinistra (gerarchia
+ *    di paragrafi giuridica reinterpretata).
+ *  · Linea oro che parte dal margine sinistro, attraversa il blocco CTA
+ *    e si interrompe (pattern editoriale: indica focus, non cornice).
+ *  · Visual mosso fuori griglia e ridotto a sigillo + estratto pratica.
+ *
+ * GSAP:
+ *  · Reveal parola-per-parola riga per riga (delay scalare).
+ *  · Linee decorative draw-in.
+ *  · Parallax leggero sul sigillo + sul visual.
+ *  · Magnetic CTA primaria.
+ *  · prefers-reduced-motion safe (gsap.context + skip).
  */
 
-export function Hero() {
-  /* Live status + ora */
-  const [openStatus, setOpenStatus] = useState<'open' | 'closed'>('open');
-  const [nowLabel, setNowLabel] = useState<string>('');
+import Link from 'next/link';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ArrowRight, MapPin, Clock4 } from 'lucide-react';
+import {
+  ensureGsap,
+  magnetic,
+  prefersReducedMotion,
+  splitToWords,
+} from '@/lib/animations';
+import { openLex } from '@/lib/lex';
+import { SITE_DATA } from '@/lib/site-data';
 
+const ROMAN = ['I', 'II', 'III', 'IV'];
+
+export function Hero() {
+  const root = useRef<HTMLElement>(null);
+  const ctaPrimary = useRef<HTMLButtonElement>(null);
+
+  // Magnetic CTA
   useEffect(() => {
-    function compute() {
-      const now = new Date();
-      const day = now.getDay();
-      const minutes = now.getHours() * 60 + now.getMinutes();
-      const isWeekday = day >= 1 && day <= 5;
-      const morningOpen = minutes >= 9 * 60 && minutes < 13 * 60;
-      const afternoonOpen = minutes >= 15 * 60 && minutes < 19 * 60;
-      setOpenStatus(isWeekday && (morningOpen || afternoonOpen) ? 'open' : 'closed');
-      setNowLabel(
-        new Intl.DateTimeFormat('it-IT', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }).format(now),
-      );
-    }
-    compute();
-    const id = window.setInterval(compute, 60_000);
-    return () => window.clearInterval(id);
+    if (!ctaPrimary.current) return;
+    return magnetic(ctaPrimary.current, 16);
+  }, []);
+
+  // Scenografia GSAP
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    ensureGsap();
+    const reduced = prefersReducedMotion();
+
+    const ctx = gsap.context(() => {
+      // Reveal parola-per-parola, ogni riga con delay scalare
+      const lines = el.querySelectorAll<HTMLElement>('[data-hero-line]');
+      lines.forEach((line, i) => {
+        const words = splitToWords(line);
+        if (reduced) {
+          gsap.set(words, { y: 0, opacity: 1 });
+          return;
+        }
+        gsap.from(words, {
+          y: '110%',
+          opacity: 0,
+          duration: 1.05,
+          ease: 'power3.out',
+          stagger: 0.04,
+          delay: 0.18 + i * 0.12,
+        });
+      });
+
+      // Stack secondario (subhead, CTA, prove fiducia)
+      gsap.from('[data-hero-stack] > *', {
+        y: 22,
+        opacity: 0,
+        duration: 0.85,
+        ease: 'power3.out',
+        stagger: 0.08,
+        delay: 0.95,
+      });
+
+      // Linee decorative draw-in (orizzontali + filetto CTA + numerali)
+      gsap.from('[data-hero-draw]', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 1.4,
+        ease: 'power3.out',
+        stagger: 0.08,
+        delay: 0.4,
+      });
+
+      // Numerali romani con fade scalare
+      gsap.from('[data-hero-roman]', {
+        opacity: 0,
+        x: -8,
+        duration: 0.9,
+        ease: 'power2.out',
+        stagger: 0.08,
+        delay: 0.6,
+      });
+
+      // Sigillo + visual reveal
+      gsap.from('[data-hero-mark]', {
+        opacity: 0,
+        scale: 0.96,
+        duration: 1.4,
+        ease: 'power3.out',
+        delay: 0.3,
+      });
+      gsap.from('[data-hero-visual]', {
+        opacity: 0,
+        y: 30,
+        duration: 1.2,
+        ease: 'power3.out',
+        delay: 0.7,
+      });
+
+      // Parallax leggero
+      if (!reduced) {
+        gsap.to('[data-hero-mark]', {
+          y: -40,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.6,
+          },
+        });
+        gsap.to('[data-hero-parallax]', {
+          y: -60,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.6,
+          },
+        });
+      }
+    }, el);
+
+    return () => {
+      ctx.revert();
+    };
   }, []);
 
   return (
     <section
-      className="relative isolate overflow-hidden bg-paper pt-32 pb-20 md:pt-40 md:pb-28"
-      aria-labelledby="hero-headline"
+      ref={root}
+      className="relative bg-aurora overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28 lg:pt-40 lg:pb-32"
+      aria-labelledby="hero-title"
     >
-      {/* Mesh aurora di sfondo */}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-aurora" />
+      {/* Texture grain */}
+      <div className="grain absolute inset-0" aria-hidden />
 
-      <div className="container-page">
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12 md:gap-y-16 items-center">
-          {/* ─── COL TESTO ─── */}
-          <div className="col-span-12 lg:col-span-7">
-            <motion.span
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="eyebrow-live mb-6"
-              data-status={openStatus}
-              aria-live="polite"
-            >
-              {openStatus === 'open'
-                ? `Studio aperto · Verona · ${nowLabel}`
-                : `Studio chiuso · Risposta entro 24 h`}
-            </motion.span>
+      {/* Filetti verticali (grid editoriale) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-[calc(var(--gutter)+1.5rem)] hidden w-px md:block"
+        style={{ background: 'rgb(var(--color-rule) / 0.08)' }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-[calc(var(--gutter)+1.5rem)] hidden w-px md:block"
+        style={{ background: 'rgb(var(--color-rule) / 0.06)' }}
+      />
 
-            <h1
-              id="hero-headline"
-              className="font-display text-balance text-ink"
-              style={{
-                fontSize: 'var(--fs-display-l)',
-                lineHeight: 1.05,
-                letterSpacing: '-0.02em',
-                fontWeight: 500,
-              }}
-            >
-              <RevealLine delay={0}>Soluzioni legali concrete</RevealLine>
-              <RevealLine delay={0.12}>
-                <span className="italic text-cobalt">per imprese e privati.</span>
-              </RevealLine>
-            </h1>
+      {/* ── Sigillo § over-sized in filigrana ── */}
+      <div
+        data-hero-mark
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-[-4%] hidden select-none items-center md:flex"
+        style={{ zIndex: 0 }}
+      >
+        <span
+          className="font-display italic"
+          style={{
+            fontSize: 'clamp(28rem, 56vw, 56rem)',
+            lineHeight: 0.78,
+            color: 'rgb(var(--color-cobalt) / 0.05)',
+            letterSpacing: '-0.06em',
+          }}
+        >
+          §
+        </span>
+      </div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="mt-7 max-w-xl text-graphite"
-              style={{ fontSize: 'var(--fs-body-l)', lineHeight: 1.6 }}
+      <div className="container-page relative" style={{ zIndex: 1 }}>
+        {/* ── Eyebrow + numerali romani sui margini ── */}
+        <div className="grid grid-cols-12 gap-x-[var(--gutter)]">
+          <div className="col-span-12 md:col-span-7 lg:col-span-8">
+            <span className="eyebrow-num">
+              <strong>01 ·</strong> Studio Legale a San Bonifacio (VR)
+            </span>
+            <span
+              data-hero-draw
+              aria-hidden
+              className="mt-4 block h-px w-32"
+              style={{ background: 'rgb(var(--color-cobalt))' }}
+            />
+          </div>
+          <div className="col-span-12 hidden md:col-span-4 lg:col-span-3 lg:col-start-10 md:flex md:items-start md:justify-end">
+            <ul
+              aria-hidden
+              className="hidden flex-col items-end gap-2 lg:flex"
             >
-              Risposte chiare, tempi certi, soluzioni che funzionano. Lo Studio
-              dell'Avv. Massimiliano Miotti affianca aziende, professionisti e
-              famiglie del territorio veronese con un metodo diretto e
-              strumenti digitali moderni.
-            </motion.p>
+              {ROMAN.map((r, i) => (
+                <li
+                  key={r}
+                  data-hero-roman
+                  className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-graphite"
+                >
+                  <span className="font-display italic" style={{ fontSize: '0.875rem', color: i === 0 ? 'rgb(var(--color-cobalt))' : 'inherit' }}>
+                    {r}
+                  </span>
+                  <span>
+                    {[ 'studio', 'metodo', 'territorio', 'fiducia' ][i]}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
-            {/* CTA row */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.7 }}
-              className="mt-9 flex flex-col sm:flex-row gap-3"
+        {/* ── Headline asimmetrica ── */}
+        <h1
+          id="hero-title"
+          className="relative mt-10 font-display text-ink md:mt-16"
+          style={{
+            fontWeight: 500,
+            letterSpacing: '-0.025em',
+          }}
+        >
+          {/* Riga 1 — flush left, peso normale */}
+          <span
+            data-hero-line
+            className="block"
+            style={{
+              fontSize: 'clamp(3.25rem, 9.5vw, 8.25rem)',
+              lineHeight: 0.92,
+            }}
+          >
+            Soluzioni
+          </span>
+
+          {/* Riga 2 — italic, cobalt, indent +1 col */}
+          <span
+            data-hero-line
+            className="mt-1 block italic md:mt-3"
+            style={{
+              fontSize: 'clamp(3.5rem, 10.5vw, 9rem)',
+              lineHeight: 0.94,
+              color: 'rgb(var(--color-cobalt))',
+              paddingLeft: 'clamp(1.5rem, 6vw, 6rem)',
+              letterSpacing: '-0.03em',
+            }}
+          >
+            legali
+          </span>
+
+          {/* Riga 3 — extra-large, indent +2 col */}
+          <span
+            data-hero-line
+            className="mt-1 block md:mt-3"
+            style={{
+              fontSize: 'clamp(3.25rem, 9.5vw, 8.25rem)',
+              lineHeight: 0.92,
+              paddingLeft: 'clamp(3rem, 12vw, 12rem)',
+            }}
+          >
+            concrete.
+          </span>
+
+          {/* Riga 4 — sottoscala, off-axis right, demoted */}
+          <span
+            data-hero-line
+            className="mt-4 block text-graphite md:mt-6 md:text-right"
+            style={{
+              fontSize: 'clamp(1.125rem, 1.6vw, 1.5rem)',
+              lineHeight: 1.3,
+              letterSpacing: '0.005em',
+              fontStyle: 'italic',
+              fontWeight: 400,
+            }}
+          >
+            <span className="inline-flex items-center gap-3">
+              <span
+                data-hero-draw
+                aria-hidden
+                className="hidden h-px w-12 md:block"
+                style={{ background: 'rgb(var(--color-gold))' }}
+              />
+              per imprese e privati.
+            </span>
+          </span>
+        </h1>
+
+        {/* ── Stack subheadline + CTA + trust ── */}
+        <div
+          data-hero-stack
+          className="mt-14 grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8 md:mt-20"
+        >
+          {/* Sub headline + CTA: indented per ritmo */}
+          <div className="col-span-12 md:col-span-7 lg:col-span-6 lg:col-start-2">
+            {/* Linea oro che fa da "segnalibro" al blocco */}
+            <span
+              data-hero-draw
+              aria-hidden
+              className="mb-6 block h-px w-16"
+              style={{ background: 'rgb(var(--color-gold))' }}
+            />
+
+            <p
+              className="max-w-xl text-ink-soft"
+              style={{ fontSize: '1.0625rem', lineHeight: 1.6 }}
             >
-              <Link href="/prenota" className="btn-primary group">
+              Ti aiutiamo a gestire problemi legali in modo chiaro e ordinato.
+              <span className="text-graphite">
+                {' '}Risposte rapide, costi indicati prima del mandato,
+                aggiornamenti costanti.
+              </span>
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <button
+                ref={ctaPrimary}
+                type="button"
+                onClick={() =>
+                  openLex(
+                    'cta-hero',
+                    'Posso aiutarti a descrivere la tua situazione prima di parlare con l’avvocato. Iniziamo dal motivo per cui ti serve consulenza?',
+                  )
+                }
+                className="btn-primary group"
+              >
                 Richiedi consulenza
                 <ArrowRight
                   size={16}
-                  className="transition-transform group-hover:translate-x-1"
+                  className="transition-transform duration-300 group-hover:translate-x-1"
                 />
+              </button>
+              <Link href="/studio" className="btn-secondary">
+                Scopri lo studio
               </Link>
-              <a href="tel:+390459586116" className="btn-secondary group">
-                <Phone size={15} />
-                Contatto rapido
-              </a>
-            </motion.div>
+            </div>
 
-            {/* Mini-stats inline */}
-            <motion.dl
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 1 }}
-              className="mt-12 grid grid-cols-3 gap-4 max-w-md border-t border-rule pt-6"
-            >
-              <MiniStat n="22+" label="Anni di esperienza" />
-              <MiniStat n="24h" label="Tempo di risposta" />
-              <MiniStat n="VR" label="Foro di Verona" />
-            </motion.dl>
+            {/* Trust microcopy */}
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <span
+                className="pill pill-live"
+                style={{ fontSize: '0.6875rem', paddingInline: '0.7rem' }}
+              >
+                Studio operativo · {SITE_DATA.hours.short}
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+                · risposta in 24–48 ore lavorative
+              </span>
+            </div>
           </div>
 
-          {/* ─── COL VISUAL ─── */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="col-span-12 lg:col-span-5 relative"
-          >
-            <StudioIllustration />
-          </motion.div>
+          {/* Visual editoriale fuori griglia (estratto pratica) */}
+          <div className="col-span-12 md:col-span-5 lg:col-span-4 lg:col-start-9">
+            <div data-hero-visual className="md:translate-y-[-2rem]">
+              <div data-hero-parallax>
+                <PracticeExtract />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Footer-row del hero (fact strip editoriale) ── */}
+        <div className="relative mt-20 md:mt-28">
+          <div
+            data-hero-draw
+            aria-hidden
+            className="absolute -top-10 left-0 right-0 h-px"
+            style={{ background: 'rgb(var(--color-rule) / 0.18)' }}
+          />
+          <dl className="grid grid-cols-2 gap-x-[var(--gutter)] gap-y-8 md:grid-cols-4">
+            <HeroFact
+              roman="I"
+              kicker="Sede"
+              value="San Bonifacio"
+              note={SITE_DATA.address.street}
+              icon={<MapPin size={13} />}
+            />
+            <HeroFact
+              roman="II"
+              kicker="Orari"
+              value="Lun – Ven"
+              note="9–13 / 15–19"
+              icon={<Clock4 size={13} />}
+            />
+            <HeroFact
+              roman="III"
+              kicker="Approccio"
+              value="Civile · Lavoro · Famiglia"
+              note="Imprese e privati del territorio"
+            />
+            <HeroFact
+              roman="IV"
+              kicker="Metodo"
+              value="Analisi → strategia → chiusura"
+              note="Aggiornamenti costanti, niente silenzi"
+            />
+          </dl>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─── Sub-components ─────────────────────────────────────────────── */
-
-function RevealLine({
-  children,
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-}) {
+/* ─── Estratto pratica (visual editoriale fuori griglia) ─────────── */
+function PracticeExtract() {
   return (
-    <span className="block overflow-hidden">
-      <motion.span
-        initial={{ y: '100%' }}
-        animate={{ y: '0%' }}
-        transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-        className="inline-block"
-      >
-        {children}
-      </motion.span>
-    </span>
-  );
-}
-
-function MiniStat({ n, label }: { n: string; label: string }) {
-  return (
-    <div>
-      <dt className="font-display text-2xl text-ink leading-none">{n}</dt>
-      <dd className="mt-1 text-[11px] uppercase tracking-[0.14em] text-graphite leading-tight">
-        {label}
-      </dd>
-    </div>
-  );
-}
-
-/**
- * StudioIllustration — line-art SVG di uno studio legale.
- *
- * Disegna scrivania + sedia + lampada da tavolo + libreria sullo sfondo.
- * Stroke 1.4 cobalt, dettagli oro. Quando si avrà foto reale dello studio
- * sostituirla con next/image qui.
- */
-function StudioIllustration() {
-  return (
-    <div className="relative aspect-[4/5] w-full max-w-md mx-auto">
-      {/* Backdrop card */}
+    <figure
+      className="relative ml-auto max-w-[22rem]"
+      role="img"
+      aria-label="Estratto editoriale: nota di pratica civile"
+    >
+      {/* Stamp oro */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-vellum border border-rule"
-        style={{ borderRadius: 'var(--radius-md)' }}
-      />
-
-      {/* Hairline gold accent corners */}
-      <span
-        aria-hidden
-        className="absolute -top-px left-8 right-8 h-px"
+        className="absolute -left-3 -top-3 inline-flex h-12 w-12 items-center justify-center rounded-full"
         style={{
-          background:
-            'linear-gradient(90deg, transparent, rgb(var(--color-gold)) 50%, transparent)',
+          background: 'rgb(var(--color-vellum))',
+          border: '1px solid rgb(var(--color-gold) / 0.5)',
+          color: 'rgb(var(--color-gold-deep))',
+          fontFamily: 'var(--font-display)',
+          fontStyle: 'italic',
+          fontSize: '1.1rem',
+          lineHeight: 1,
         }}
-      />
-
-      <svg
-        viewBox="0 0 400 500"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-        aria-label="Illustrazione di uno studio legale: libreria, scrivania, lampada, sedia."
-        className="absolute inset-0 w-full h-full p-6"
       >
-        {/* Pavimento + linea orizzonte */}
-        <line
-          x1="20"
-          y1="380"
-          x2="380"
-          y2="380"
-          stroke="rgb(var(--color-graphite))"
-          strokeOpacity="0.25"
-          strokeWidth="1"
-        />
+        M
+      </div>
 
-        {/* Libreria sfondo */}
-        <g
-          stroke="rgb(var(--color-cobalt))"
-          strokeWidth="1.4"
-          strokeLinecap="square"
-        >
-          <rect x="40" y="60" width="170" height="290" />
-          <line x1="40" y1="120" x2="210" y2="120" />
-          <line x1="40" y1="180" x2="210" y2="180" />
-          <line x1="40" y1="240" x2="210" y2="240" />
-          <line x1="40" y1="300" x2="210" y2="300" />
-          {/* Libri ripiani */}
-          {[70, 130, 190, 250].map((y) => (
-            <g key={y}>
-              <line x1="50" y1={y} x2="50" y2={y + 50} />
-              <line x1="60" y1={y} x2="60" y2={y + 50} />
-              <line x1="74" y1={y + 8} x2="74" y2={y + 50} />
-              <line x1="84" y1={y} x2="84" y2={y + 50} />
-              <line x1="100" y1={y + 4} x2="100" y2={y + 50} />
-              <line x1="110" y1={y} x2="110" y2={y + 50} />
-              <line x1="125" y1={y} x2="125" y2={y + 50} />
-              <line x1="138" y1={y + 6} x2="138" y2={y + 50} />
-              <line x1="152" y1={y} x2="152" y2={y + 50} />
-              <line x1="170" y1={y + 2} x2="170" y2={y + 50} />
-              <line x1="184" y1={y} x2="184" y2={y + 50} />
-              <line x1="198" y1={y + 4} x2="198" y2={y + 50} />
-            </g>
-          ))}
-        </g>
-
-        {/* Scrivania (in primo piano) */}
-        <g
-          stroke="rgb(var(--color-cobalt-deep))"
-          strokeWidth="1.6"
-          strokeLinecap="square"
-          fill="rgb(var(--color-paper))"
-        >
-          <rect x="220" y="280" width="160" height="14" />
-          <line x1="232" y1="294" x2="232" y2="380" />
-          <line x1="368" y1="294" x2="368" y2="380" />
-          {/* Cassetto */}
-          <rect x="240" y="304" width="120" height="20" fill="none" />
-        </g>
-
-        {/* Lampada da tavolo (oro) */}
-        <g
-          stroke="rgb(var(--color-gold-deep))"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          fill="none"
-        >
-          <path d="M250 280 L250 230 L270 200 L300 200" />
-          <path d="M295 200 Q310 195 318 210 L304 220 Z" fill="rgb(var(--color-gold) / 0.25)" />
-          <circle cx="250" cy="280" r="4" fill="rgb(var(--color-gold))" />
-        </g>
-
-        {/* Cono di luce dalla lampada */}
-        <path
-          d="M310 215 L260 280 L355 280 Z"
-          fill="rgb(var(--color-gold) / 0.10)"
-          stroke="none"
-        />
-
-        {/* Documento sulla scrivania */}
-        <g
-          stroke="rgb(var(--color-cobalt))"
-          strokeWidth="1"
-          fill="rgb(var(--color-paper))"
-        >
-          <rect x="280" y="248" width="60" height="32" />
-          <line x1="288" y1="258" x2="332" y2="258" />
-          <line x1="288" y1="265" x2="324" y2="265" />
-          <line x1="288" y1="272" x2="318" y2="272" />
-        </g>
-
-        {/* Sedia (silhouette) */}
-        <g
-          stroke="rgb(var(--color-cobalt-deep))"
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinecap="square"
-        >
-          <path d="M270 410 L270 340 Q270 332 278 332 L322 332 Q330 332 330 340 L330 410" />
-          <line x1="265" y1="395" x2="335" y2="395" />
-          <line x1="285" y1="410" x2="285" y2="450" />
-          <line x1="315" y1="410" x2="315" y2="450" />
-        </g>
-
-        {/* Tappeto / linea suolo */}
-        <line
-          x1="60"
-          y1="465"
-          x2="360"
-          y2="465"
-          stroke="rgb(var(--color-gold))"
-          strokeWidth="1.2"
-          strokeOpacity="0.5"
-        />
-
-        {/* Numero romano discreto in alto a sinistra — segno editoriale */}
-        <text
-          x="40"
-          y="40"
-          fill="rgb(var(--color-graphite))"
-          fontFamily="var(--font-display)"
-          fontSize="14"
-          letterSpacing="0.2em"
-        >
-          STUDIO · 2003
-        </text>
-      </svg>
-
-      {/* Caption */}
-      <span
-        aria-hidden
-        className="absolute -bottom-2 left-3 right-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-graphite bg-paper px-2"
+      <div
+        className="relative border bg-vellum p-6 shadow-card"
+        style={{
+          borderColor: 'rgb(var(--color-rule) / 0.18)',
+          borderRadius: '2px',
+        }}
       >
-        <span>San Bonifacio</span>
-        <span>·</span>
-        <span>Foro di Verona</span>
+        {/* Header nota */}
+        <div className="flex items-center justify-between">
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+            Estratto · pratica civile
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-graphite">
+            #2026/047
+          </span>
+        </div>
+
+        {/* Filetto cobalt */}
+        <span
+          aria-hidden
+          className="mt-4 block h-px w-full"
+          style={{ background: 'rgb(var(--color-cobalt) / 0.2)' }}
+        />
+
+        {/* Quote display */}
+        <blockquote
+          className="mt-4 font-display italic text-ink"
+          style={{ fontSize: '1.15rem', lineHeight: 1.35 }}
+        >
+          «La controparte ha 30 giorni. Nel frattempo, mettiamo al sicuro la posizione.»
+        </blockquote>
+
+        {/* Filetto oro */}
+        <span
+          aria-hidden
+          className="mt-5 block h-px w-full"
+          style={{ background: 'rgb(var(--color-gold) / 0.5)' }}
+        />
+
+        {/* Footer nota */}
+        <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-graphite">
+          <span>Avv. M. Miotti</span>
+          <span>VR · 37047</span>
+        </div>
+      </div>
+
+      {/* Footnote tipografica fuori card */}
+      <figcaption className="mt-3 flex items-start gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+        <span className="font-display italic" style={{ fontSize: '0.8rem', lineHeight: 1, color: 'rgb(var(--color-cobalt))' }}>
+          ¶
+        </span>
+        nota di studio · 2026
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ─── Fact tile con numerale romano ─────────────────────────────── */
+function HeroFact({
+  roman,
+  kicker,
+  value,
+  note,
+  icon,
+}: {
+  roman: string;
+  kicker: string;
+  value: string;
+  note: string;
+  icon?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-baseline gap-2">
+        <span
+          className="font-display italic text-cobalt"
+          style={{ fontSize: '0.95rem', lineHeight: 1 }}
+        >
+          {roman}
+        </span>
+        <span
+          aria-hidden
+          className="h-px flex-1"
+          style={{ background: 'rgb(var(--color-rule) / 0.18)', maxWidth: 16 }}
+        />
+        <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+          {icon}
+          {kicker}
+        </span>
+      </div>
+      <span className="font-display text-ink" style={{ fontSize: '1.125rem', lineHeight: 1.2 }}>
+        {value}
       </span>
+      <span className="text-sm text-graphite">{note}</span>
     </div>
   );
 }

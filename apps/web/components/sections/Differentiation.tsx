@@ -1,135 +1,187 @@
 'use client';
 
-import { motion } from 'motion/react';
-import { Timer, MessagesSquare, FolderKanban, Cpu } from 'lucide-react';
-
 /**
- * DIFFERENZIAZIONE
+ * Differentiation — "Perché scegliere lo Studio Miotti".
  *
- * Sezione chiave: cosa ci distingue da uno studio tradizionale.
- *  · Risposta rapida (24 h)
- *  · Supporto digitale (firma, video-call, condivisione documenti)
- *  · Gestione efficiente (cartelle digitali, scadenziario)
- *  · Uso tecnologia (knowledge base, automazioni interne)
+ * Layout:
+ *  · Desktop 12-col: titolo + lead a sinistra (col 1-5), elenco numerato
+ *    a destra (col 7-12) con linea progressiva verticale che collega i 6 punti.
+ *  · Mobile: stack verticale, linea sul lato sinistro dei numeri.
  *
- * Layout: hero-strip dark con 4 card a contrasto.
+ * Animazioni GSAP:
+ *  · Linea verticale: scaleY 0→1 con scrub leggero (ScrollTrigger).
+ *  · Punti: stagger fade-up.
+ *  · Hover: numero diventa cobalt + bordo sinistro oro + lieve elevazione.
  */
 
-const items = [
-  {
-    icon: Timer,
-    title: 'Risposta entro 24 h',
-    body: 'Ogni nuova richiesta ha un primo riscontro in giornata lavorativa. Niente settimane di silenzio in attesa di sapere se la pratica può essere presa.',
-  },
-  {
-    icon: MessagesSquare,
-    title: 'Supporto digitale',
-    body: 'Video-consulenze, firma digitale dei mandati, condivisione documenti via canale riservato. Lei sceglie il canale più comodo, noi lo rendiamo legalmente valido.',
-  },
-  {
-    icon: FolderKanban,
-    title: 'Gestione efficiente dei casi',
-    body: 'Ogni pratica ha la sua cartella digitale con scadenze, documenti e cronologia delle azioni. Quando ci chiama, abbiamo tutto sott\'occhio in pochi secondi.',
-  },
-  {
-    icon: Cpu,
-    title: 'Tecnologia al servizio',
-    body: 'Strumenti interni di ricerca giurisprudenziale e automazione delle attività ripetitive. Più tempo dedicato a ragionare sul caso, meno alle pratiche burocratiche.',
-  },
-];
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ensureGsap, prefersReducedMotion } from '@/lib/animations';
+import { DIFFERENTIATORS } from '@/lib/site-data';
 
 export function Differentiation() {
+  const root = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    ensureGsap();
+    const reduced = prefersReducedMotion();
+
+    const ctx = gsap.context(() => {
+      // Stagger reveal sui punti (mobile e desktop)
+      gsap.from('[data-diff-item]', {
+        y: 24,
+        opacity: 0,
+        duration: 0.85,
+        stagger: 0.07,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 75%', once: true },
+      });
+
+      // Header reveal
+      gsap.from('[data-diff-head]', {
+        y: 20,
+        opacity: 0,
+        duration: 0.85,
+        stagger: 0.08,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 78%', once: true },
+      });
+
+      // Linea progressiva verticale: scaleY 0→1 con scrub.
+      const line = el.querySelector<HTMLElement>('[data-diff-line]');
+      if (line) {
+        if (reduced) {
+          gsap.set(line, { scaleY: 1, transformOrigin: 'top center' });
+        } else {
+          gsap.fromTo(
+            line,
+            { scaleY: 0, transformOrigin: 'top center' },
+            {
+              scaleY: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: el.querySelector('[data-diff-list]') ?? el,
+                start: 'top 70%',
+                end: 'bottom 70%',
+                scrub: 0.6,
+              },
+            },
+          );
+        }
+      }
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
-      className="relative isolate overflow-hidden bg-aurora-dark text-paper py-24 md:py-32"
-      aria-labelledby="diff-heading"
+      ref={root}
+      id="differenziazione"
+      className="relative bg-paper py-24 md:py-32"
+      aria-labelledby="diff-title"
     >
-      {/* Pattern grid sottile */}
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgb(var(--color-paper)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--color-paper)) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-        }}
-      />
-
-      {/* Hairline gold top */}
-      <div
-        aria-hidden
-        className="absolute top-0 inset-x-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent, rgb(var(--color-gold)/0.6) 50%, transparent)',
-        }}
-      />
-
-      <div className="container-page relative">
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-6 mb-14 md:mb-20">
-          <div className="col-span-12 md:col-span-5">
-            <span className="eyebrow text-paper/60">04 — Differenze</span>
+      <div className="container-page">
+        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12">
+          {/* ── Sinistra: titolo + lead ── */}
+          <div className="col-span-12 md:col-span-5 lg:col-span-4">
+            <span className="eyebrow-num" data-diff-head>
+              <strong>05 ·</strong> Differenza
+            </span>
             <h2
-              id="diff-heading"
-              className="font-display text-balance mt-5 text-paper"
+              id="diff-title"
+              data-diff-head
+              className="mt-6 font-display text-ink"
               style={{
-                fontSize: 'var(--fs-display-m)',
-                lineHeight: 1.08,
-                letterSpacing: '-0.018em',
-                fontWeight: 500,
+                fontSize: 'var(--fs-display-l)',
+                lineHeight: 1.04,
+                letterSpacing: '-0.02em',
               }}
             >
-              Veloci dove serve.{' '}
-              <span className="italic text-gold">Precisi sempre.</span>
+              Perché scegliere lo{' '}
+              <span className="italic text-cobalt">Studio Miotti.</span>
             </h2>
-          </div>
+            <p
+              data-diff-head
+              className="mt-7 max-w-md text-[1.0625rem] text-ink-soft"
+              style={{ lineHeight: 1.6 }}
+            >
+              Sei differenze concrete. Niente claim di "eccellenza", niente
+              elenchi di anni di esperienza. Solo cosa cambia, in pratica,
+              quando affidi la tua pratica a questo studio.
+            </p>
 
-          <div className="col-span-12 md:col-span-6 md:col-start-7 self-end">
-            <p className="text-paper/75 text-lg leading-relaxed max-w-xl">
-              La differenza fra uno studio che lavora come negli anni '90 e
-              uno che lavora oggi non sta nel parcelle: sta nei tempi, nella
-              chiarezza e in quanto le facciamo perdere tempo. Noi puntiamo a
-              farle risparmiare tempo.
+            <p
+              data-diff-head
+              className="mt-6 font-mono text-[10.5px] uppercase tracking-[0.22em] text-graphite"
+            >
+              Sei punti · da I a VI
             </p>
           </div>
-        </div>
 
-        {/* 4 differenziatori */}
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-px bg-paper/15">
-          {items.map((it, i) => (
-            <motion.li
-              key={it.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{
-                duration: 0.6,
-                delay: i * 0.1,
-                ease: [0.16, 1, 0.3, 1],
+          {/* ── Destra: lista numerata con linea progressiva ── */}
+          <ol
+            data-diff-list
+            className="relative col-span-12 md:col-span-7 md:col-start-6 lg:col-span-7 lg:col-start-6"
+          >
+            {/* Linea base */}
+            <span
+              aria-hidden
+              className="absolute left-3 top-2 bottom-2 w-px md:left-5"
+              style={{ background: 'rgb(var(--color-rule) / 0.18)' }}
+            />
+            {/* Linea progressiva */}
+            <span
+              data-diff-line
+              aria-hidden
+              className="absolute left-3 top-2 bottom-2 w-px md:left-5"
+              style={{
+                background:
+                  'linear-gradient(180deg, rgb(var(--color-cobalt)) 0%, rgb(var(--color-gold)) 100%)',
+                transform: 'scaleY(0)',
+                transformOrigin: 'top center',
               }}
-              className="bg-cobalt-deep p-8 md:p-10 flex gap-5"
-            >
-              <span
-                aria-hidden
-                className="shrink-0 inline-flex items-center justify-center w-12 h-12 border border-paper/15 text-gold"
-                style={{ borderRadius: 'var(--radius-sm)' }}
+            />
+
+            {DIFFERENTIATORS.map((d) => (
+              <li
+                key={d.n}
+                data-diff-item
+                className="group relative pl-12 transition-colors duration-500 md:pl-16"
               >
-                <it.icon size={22} strokeWidth={1.4} />
-              </span>
-              <div>
-                <h3
-                  className="font-display text-2xl text-paper"
-                  style={{ fontWeight: 500, letterSpacing: '-0.01em' }}
+                <article
+                  className="border-l border-transparent py-7 pl-5 pr-4 transition-all duration-500 group-hover:border-l-[rgb(var(--color-gold))] group-hover:bg-vellum md:py-8 md:pl-7"
+                  style={{ borderLeftWidth: '2px' }}
                 >
-                  {it.title}
-                </h3>
-                <p className="mt-3 text-paper/70 leading-relaxed text-[15px]">
-                  {it.body}
-                </p>
-              </div>
-            </motion.li>
-          ))}
-        </ul>
+                  {/* Numero come nodo della timeline */}
+                  <span
+                    aria-hidden
+                    className="absolute left-0 top-7 inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-mono font-medium tracking-[0.04em] transition-colors duration-500 md:left-2 md:top-8"
+                    style={{
+                      background: 'rgb(var(--color-paper))',
+                      border: '1px solid rgb(var(--color-cobalt))',
+                      color: 'rgb(var(--color-cobalt))',
+                    }}
+                  >
+                    {d.n}
+                  </span>
+
+                  <h3
+                    className="font-display text-ink transition-colors group-hover:text-cobalt"
+                    style={{ fontSize: '1.375rem', lineHeight: 1.2, letterSpacing: '-0.005em' }}
+                  >
+                    {d.title}
+                  </h3>
+                  <p className="mt-2.5 max-w-2xl text-[0.9375rem] leading-[1.6] text-graphite">
+                    {d.body}
+                  </p>
+                </article>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );

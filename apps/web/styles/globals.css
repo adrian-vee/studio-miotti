@@ -1,14 +1,7 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
-/* ─── TAILWIND v4 THEME — bind tokens al sistema utility ──────────
- * `inline` = il valore va sostituito letteralmente nelle utility,
- * SENZA emettere `--color-X: rgb(var(--color-X))` in :root (sarebbe
- * ricorsivo e renderebbe `bg-paper` invalido → trasparente).
- * Così Tailwind genera `.bg-paper { background-color: rgb(var(--color-paper)) }`
- * e `--color-paper` (definito in tokens.css come `250 250 247`) viene
- * risolto correttamente dentro l'rgb().
- */
+/* ─── TAILWIND v4 THEME — bind tokens al sistema utility ─────────── */
 @theme inline {
   --color-ink: rgb(var(--color-ink));
   --color-ink-soft: rgb(var(--color-ink-soft));
@@ -20,6 +13,7 @@
   --color-cobalt-deep: rgb(var(--color-cobalt-deep));
   --color-cobalt-soft: rgb(var(--color-cobalt-soft));
   --color-graphite: rgb(var(--color-graphite));
+  --color-graphite-deep: rgb(var(--color-graphite-deep));
   --color-rule: rgb(var(--color-rule));
   --color-rule-soft: rgb(var(--color-rule-soft));
   --color-gold: rgb(var(--color-gold));
@@ -36,11 +30,11 @@
   --container-prose: 65ch;
 }
 
-/* ─── BASE ──────────────────────────────────────────────────────── */
+/* ─── BASE ───────────────────────────────────────────────────────── */
 @layer base {
   *, *::before, *::after {
     box-sizing: border-box;
-    border-color: rgb(var(--color-rule) / 0.6);
+    border-color: rgb(var(--color-rule) / 0.12);
   }
 
   html {
@@ -62,46 +56,34 @@
     min-height: 100dvh;
   }
 
-  /* Heading reset — la classe applica lo stile, non il tag */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 500;
     line-height: var(--lh-tight);
-    letter-spacing: -0.015em;
+    letter-spacing: -0.012em;
     text-wrap: balance;
-    font-feature-settings: 'ss01', 'ss02';
   }
 
-  p {
-    text-wrap: pretty;
-    max-width: 72ch;
-  }
+  p { text-wrap: pretty; max-width: 72ch; }
 
-  /* Selection — sobria, cobalt soft */
   ::selection {
     background: rgb(var(--color-cobalt) / 0.18);
     color: rgb(var(--color-ink));
   }
 
-  /* Focus — ring oro-cobalt, non blu Windows */
   :focus-visible {
     outline: 2px solid rgb(var(--color-cobalt));
     outline-offset: 3px;
     border-radius: 2px;
   }
 
-  /* Link */
   a {
     color: inherit;
     text-decoration: none;
     transition: color var(--dur-quick) var(--ease-out);
   }
 
-  /* Form elements baseline */
-  input, textarea, select, button {
-    font: inherit;
-    color: inherit;
-  }
+  input, textarea, select, button { font: inherit; color: inherit; }
 
   button {
     cursor: pointer;
@@ -110,7 +92,6 @@
     padding: 0;
   }
 
-  /* Image responsive default */
   img, svg, video {
     display: block;
     max-width: 100%;
@@ -118,9 +99,8 @@
   }
 }
 
-/* ─── COMPONENT CLASSES ────────────────────────────────────────── */
+/* ─── COMPONENT CLASSES ──────────────────────────────────────────── */
 @layer components {
-  /* Container principale — pad orizzontale fluido */
   .container-page {
     width: 100%;
     max-width: var(--container-max);
@@ -135,64 +115,49 @@
     padding-inline: var(--gutter);
   }
 
-  /* Eyebrow — micro caps che precede ogni heading di sezione */
+  /* ─── Eyebrow editoriale ─── */
   .eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgb(var(--color-graphite));
+  }
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: rgb(var(--color-cobalt));
+  }
+
+  .eyebrow-num {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
     font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: rgb(var(--color-graphite));
   }
-
-  .eyebrow::before {
-    content: '';
-    display: inline-block;
-    width: 24px;
-    height: 1px;
-    background: rgb(var(--color-cobalt));
+  .eyebrow-num strong {
+    color: rgb(var(--color-cobalt));
+    font-weight: 600;
   }
 
-  /* Eyebrow live — dot pulsante a sinistra (studio aperto, sistemi attivi…) */
-  .eyebrow-live {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgb(var(--color-graphite));
-  }
-
-  .eyebrow-live::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: rgb(var(--color-success));
-    box-shadow: 0 0 0 0 rgb(var(--color-success) / 0.4);
-    animation: pulse-dot 2.4s var(--ease-out) infinite;
-  }
-
-  .eyebrow-live[data-status='closed']::before {
-    background: rgb(var(--color-graphite));
-    animation: none;
-    box-shadow: none;
-  }
-
-  /* Filetto orizzontale ornamentale */
+  /* ─── Filetto ornamentale ─── */
   .rule-decorative {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: rgb(var(--color-rule));
+    color: rgb(var(--color-rule) / 0.18);
   }
-
   .rule-decorative::before,
   .rule-decorative::after {
     content: '';
@@ -201,76 +166,65 @@
     background: currentColor;
   }
 
-  /* Bottone primario CTA — magnetic ready (translate da JS) */
+  /* ─── CTA primaria — magnetic hover ─── */
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.625rem;
-    padding: 0.875rem 1.625rem;
+    padding: 0.95rem 1.7rem;
     background: rgb(var(--color-cobalt));
-    color: rgb(var(--color-paper));
+    color: rgb(var(--color-vellum));
     font-size: 0.9375rem;
     font-weight: 500;
     letter-spacing: 0.01em;
     border-radius: var(--radius-xs);
+    border: 1px solid rgb(var(--color-cobalt));
     transition: background var(--dur-quick) var(--ease-out),
-                transform var(--dur-medium) var(--ease-spring),
                 box-shadow var(--dur-medium) var(--ease-out);
     position: relative;
     overflow: hidden;
     will-change: transform;
   }
-
   .btn-primary::after {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(115deg,
       transparent 30%,
-      rgb(var(--color-gold) / 0.18) 50%,
+      rgb(var(--color-gold) / 0.22) 50%,
       transparent 70%);
     transform: translateX(-100%);
     transition: transform var(--dur-slow) var(--ease-out);
     pointer-events: none;
   }
-
   .btn-primary:hover {
     background: rgb(var(--color-cobalt-deep));
-    box-shadow: 0 8px 24px rgba(15, 34, 64, 0.18);
+    box-shadow: 0 10px 28px rgb(15 34 64 / 0.22);
   }
+  .btn-primary:hover::after { transform: translateX(100%); }
 
-  .btn-primary:hover::after {
-    transform: translateX(100%);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0) !important;
-  }
-
-  /* Bottone secondario */
+  /* CTA secondaria sobria */
   .btn-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.625rem;
-    padding: 0.875rem 1.625rem;
+    padding: 0.95rem 1.7rem;
     background: transparent;
     color: rgb(var(--color-ink));
-    border: 1px solid rgb(var(--color-ink));
+    border: 1px solid rgb(var(--color-rule) / 0.24);
     font-size: 0.9375rem;
     font-weight: 500;
     letter-spacing: 0.01em;
     border-radius: var(--radius-xs);
     transition: all var(--dur-quick) var(--ease-out);
   }
-
   .btn-secondary:hover {
-    background: rgb(var(--color-ink));
-    color: rgb(var(--color-paper));
+    border-color: rgb(var(--color-cobalt));
+    background: rgb(var(--color-vellum));
   }
 
-  /* Bottone ghost — sottile per contesti dark */
   .btn-ghost {
     display: inline-flex;
     align-items: center;
@@ -278,17 +232,15 @@
     gap: 0.625rem;
     padding: 0.875rem 1.625rem;
     background: transparent;
-    color: rgb(var(--color-paper));
-    border: 1px solid rgb(var(--color-paper) / 0.3);
+    color: rgb(var(--color-vellum));
+    border: 1px solid rgb(var(--color-vellum) / 0.32);
     font-size: 0.9375rem;
     font-weight: 500;
-    letter-spacing: 0.01em;
     border-radius: var(--radius-xs);
     transition: all var(--dur-quick) var(--ease-out);
   }
-
   .btn-ghost:hover {
-    background: rgb(var(--color-paper) / 0.08);
+    background: rgb(var(--color-vellum) / 0.08);
     border-color: rgb(var(--color-gold));
     color: rgb(var(--color-gold-bright));
   }
@@ -300,133 +252,110 @@
     background-size: 100% 1px;
     background-position: 0 100%;
     background-repeat: no-repeat;
-    transition: background-size var(--dur-medium) var(--ease-out);
+    transition: background-size var(--dur-medium) var(--ease-out),
+                color var(--dur-quick) var(--ease-out);
   }
-
   .link-inline:hover {
     background-size: 100% 2px;
+    color: rgb(var(--color-cobalt-deep));
   }
 
-  /* Card servizio classica */
+  /* Link "Approfondisci" — sottile arrow */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgb(var(--color-cobalt));
+    letter-spacing: 0.01em;
+  }
+  .link-arrow::after {
+    content: '→';
+    transition: transform var(--dur-medium) var(--ease-out);
+  }
+  .link-arrow:hover::after {
+    transform: translateX(4px);
+  }
+
+  /* ─── Card service base ─── */
   .card-service {
-    padding: var(--space-8);
-    background: rgb(var(--color-paper));
-    border: 1px solid rgb(var(--color-rule) / 0.6);
-    border-radius: var(--radius-xs);
-    transition: all var(--dur-medium) var(--ease-out);
-  }
-
-  .card-service:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-card-hover);
-    border-color: rgb(var(--color-cobalt) / 0.4);
-  }
-
-  /* Card 2026 — spotlight cursor + conic hairline */
-  .card-spotlight {
     position: relative;
-    background: rgb(var(--color-paper));
-    border: 1px solid rgb(var(--color-rule) / 0.7);
-    transition: border-color var(--dur-medium) var(--ease-out),
-                transform var(--dur-medium) var(--ease-out),
+    padding: var(--space-8);
+    background: rgb(var(--color-vellum));
+    border: var(--border-rule);
+    border-radius: var(--radius-xs);
+    transition: transform var(--dur-medium) var(--ease-out),
+                border-color var(--dur-medium) var(--ease-out),
                 box-shadow var(--dur-medium) var(--ease-out);
     overflow: hidden;
   }
-
-  .card-spotlight::before {
+  .card-service::before {
     content: '';
     position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: radial-gradient(
-      var(--spotlight-radius) circle at var(--mx, 50%) var(--my, 50%),
-      rgb(var(--color-gold) / 0.35),
-      transparent 50%
-    );
-    opacity: 0;
-    transition: opacity var(--dur-medium) var(--ease-out);
-    pointer-events: none;
-    z-index: 0;
+    inset: auto 0 0 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      rgb(var(--color-gold) / 0.4),
+      transparent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .card-service:hover {
+    transform: translateY(-3px);
+    border-color: rgb(var(--color-cobalt) / 0.18);
+    box-shadow: var(--shadow-card-hover);
+  }
+  .card-service:hover::before {
+    transform: scaleX(1);
   }
 
-  .card-spotlight::after {
-    content: '';
-    position: absolute;
-    inset: 1px;
-    background: rgb(var(--color-paper));
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .card-spotlight > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  .card-spotlight:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-card-spotlight);
-  }
-
-  .card-spotlight:hover::before {
-    opacity: 1;
-  }
-
-  /* Hairline gold conic — segno ornamentale moderno per accenti */
-  .hairline-gold {
-    position: relative;
-  }
-
-  .hairline-gold::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    background: var(--conic-gold);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity var(--dur-medium) var(--ease-out);
-  }
-
-  .hairline-gold:hover::before {
-    opacity: 1;
-  }
-
-  /* Pill — chip live status / trust marker */
+  /* ─── Pill ─── */
   .pill {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.375rem 0.75rem;
-    border: 1px solid rgb(var(--color-rule));
-    background: rgb(var(--color-paper));
+    border: var(--border-rule);
+    background: rgb(var(--color-vellum));
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: rgb(var(--color-graphite));
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
   }
-
-  .pill[data-variant='dark'] {
-    background: rgb(var(--color-paper) / 0.06);
-    border-color: rgb(var(--color-paper) / 0.18);
-    color: rgb(var(--color-paper) / 0.85);
-  }
-
   .pill[data-variant='gold'] {
-    border-color: rgb(var(--color-gold) / 0.5);
+    border-color: rgb(var(--color-gold) / 0.45);
     color: rgb(var(--color-gold-deep));
     background: rgb(var(--color-vellum));
   }
+  .pill[data-variant='dark'] {
+    background: rgb(var(--color-vellum) / 0.06);
+    border-color: rgb(var(--color-vellum) / 0.22);
+    color: rgb(var(--color-vellum) / 0.9);
+  }
+
+  /* Live status dot */
+  .pill-live::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgb(var(--color-success));
+    box-shadow: 0 0 0 0 rgb(var(--color-success) / 0.4);
+    animation: pulse-dot 2.4s var(--ease-out) infinite;
+  }
 }
 
-/* ─── UTILITY CLASSES (extension) ──────────────────────────────── */
+/* ─── UTILITIES ──────────────────────────────────────────────────── */
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
 
-  /* Display gradient text — uso parsimonioso, mai paragrafo */
   .text-grad-display {
     background: var(--grad-display);
     -webkit-background-clip: text;
@@ -434,7 +363,6 @@
     color: transparent;
   }
 
-  /* Outline / stroke text — usato in footer typewall */
   .text-stroke {
     color: transparent;
     -webkit-text-stroke: 1px rgb(var(--color-ink) / 0.18);
@@ -442,120 +370,83 @@
 
   .text-stroke-paper {
     color: transparent;
-    -webkit-text-stroke: 1px rgb(var(--color-paper) / 0.16);
+    -webkit-text-stroke: 1px rgb(var(--color-vellum) / 0.16);
   }
 
-  /* Mesh aurora background — luce editoriale sobria */
   .bg-aurora {
     background-color: rgb(var(--color-paper));
     background-image: var(--mesh-aurora);
   }
-
-  .bg-aurora-dark {
+  .bg-aurora-deep {
     background-color: rgb(var(--color-cobalt-deep));
-    background-image: var(--mesh-aurora-dark);
+    background-image: var(--mesh-aurora-deep);
   }
 
-  .grain {
-    position: relative;
-  }
+  .bg-paper { background-color: rgb(var(--color-paper)); }
+  .bg-paper-warm { background-color: rgb(var(--color-paper-warm)); }
+  .bg-paper-deep { background-color: rgb(var(--color-paper-deep)); }
+  .bg-vellum { background-color: rgb(var(--color-vellum)); }
+  .bg-cobalt { background-color: rgb(var(--color-cobalt)); }
+  .bg-cobalt-deep { background-color: rgb(var(--color-cobalt-deep)); }
 
+  .text-ink { color: rgb(var(--color-ink)); }
+  .text-ink-soft { color: rgb(var(--color-ink-soft)); }
+  .text-cobalt { color: rgb(var(--color-cobalt)); }
+  .text-cobalt-soft { color: rgb(var(--color-cobalt-soft)); }
+  .text-graphite { color: rgb(var(--color-graphite)); }
+  .text-gold { color: rgb(var(--color-gold)); }
+  .text-gold-deep { color: rgb(var(--color-gold-deep)); }
+  .text-paper { color: rgb(var(--color-paper)); }
+  .text-vellum { color: rgb(var(--color-vellum)); }
+
+  .border-rule { border-color: rgb(var(--color-rule) / 0.12); }
+  .border-rule-strong { border-color: rgb(var(--color-rule) / 0.22); }
+  .border-rule-soft { border-color: rgb(var(--color-rule) / 0.06); }
+  .border-cobalt { border-color: rgb(var(--color-cobalt)); }
+  .border-gold { border-color: rgb(var(--color-gold)); }
+
+  .grain { position: relative; }
   .grain::after {
     content: '';
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-    opacity: 0.04;
+    opacity: 0.035;
     mix-blend-mode: multiply;
     pointer-events: none;
+    z-index: 1;
   }
 
-  /* Scroll snap for sections */
-  .section-snap {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-
-  /* Marquee infinita — usata in TrustStrip e Footer */
   .marquee-track {
     display: flex;
     animation: marquee 38s linear infinite;
     width: max-content;
   }
+  .marquee-track:hover { animation-play-state: paused; }
 
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-
-  /* Hide scrollbar utility (per chip rows) */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
 
-  /* Shadow utilities mancanti */
   .shadow-card { box-shadow: var(--shadow-card); }
   .shadow-card-hover { box-shadow: var(--shadow-card-hover); }
   .shadow-card-spotlight { box-shadow: var(--shadow-card-spotlight); }
+  .shadow-floating { box-shadow: var(--shadow-floating); }
+
+  .font-display { font-family: var(--font-display); }
+  .font-sans { font-family: var(--font-sans); }
+  .font-mono { font-family: var(--font-mono); }
 }
 
-/* ─── LEX SCROLLBAR (panel chat) ────────────────────────────────── */
-@layer utilities {
-  .lex-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(var(--color-rule)) transparent;
-  }
-
-  .lex-scroll::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .lex-scroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .lex-scroll::-webkit-scrollbar-thumb {
-    background: rgb(var(--color-rule));
-    border-radius: 0;
-  }
-
-  .lex-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--color-graphite) / 0.6);
-  }
-}
-
-/* ─── KEYFRAMES ─────────────────────────────────────────────────── */
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@keyframes draw-line {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+/* ─── KEYFRAMES ──────────────────────────────────────────────────── */
 @keyframes pulse-dot {
-  0% {
-    box-shadow: 0 0 0 0 rgb(var(--color-success) / 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgb(var(--color-success) / 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgb(var(--color-success) / 0);
-  }
+  0% { box-shadow: 0 0 0 0 rgb(var(--color-success) / 0.5); }
+  70% { box-shadow: 0 0 0 8px rgb(var(--color-success) / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(var(--color-success) / 0); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--color-gold) / 0.35); }
+  50% { box-shadow: 0 0 0 14px rgb(var(--color-gold) / 0); }
 }
 
 @keyframes marquee {
@@ -563,7 +454,40 @@
   to { transform: translateX(-50%); }
 }
 
+@keyframes draw-line {
+  from { transform: scaleX(0); transform-origin: left center; }
+  to { transform: scaleX(1); }
+}
+
 @keyframes shimmer-gold {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.7; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* LEX FAB — pulse "respiro" non continuo (1 ogni 4.5s, mai nervoso) */
+@keyframes lex-breath {
+  0%, 70% { box-shadow: 0 0 0 0 rgb(var(--color-gold) / 0); opacity: 0.55; }
+  80% { box-shadow: 0 0 0 6px rgb(var(--color-gold) / 0.28); opacity: 1; }
+  92% { box-shadow: 0 0 0 16px rgb(var(--color-gold) / 0); opacity: 0.6; }
+  100% { box-shadow: 0 0 0 0 rgb(var(--color-gold) / 0); opacity: 0.55; }
+}
+
+/* LEX hint bubble — entrata morbida da basso/destra */
+@keyframes lex-hint-in {
+  from { opacity: 0; transform: translate(8px, 6px); }
+  to { opacity: 1; transform: translate(0, 0); }
+}
+
+/* ─── SCROLLBAR LEX (overlay tools) ──────────────────────────────── */
+@layer utilities {
+  .lex-scroll { scrollbar-width: thin; scrollbar-color: rgb(var(--color-rule) / 0.4) transparent; }
+  .lex-scroll::-webkit-scrollbar { width: 4px; }
+  .lex-scroll::-webkit-scrollbar-track { background: transparent; }
+  .lex-scroll::-webkit-scrollbar-thumb { background: rgb(var(--color-rule) / 0.4); border-radius: 0; }
+  .lex-scroll::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-graphite) / 0.6); }
 }

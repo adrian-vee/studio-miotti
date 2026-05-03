@@ -1,302 +1,249 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+/**
+ * SiteHeader — sticky luminoso, minimal, premium.
+ *
+ *  · Compattazione allo scroll (riduce padding + applica vetro chiaro).
+ *  · Underline animato sui link (ScaleX 0→1 origine sinistra).
+ *  · CTA primaria con hover magnetico leggero (lib/animations).
+ *  · Lang switch placeholder IT.
+ *  · Mobile menu fullscreen con stagger reveal e blocco scroll body.
+ */
+
 import Link from 'next/link';
-import { motion, AnimatePresence, useMotionValueEvent, useScroll } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { SITE_DATA } from '@/lib/site-data';
-
-type NavLink = { label: string; href: string; mega?: boolean };
-
-const navLinks: readonly NavLink[] = [
-  { label: 'Lo Studio', href: '/studio' },
-  { label: 'Aree', href: '/aree-di-competenza', mega: true },
-  { label: 'Guide', href: '/guide' },
-  { label: 'Contatti', href: '/contatti' },
-];
-
-const PRACTICE_AREAS = [
-  {
-    title: 'Diritto Civile',
-    href: '/aree-di-competenza/diritto-civile',
-    blurb: 'Contratti, obbligazioni, condominio, responsabilità.',
-  },
-  {
-    title: 'Diritto di Famiglia',
-    href: '/aree-di-competenza/diritto-famiglia',
-    blurb: 'Separazioni, divorzi, affidamento, successioni.',
-  },
-  {
-    title: 'Diritto del Lavoro',
-    href: '/aree-di-competenza/diritto-lavoro',
-    blurb: 'Licenziamenti, mobbing, vertenze sindacali.',
-  },
-  {
-    title: 'Recupero Crediti',
-    href: '/aree-di-competenza/recupero-crediti',
-    blurb: 'Decreti ingiuntivi, pignoramenti, esecuzioni.',
-  },
-  {
-    title: 'Diritto Immobiliare',
-    href: '/aree-di-competenza/diritto-immobiliare',
-    blurb: 'Compravendita, locazioni, usucapione.',
-  },
-  {
-    title: 'Responsabilità Civile',
-    href: '/aree-di-competenza/responsabilita-civile',
-    blurb: 'Sinistri stradali, malasanità, danni.',
-  },
-] as const;
+import { gsap } from 'gsap';
+import { NAV_LINKS, SITE_DATA } from '@/lib/site-data';
+import { ensureGsap, magnetic, prefersReducedMotion } from '@/lib/animations';
+import { openLex } from '@/lib/lex';
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
-  const closeTimer = useRef<number | null>(null);
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    setScrolled(y > 24);
-  });
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const ctaRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!ctaRef.current) return;
+    return magnetic(ctaRef.current, 14);
+  }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    ensureGsap();
+    if (prefersReducedMotion()) return;
+    const ctx = gsap.context(() => {
+      gsap.from('[data-mobile-link]', {
+        y: 32,
+        opacity: 0,
+        stagger: 0.06,
+        duration: 0.7,
+        ease: 'power3.out',
+        delay: 0.05,
+      });
+    });
+    return () => ctx.revert();
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [open]);
-
-  function openMega() {
-    if (closeTimer.current) {
-      window.clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
-    setMegaOpen(true);
-  }
-
-  function scheduleCloseMega() {
-    if (closeTimer.current) window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(() => setMegaOpen(false), 150);
-  }
+  }, [mobileOpen]);
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className={cn(
-          'fixed top-0 inset-x-0 z-[var(--z-sticky)] transition-all duration-500',
-          scrolled
-            ? 'bg-paper/95 backdrop-blur-lg border-b border-rule/60'
-            : 'bg-paper/0',
-        )}
+      <header
+        data-scrolled={scrolled}
+        className="sticky top-0 z-[100] w-full transition-all duration-500"
+        style={{
+          backgroundColor: scrolled
+            ? 'rgb(var(--color-vellum) / 0.82)'
+            : 'rgb(var(--color-paper) / 0)',
+          backdropFilter: scrolled ? 'saturate(140%) blur(14px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'saturate(140%) blur(14px)' : 'none',
+          borderBottom: scrolled
+            ? '1px solid rgb(var(--color-rule) / 0.08)'
+            : '1px solid transparent',
+        }}
       >
-        {/* Top-bar — phone, orari, IT/EN */}
-        <div className="hidden md:block bg-paper-warm border-b border-rule/60">
-          <div className="container-page">
-            <div className="flex items-center justify-between h-9">
-              <a
-                href={`tel:${SITE_DATA.phoneTel}`}
-                className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.12em] text-ink hover:text-cobalt transition-colors"
-              >
-                <Phone size={12} className="text-cobalt" aria-hidden />
-                <span>{SITE_DATA.phoneDisplay}</span>
-              </a>
-
-              <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-graphite">
-                Studio aperto · {SITE_DATA.hours.short}
-              </span>
-
-              <span
-                className="font-mono text-[11px] tracking-[0.12em] text-graphite select-none"
-                aria-label="Lingua del sito (italiano)"
-              >
-                <span className="text-ink">IT</span>
-                <span className="mx-1 text-rule">/</span>
-                <span aria-hidden>EN</span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Main row */}
         <div className="container-page">
-          <div className="flex items-center justify-between h-20 md:h-24">
-            {/* Logotype */}
+          <div
+            className="flex items-center justify-between transition-[padding] duration-500"
+            style={{ paddingBlock: scrolled ? '0.85rem' : '1.4rem' }}
+          >
+            {/* ── Logo ── */}
             <Link
               href="/"
               className="group flex items-baseline gap-3"
-              aria-label="Studio Legale Miotti — homepage"
+              aria-label="Studio Legale Miotti — home"
             >
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite hidden sm:inline">
-                Studio Legale
+              <span
+                aria-hidden
+                className="text-cobalt font-display"
+                style={{ fontSize: '1.6rem', lineHeight: 1, fontStyle: 'italic' }}
+              >
+                §
               </span>
-              <span className="font-display text-2xl tracking-[0.18em] text-ink group-hover:text-cobalt transition-colors">
-                MIOTTI
+              <span className="leading-none">
+                <span
+                  className="block font-display text-ink"
+                  style={{ fontSize: '1.05rem', letterSpacing: '0.005em' }}
+                >
+                  Studio Legale <em className="not-italic text-cobalt">Miotti</em>
+                </span>
+                <span className="mt-0.5 block font-mono text-[10px] tracking-[0.22em] uppercase text-graphite">
+                  San Bonifacio · VR
+                </span>
               </span>
             </Link>
 
-            {/* Desktop nav */}
+            {/* ── Desktop nav ── */}
             <nav
-              className="hidden lg:flex items-center gap-10"
+              className="hidden items-center gap-8 lg:flex"
               aria-label="Navigazione principale"
             >
-              {navLinks.map((link) =>
-                link.mega ? (
-                  <div
-                    key={link.href}
-                    className="relative"
-                    onMouseEnter={openMega}
-                    onMouseLeave={scheduleCloseMega}
-                  >
-                    <Link
-                      href={link.href as never}
-                      onFocus={openMega}
-                      onBlur={scheduleCloseMega}
-                      aria-haspopup="true"
-                      aria-expanded={megaOpen}
-                      className="text-sm font-medium text-ink hover:text-cobalt transition-colors relative group"
-                    >
-                      {link.label}
-                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-cobalt origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-                    </Link>
-                  </div>
-                ) : (
-                  <Link
-                    key={link.href}
-                    href={link.href as never}
-                    className="text-sm font-medium text-ink hover:text-cobalt transition-colors relative group"
-                  >
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="group relative inline-flex items-center text-[0.875rem] font-medium text-ink-soft transition-colors hover:text-cobalt"
+                >
+                  <span className="relative">
                     {link.label}
-                    <span className="absolute -bottom-1 left-0 right-0 h-px bg-cobalt origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-                  </Link>
-                ),
-              )}
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-cobalt transition-transform duration-500 ease-out group-hover:scale-x-100"
+                    />
+                  </span>
+                </Link>
+              ))}
             </nav>
 
-            {/* CTA + mobile toggle */}
-            <div className="flex items-center gap-4">
-              <Link
-                href="/prenota"
-                className="hidden md:inline-flex btn-primary !py-2.5 !text-sm"
-              >
-                Primo confronto
-              </Link>
+            {/* ── Right cluster ── */}
+            <div className="hidden items-center gap-4 lg:flex">
               <button
                 type="button"
-                className="lg:hidden p-2 -mr-2"
-                onClick={() => setOpen((v) => !v)}
-                aria-expanded={open}
-                aria-controls="mobile-menu"
-                aria-label={open ? 'Chiudi menu' : 'Apri menu'}
+                disabled
+                title="Italiano (predefinito)"
+                aria-label="Cambia lingua (solo italiano per ora)"
+                className="cursor-default font-mono text-[10px] tracking-[0.22em] uppercase text-graphite"
               >
-                {open ? <X size={22} /> : <Menu size={22} />}
+                IT
+              </button>
+              <span
+                aria-hidden
+                className="h-4 w-px"
+                style={{ background: 'rgb(var(--color-rule) / 0.18)' }}
+              />
+              <button
+                ref={ctaRef}
+                type="button"
+                onClick={() =>
+                  openLex(
+                    'cta-header',
+                    'Da dove vuoi partire? Posso aiutarti a inquadrare la richiesta prima della consulenza con l’avvocato.',
+                  )
+                }
+                className="btn-primary"
+                style={{ padding: '0.7rem 1.25rem' }}
+              >
+                Richiedi consulenza
               </button>
             </div>
+
+            {/* ── Mobile toggle ── */}
+            <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 lg:hidden"
+              aria-label={mobileOpen ? 'Chiudi menu' : 'Apri menu'}
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen((v) => !v)}
+            >
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
         </div>
+      </header>
 
-        {/* Mega-menu */}
-        <AnimatePresence>
-          {megaOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              onMouseEnter={openMega}
-              onMouseLeave={scheduleCloseMega}
-              className="hidden lg:block absolute top-full left-0 right-0 bg-paper border-b border-rule shadow-[0_24px_48px_rgba(15,34,64,0.08)]"
-              role="menu"
+      {/* ── Mobile menu fullscreen ── */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-[1090] flex flex-col bg-vellum lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu principale"
+        >
+          <div className="container-page flex items-center justify-between py-5">
+            <span className="font-display text-cobalt italic text-2xl leading-none">§</span>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex items-center justify-center p-2"
+              aria-label="Chiudi menu"
             >
-              <div className="container-page py-12">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-graphite mb-8">
-                  Aree di competenza
-                </p>
-                <ul className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-8">
-                  {PRACTICE_AREAS.map((area) => (
-                    <li key={area.href} className="col-span-4">
-                      <Link
-                        href={area.href as never}
-                        onClick={() => setMegaOpen(false)}
-                        className="group block border-l-2 border-transparent pl-4 -ml-[18px] hover:border-cobalt transition-colors"
-                      >
-                        <p className="font-display text-[20px] leading-tight text-ink group-hover:text-cobalt transition-colors">
-                          {area.title}
-                        </p>
-                        <p className="mt-1 text-[13px] text-graphite leading-snug">
-                          {area.blurb}
-                        </p>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-10 pt-6 border-t border-rule">
-                  <Link
-                    href="/aree-di-competenza"
-                    onClick={() => setMegaOpen(false)}
-                    className="link-inline text-sm"
-                  >
-                    Vedi tutte le aree di competenza →
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
-
-      {/* Mobile menu overlay */}
-      <motion.div
-        id="mobile-menu"
-        initial={false}
-        animate={
-          open
-            ? { opacity: 1, pointerEvents: 'auto' }
-            : { opacity: 0, pointerEvents: 'none' }
-        }
-        transition={{ duration: 0.3 }}
-        className="fixed inset-0 z-[var(--z-overlay)] bg-paper lg:hidden"
-        aria-hidden={!open}
-      >
-        <div className="container-page pt-24 pb-12 h-full flex flex-col">
-          <nav className="flex-1" aria-label="Navigazione mobile">
-            <ul className="space-y-1">
-              {navLinks.map((link, i) => (
-                <motion.li
+              <X size={22} />
+            </button>
+          </div>
+          <nav
+            className="container-page flex-1 overflow-y-auto pb-12 pt-6"
+            aria-label="Navigazione mobile"
+          >
+            <ul className="flex flex-col">
+              {NAV_LINKS.map((link, i) => (
+                <li
                   key={link.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={
-                    open ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                  }
-                  transition={{
-                    duration: 0.4,
-                    delay: open ? 0.1 + i * 0.05 : 0,
-                  }}
+                  className="border-b"
+                  style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
+                  data-mobile-link
                 >
                   <Link
-                    href={link.href as never}
-                    onClick={() => setOpen(false)}
-                    className="block py-4 font-display text-3xl border-b border-rule"
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-between py-5 font-display text-3xl text-ink"
                   >
-                    {link.label}
+                    <span>{link.label}</span>
+                    <span className="font-mono text-xs text-graphite">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
                   </Link>
-                </motion.li>
+                </li>
               ))}
             </ul>
-          </nav>
 
-          <Link
-            href="/prenota"
-            onClick={() => setOpen(false)}
-            className="btn-primary w-full justify-center mt-8"
-          >
-            Prenota un primo confronto
-          </Link>
+            <div className="mt-10 space-y-4" data-mobile-link>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false);
+                  openLex(
+                    'cta-header',
+                    'Da dove vuoi partire? Posso aiutarti a inquadrare la richiesta prima della consulenza con l’avvocato.',
+                  );
+                }}
+                className="btn-primary w-full"
+              >
+                Richiedi consulenza
+              </button>
+              <a
+                href={`tel:${SITE_DATA.phoneTel}`}
+                className="flex items-center justify-center gap-2 text-sm text-graphite"
+              >
+                <Phone size={14} />
+                {SITE_DATA.phoneDisplay}
+              </a>
+            </div>
+          </nav>
         </div>
-      </motion.div>
+      )}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema';
 import { LexAssistant } from '@/components/lex/LexAssistant';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -8,11 +8,11 @@ import { SmoothScrollProvider } from '@/components/motion/SmoothScrollProvider';
 import '@/styles/globals.css';
 
 /**
- * Brand fonts (allineati al brief):
- *  · Playfair Display — titoli, autorevolezza editoriale calda
- *  · Inter — testo, leggibilità moderna a tutte le dimensioni
+ * Brand fonts:
+ *  · Cormorant Garamond — display editoriale legale (warm serif)
+ *  · Inter — sans moderna, leggibilità a tutte le dimensioni
  */
-const display = Playfair_Display({
+const display = Cormorant_Garamond({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-display-google',
@@ -31,7 +31,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiomiotti.it';
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F7F5F2' },
+    { media: '(prefers-color-scheme: light)', color: '#F7F3EC' },
     { media: '(prefers-color-scheme: dark)', color: '#1E2A38' },
   ],
   width: 'device-width',

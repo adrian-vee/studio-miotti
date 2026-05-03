@@ -1,56 +1,54 @@
 /**
- * DESIGN TOKENS — STUDIO MIOTTI · v2026.1
+ * STUDIO LEGALE MIOTTI — DESIGN TOKENS · v2026.2
  *
- * Posizionamento: studio legale moderno, accessibile, vicino al cliente.
- * No design "elitario distante": palette calda, testo in contrasto netto,
- * accenti d'oro morbidi.
- *
- * Brand colors:
- *  · Background : #F7F5F2 (beige chiaro)
- *  · Primario   : #1E2A38 (blu professionale)
- *  · Accento    : #C6A96B (oro soft)
- *  · Testo      : #111111
+ * Posizionamento: studio legale moderno, autorevole, vicino al territorio.
+ * Mood: editoriale, premium, luminoso. Mai cyberpunk, mai gradienti startup.
  */
 
 @layer base {
   :root {
-    /* ─── COLOR TOKENS ─────────────────────────────────────── */
-    --color-paper: 247 245 242;        /* #F7F5F2 — bg principale */
-    --color-paper-warm: 240 235 226;   /* #F0EBE2 — sezioni alternate */
-    --color-paper-deep: 232 226 215;   /* #E8E2D7 — divisori soft */
-    --color-vellum: 244 237 222;       /* #F4EDDE — backdrop accent */
+    /* ─── COLOR ─── (RGB triplets, used inside rgb(var(--…)) ) ── */
+    --color-paper: 247 243 236;        /* #F7F3EC — bg principale */
+    --color-paper-warm: 239 231 218;   /* #EFE7DA — bg secondario */
+    --color-paper-deep: 230 220 204;   /* #E6DCCC — divisori */
+    --color-vellum: 255 253 248;       /* #FFFDF8 — bianco caldo */
 
-    --color-ink: 17 17 17;             /* #111111 — testo principale */
-    --color-ink-soft: 35 39 46;        /* #23272E — testo dark sub-bg */
+    --color-ink: 23 33 43;             /* #17212B — testo principale */
+    --color-ink-soft: 38 50 64;        /* #263240 — testo soft */
 
-    --color-cobalt: 30 42 56;          /* #1E2A38 — primario blu */
-    --color-cobalt-deep: 17 25 36;     /* #111924 — pressed/dark */
-    --color-cobalt-soft: 79 96 119;    /* #4F6077 — testo su scuro */
+    --color-cobalt: 30 42 56;          /* #1E2A38 — blu istituzionale */
+    --color-cobalt-deep: 17 25 36;     /* #111924 — blu pressed */
+    --color-cobalt-soft: 79 96 119;    /* #4F6077 — blu chiaro */
 
-    --color-graphite: 79 84 92;        /* #4F545C — testo secondario */
-    --color-rule: 219 213 200;         /* #DBD5C8 — bordi sottili */
-    --color-rule-soft: 235 230 219;    /* #EBE6DB — bordi più chiari */
+    --color-graphite: 111 125 117;     /* #6F7D75 — verde-grigio testo sec */
+    --color-graphite-deep: 86 98 90;   /* #56625A */
 
-    --color-gold: 198 169 107;         /* #C6A96B — oro soft accento */
-    --color-gold-bright: 217 188 124;  /* #D9BC7C — highlight */
-    --color-gold-deep: 156 132 81;     /* #9C8451 — pressed */
+    --color-rule: 30 42 56;            /* base bordo (usato con /0.12) */
+    --color-rule-soft: 30 42 56;       /* base bordo morbido (con /0.06) */
 
-    --color-success: 46 93 58;         /* #2E5D3A */
-    --color-warn: 176 122 43;          /* #B07A2B */
-    --color-error: 140 42 47;          /* #8C2A2F */
+    --color-gold: 184 150 90;          /* #B8965A — oro soft */
+    --color-gold-bright: 207 173 113;  /* #CFAD71 — highlight */
+    --color-gold-deep: 148 119 70;     /* #947746 — pressed */
 
-    /* ─── GRADIENTS / MESH ─────────────────────────────────── */
-    /* Aurora calda: oro soft, beige profondo, cobalt minimale */
+    --color-success: 64 105 84;        /* #406954 */
+    --color-warn: 161 116 50;          /* #A17432 */
+    --color-error: 138 47 55;          /* #8A2F37 */
+
+    /* ─── BORDERS ─── (uniformi su tutto il sistema) */
+    --border-rule: 1px solid rgb(var(--color-rule) / 0.12);
+    --border-rule-strong: 1px solid rgb(var(--color-rule) / 0.22);
+    --border-rule-soft: 1px solid rgb(var(--color-rule) / 0.06);
+
+    /* ─── SURFACES (gradient, mesh) ─── */
     --mesh-aurora:
-      radial-gradient(at 20% 15%, rgb(var(--color-gold) / 0.12) 0%, transparent 40%),
-      radial-gradient(at 80% 85%, rgb(var(--color-cobalt) / 0.06) 0%, transparent 45%),
-      radial-gradient(at 50% 60%, rgb(var(--color-vellum) / 0.5) 0%, transparent 55%);
+      radial-gradient(at 18% 12%, rgb(var(--color-gold) / 0.10) 0%, transparent 42%),
+      radial-gradient(at 82% 88%, rgb(var(--color-cobalt) / 0.05) 0%, transparent 48%),
+      radial-gradient(at 50% 58%, rgb(var(--color-vellum) / 0.6) 0%, transparent 55%);
 
-    --mesh-aurora-dark:
-      radial-gradient(at 25% 25%, rgb(var(--color-gold) / 0.16) 0%, transparent 45%),
-      radial-gradient(at 75% 80%, rgb(var(--color-cobalt-soft) / 0.22) 0%, transparent 50%);
+    --mesh-aurora-deep:
+      radial-gradient(at 25% 22%, rgb(var(--color-gold) / 0.18) 0%, transparent 50%),
+      radial-gradient(at 78% 78%, rgb(var(--color-cobalt-soft) / 0.18) 0%, transparent 50%);
 
-    /* Conic gold hairline */
     --conic-gold:
       conic-gradient(from 220deg at 50% 50%,
         rgb(var(--color-gold) / 0) 0deg,
@@ -59,44 +57,44 @@
         rgb(var(--color-gold) / 0) 360deg
       );
 
-    /* Gradient testo cobalt → oro */
     --grad-display:
       linear-gradient(115deg,
         rgb(var(--color-cobalt-deep)) 0%,
-        rgb(var(--color-cobalt)) 35%,
+        rgb(var(--color-cobalt)) 38%,
         rgb(var(--color-gold)) 100%
       );
 
     --spotlight-radius: 360px;
 
-    /* ─── TYPOGRAPHY ───────────────────────────────────────── */
-    /* Brief: Playfair Display (titoli) + Inter (testo) */
-    --font-display: var(--font-display-google), 'Playfair Display', Georgia, serif;
+    /* ─── TYPOGRAPHY ─── */
+    /* Display: Cormorant Garamond — eleganza editoriale legale.
+       Sans:    Inter — leggibilità moderna a tutte le dimensioni.
+       Mono:    JetBrains Mono — contrappunto sobrio. */
+    --font-display: var(--font-display-google), 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
     --font-sans: var(--font-sans-google), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'Cascadia Code', monospace;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
     /* Type scale (fluido, mobile-first) */
-    --fs-display-xl: clamp(3.25rem, 5.5vw + 1rem, 5.5rem);
-    --fs-display-l: clamp(2.75rem, 4.5vw + 0.5rem, 4rem);
-    --fs-display-m: clamp(2.25rem, 3.5vw + 0.5rem, 3rem);
-    --fs-h1: clamp(2rem, 3vw + 0.5rem, 2.5rem);
-    --fs-h2: clamp(1.625rem, 2vw + 0.5rem, 1.875rem);
+    --fs-display-xxl: clamp(3.5rem, 7.5vw + 1rem, 7.5rem);
+    --fs-display-xl: clamp(3rem, 5.5vw + 1rem, 5.75rem);
+    --fs-display-l: clamp(2.5rem, 4.5vw + 0.5rem, 4.25rem);
+    --fs-display-m: clamp(2rem, 3.5vw + 0.5rem, 3rem);
+    --fs-h1: clamp(1.875rem, 3vw + 0.5rem, 2.5rem);
+    --fs-h2: clamp(1.5rem, 2vw + 0.5rem, 1.875rem);
     --fs-h3: 1.375rem;
     --fs-h4: 1.125rem;
     --fs-body-l: 1.125rem;
     --fs-body-m: 1rem;
     --fs-body-s: 0.875rem;
     --fs-micro: 0.75rem;
+    --fs-counter: clamp(2.5rem, 5vw, 4rem);
 
-    --fs-counter: clamp(2.75rem, 5.5vw, 4.5rem);
-
-    /* Line-heights */
-    --lh-tight: 1.08;
-    --lh-snug: 1.2;
+    --lh-tight: 1.04;
+    --lh-snug: 1.18;
     --lh-normal: 1.55;
     --lh-relaxed: 1.7;
 
-    /* ─── SPACING (8pt grid) ───────────────────────────────── */
+    /* ─── SPACING (8pt) ─── */
     --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;
@@ -107,49 +105,51 @@
     --space-16: 4rem;
     --space-24: 6rem;
     --space-32: 8rem;
+    --space-40: 10rem;
 
-    /* ─── LAYOUT ────────────────────────────────────────────── */
-    --container-max: 1280px;
+    /* ─── LAYOUT ─── */
+    --container-max: 1320px;
     --container-prose: 65ch;
     --container-narrow: 720px;
     --gutter: clamp(1.25rem, 4vw, 2.5rem);
 
-    /* ─── RADIUS — leggermente più morbido per tono accessibile */
+    /* ─── RADIUS ─── */
     --radius-none: 0;
     --radius-xs: 4px;
     --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-pill: 999px;
 
-    /* ─── SHADOWS ──────────────────────────────────────────── */
-    --shadow-card: 0 1px 3px rgba(17, 17, 17, 0.04), 0 4px 12px rgba(17, 17, 17, 0.04);
-    --shadow-card-hover: 0 2px 6px rgba(17, 17, 17, 0.06), 0 12px 32px rgba(30, 42, 56, 0.08);
-    --shadow-card-spotlight: 0 8px 24px rgba(198, 169, 107, 0.10), 0 24px 64px rgba(30, 42, 56, 0.08);
-    --shadow-modal: 0 8px 24px rgba(17, 17, 17, 0.12), 0 24px 64px rgba(17, 17, 17, 0.18);
+    /* ─── SHADOWS ─── (sobrie, mai pesanti) */
+    --shadow-card: 0 1px 2px rgb(23 33 43 / 0.04), 0 6px 16px rgb(23 33 43 / 0.04);
+    --shadow-card-hover: 0 2px 6px rgb(23 33 43 / 0.06), 0 18px 40px rgb(30 42 56 / 0.08);
+    --shadow-card-spotlight: 0 6px 18px rgb(184 150 90 / 0.12), 0 22px 56px rgb(30 42 56 / 0.08);
+    --shadow-modal: 0 12px 28px rgb(23 33 43 / 0.14), 0 32px 80px rgb(23 33 43 / 0.18);
+    --shadow-floating: 0 4px 14px rgb(30 42 56 / 0.18), 0 18px 36px rgb(184 150 90 / 0.14);
 
-    /* ─── MOTION ────────────────────────────────────────────── */
+    /* ─── MOTION ─── */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
     --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
     --dur-instant: 80ms;
-    --dur-quick: 180ms;
-    --dur-medium: 320ms;
+    --dur-quick: 200ms;
+    --dur-medium: 360ms;
     --dur-slow: 720ms;
     --dur-cinematic: 1400ms;
 
-    /* ─── Z-INDEX ──────────────────────────────────────────── */
+    /* ─── Z-INDEX ─── */
     --z-base: 0;
     --z-elevated: 10;
     --z-sticky: 100;
     --z-overlay: 1000;
     --z-modal: 1100;
     --z-toast: 1200;
-    --z-lex: 900;
+    --z-lex: 950;
   }
 
-  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     :root {
       --dur-instant: 0ms;
@@ -158,7 +158,6 @@
       --dur-slow: 0ms;
       --dur-cinematic: 0ms;
     }
-
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
