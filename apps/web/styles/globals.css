@@ -381,6 +381,13 @@
     background-color: rgb(var(--color-cobalt-deep));
     background-image: var(--mesh-aurora-deep);
   }
+  .bg-night {
+    background-color: rgb(var(--color-cobalt-deep));
+    background-image: var(--mesh-night);
+  }
+  .bg-graphite {
+    background-color: rgb(var(--color-ink));
+  }
 
   .bg-paper { background-color: rgb(var(--color-paper)); }
   .bg-paper-warm { background-color: rgb(var(--color-paper-warm)); }

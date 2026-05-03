@@ -11,6 +11,7 @@
  */
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -22,6 +23,11 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const ctaRef = useRef<HTMLButtonElement | null>(null);
+  const pathname = usePathname();
+  // La home ha sequenza narrativa scuro→chiaro→scuro: l'header in cima
+  // sta sopra il blu notte. Quando l'utente non ha ancora scrollato,
+  // serve testo paper (chiaro su scuro). Allo scroll torna paper-aware.
+  const isHomeDark = pathname === '/' && !scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -88,19 +94,46 @@ export function SiteHeader() {
             >
               <span
                 aria-hidden
-                className="text-cobalt font-display"
-                style={{ fontSize: '1.6rem', lineHeight: 1, fontStyle: 'italic' }}
+                className="font-display"
+                style={{
+                  fontSize: '1.6rem',
+                  lineHeight: 1,
+                  fontStyle: 'italic',
+                  color: isHomeDark ? 'rgb(var(--color-gold))' : 'rgb(var(--color-cobalt))',
+                  transition: 'color 400ms var(--ease-out)',
+                }}
               >
                 §
               </span>
               <span className="leading-none">
                 <span
-                  className="block font-display text-ink"
-                  style={{ fontSize: '1.05rem', letterSpacing: '0.005em' }}
+                  className="block font-display"
+                  style={{
+                    fontSize: '1.05rem',
+                    letterSpacing: '0.005em',
+                    color: isHomeDark ? 'rgb(var(--color-paper))' : 'rgb(var(--color-ink))',
+                    transition: 'color 400ms var(--ease-out)',
+                  }}
                 >
-                  Studio Legale <em className="not-italic text-cobalt">Miotti</em>
+                  Studio Legale{' '}
+                  <em
+                    className="not-italic"
+                    style={{
+                      color: isHomeDark ? 'rgb(var(--color-gold))' : 'rgb(var(--color-cobalt))',
+                    }}
+                  >
+                    Miotti
+                  </em>
                 </span>
-                <span className="mt-0.5 block font-mono text-[10px] tracking-[0.22em] uppercase text-graphite">
+                <span
+                  className="mt-0.5 block font-mono text-[10px] tracking-[0.22em] uppercase"
+                  style={{
+                    color: isHomeDark
+                      ? 'rgb(var(--color-paper) / 0.55)'
+                      : 'rgb(var(--color-graphite))',
+                    transition: 'color 400ms var(--ease-out)',
+                  }}
+                >
                   San Bonifacio · VR
                 </span>
               </span>
@@ -115,13 +148,23 @@ export function SiteHeader() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="group relative inline-flex items-center text-[0.875rem] font-medium text-ink-soft transition-colors hover:text-cobalt"
+                  className="group relative inline-flex items-center text-[0.875rem] font-medium transition-colors"
+                  style={{
+                    color: isHomeDark
+                      ? 'rgb(var(--color-paper) / 0.85)'
+                      : 'rgb(var(--color-ink-soft))',
+                  }}
                 >
                   <span className="relative">
                     {link.label}
                     <span
                       aria-hidden
-                      className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-cobalt transition-transform duration-500 ease-out group-hover:scale-x-100"
+                      className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+                      style={{
+                        background: isHomeDark
+                          ? 'rgb(var(--color-gold))'
+                          : 'rgb(var(--color-cobalt))',
+                      }}
                     />
                   </span>
                 </Link>
@@ -135,7 +178,12 @@ export function SiteHeader() {
                 disabled
                 title="Italiano (predefinito)"
                 aria-label="Cambia lingua (solo italiano per ora)"
-                className="cursor-default font-mono text-[10px] tracking-[0.22em] uppercase text-graphite"
+                className="cursor-default font-mono text-[10px] tracking-[0.22em] uppercase"
+                style={{
+                  color: isHomeDark
+                    ? 'rgb(var(--color-paper) / 0.55)'
+                    : 'rgb(var(--color-graphite))',
+                }}
               >
                 IT
               </button>
@@ -154,7 +202,16 @@ export function SiteHeader() {
                   )
                 }
                 className="btn-primary"
-                style={{ padding: '0.7rem 1.25rem' }}
+                style={
+                  isHomeDark
+                    ? {
+                        padding: '0.7rem 1.25rem',
+                        background: 'rgb(var(--color-gold))',
+                        borderColor: 'rgb(var(--color-gold))',
+                        color: 'rgb(var(--color-cobalt-deep))',
+                      }
+                    : { padding: '0.7rem 1.25rem' }
+                }
               >
                 Richiedi consulenza
               </button>
@@ -167,6 +224,9 @@ export function SiteHeader() {
               aria-label={mobileOpen ? 'Chiudi menu' : 'Apri menu'}
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen((v) => !v)}
+              style={{
+                color: isHomeDark ? 'rgb(var(--color-paper))' : 'rgb(var(--color-ink))',
+              }}
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>

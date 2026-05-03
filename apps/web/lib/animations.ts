@@ -32,6 +32,75 @@ export function prefersReducedMotion(): boolean {
 }
 
 /**
+ * splitToChars — fallback per char reveal cinematico.
+ * Wrappa ogni carattere (preservando spazi) in <span class="char"><span class="char-inner">…</span></span>.
+ */
+export function splitToChars(el: HTMLElement): HTMLElement[] {
+  if (!el || el.dataset.splitChars === 'true') {
+    return Array.from(el.querySelectorAll<HTMLElement>('.char-inner'));
+  }
+  const text = el.textContent ?? '';
+  el.innerHTML = '';
+  const out: HTMLElement[] = [];
+  for (const ch of text) {
+    if (ch === ' ') {
+      el.appendChild(document.createTextNode(' '));
+      continue;
+    }
+    const wrap = document.createElement('span');
+    wrap.className = 'char';
+    wrap.style.display = 'inline-block';
+    wrap.style.overflow = 'hidden';
+    wrap.style.lineHeight = 'inherit';
+    wrap.style.verticalAlign = 'baseline';
+
+    const inner = document.createElement('span');
+    inner.className = 'char-inner';
+    inner.style.display = 'inline-block';
+    inner.style.willChange = 'transform, opacity';
+    inner.textContent = ch;
+
+    wrap.appendChild(inner);
+    el.appendChild(wrap);
+    out.push(inner);
+  }
+  el.dataset.splitChars = 'true';
+  return out;
+}
+
+/**
+ * drawPath — anima un SVG path con stroke-dasharray (fallback DrawSVG).
+ * Setta dasharray = pathLength, dashoffset 0 → pathLength, e anima offset → 0.
+ */
+export function drawPath(
+  path: SVGPathElement | SVGLineElement | SVGPolylineElement,
+  opts: { duration?: number; delay?: number; ease?: string; trigger?: Element | null } = {},
+): void {
+  const g = ensureGsap();
+  if (!g) return;
+  const len =
+    'getTotalLength' in path
+      ? (path as SVGPathElement).getTotalLength()
+      : 1000;
+  path.style.strokeDasharray = String(len);
+  path.style.strokeDashoffset = String(len);
+
+  if (prefersReducedMotion()) {
+    path.style.strokeDashoffset = '0';
+    return;
+  }
+
+  const { duration = 1.6, delay = 0, ease = 'power2.out', trigger } = opts;
+  g.to(path, {
+    strokeDashoffset: 0,
+    duration,
+    delay,
+    ease,
+    scrollTrigger: trigger ? { trigger, start: 'top 80%', once: true } : undefined,
+  });
+}
+
+/**
  * splitToWords — fallback per word reveal.
  * Wrappa ogni parola in <span class="word"><span class="word-inner">…</span></span>
  * preservando spazi e ritorni a capo. Idempotente.

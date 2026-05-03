@@ -1,53 +1,65 @@
 /**
- * STUDIO LEGALE MIOTTI — DESIGN TOKENS · v2026.2
+ * STUDIO LEGALE MIOTTI — DESIGN TOKENS · v2026.3 (cinematic)
  *
- * Posizionamento: studio legale moderno, autorevole, vicino al territorio.
- * Mood: editoriale, premium, luminoso. Mai cyberpunk, mai gradienti startup.
+ * Palette obbligatoria:
+ *  · Blu notte profondo : #0B253A
+ *  · Oro caldo          : #C6A86B
+ *  · Grigio scuro       : #2E2E2E
+ *  · Grigio chiaro caldo: #CFCAC4
+ *  · Bianco sporco      : #F4F2EE
+ *
+ * Posizionamento: studio legale moderno, sofisticato, ad alto contrasto.
+ * Atmosfera cinematografica, sequenza narrativa scuro→chiaro→scuro.
  */
 
 @layer base {
   :root {
-    /* ─── COLOR ─── (RGB triplets, used inside rgb(var(--…)) ) ── */
-    --color-paper: 247 243 236;        /* #F7F3EC — bg principale */
-    --color-paper-warm: 239 231 218;   /* #EFE7DA — bg secondario */
-    --color-paper-deep: 230 220 204;   /* #E6DCCC — divisori */
-    --color-vellum: 255 253 248;       /* #FFFDF8 — bianco caldo */
+    /* ─── COLOR (RGB triplets, used inside rgb(var(--…))) ─────── */
+    --color-paper: 244 242 238;        /* #F4F2EE — bianco sporco / bg chiaro */
+    --color-paper-warm: 207 202 196;   /* #CFCAC4 — grigio chiaro caldo */
+    --color-paper-deep: 184 178 170;   /* #B8B2AA — divisori chiari */
+    --color-vellum: 244 242 238;       /* alias paper */
 
-    --color-ink: 23 33 43;             /* #17212B — testo principale */
-    --color-ink-soft: 38 50 64;        /* #263240 — testo soft */
+    --color-ink: 46 46 46;             /* #2E2E2E — grigio scuro testo */
+    --color-ink-soft: 70 70 70;        /* #464646 — testo soft */
 
-    --color-cobalt: 30 42 56;          /* #1E2A38 — blu istituzionale */
-    --color-cobalt-deep: 17 25 36;     /* #111924 — blu pressed */
-    --color-cobalt-soft: 79 96 119;    /* #4F6077 — blu chiaro */
+    --color-cobalt: 11 37 58;          /* #0B253A — blu notte profondo */
+    --color-cobalt-deep: 6 22 36;      /* #061624 — quasi nero blu */
+    --color-cobalt-soft: 60 86 110;    /* #3C566E — blu medio */
 
-    --color-graphite: 111 125 117;     /* #6F7D75 — verde-grigio testo sec */
-    --color-graphite-deep: 86 98 90;   /* #56625A */
+    --color-graphite: 100 100 100;     /* #646464 — testo secondario */
+    --color-graphite-deep: 70 70 70;
 
-    --color-rule: 30 42 56;            /* base bordo (usato con /0.12) */
-    --color-rule-soft: 30 42 56;       /* base bordo morbido (con /0.06) */
+    --color-rule: 11 37 58;            /* base bordo (con /0.x) */
+    --color-rule-soft: 11 37 58;
 
-    --color-gold: 184 150 90;          /* #B8965A — oro soft */
-    --color-gold-bright: 207 173 113;  /* #CFAD71 — highlight */
-    --color-gold-deep: 148 119 70;     /* #947746 — pressed */
+    --color-gold: 198 168 107;         /* #C6A86B — oro caldo accento */
+    --color-gold-bright: 215 188 130;  /* #D7BC82 — highlight */
+    --color-gold-deep: 162 134 79;     /* #A2864F — pressed */
 
-    --color-success: 64 105 84;        /* #406954 */
-    --color-warn: 161 116 50;          /* #A17432 */
-    --color-error: 138 47 55;          /* #8A2F37 */
+    --color-success: 84 134 100;
+    --color-warn: 196 142 60;
+    --color-error: 168 60 70;
 
-    /* ─── BORDERS ─── (uniformi su tutto il sistema) */
+    /* ─── BORDERS ─── */
     --border-rule: 1px solid rgb(var(--color-rule) / 0.12);
     --border-rule-strong: 1px solid rgb(var(--color-rule) / 0.22);
     --border-rule-soft: 1px solid rgb(var(--color-rule) / 0.06);
+    --border-rule-paper: 1px solid rgb(var(--color-paper) / 0.14);
 
-    /* ─── SURFACES (gradient, mesh) ─── */
+    /* ─── SURFACES ─── */
     --mesh-aurora:
-      radial-gradient(at 18% 12%, rgb(var(--color-gold) / 0.10) 0%, transparent 42%),
-      radial-gradient(at 82% 88%, rgb(var(--color-cobalt) / 0.05) 0%, transparent 48%),
-      radial-gradient(at 50% 58%, rgb(var(--color-vellum) / 0.6) 0%, transparent 55%);
+      radial-gradient(at 18% 12%, rgb(var(--color-gold) / 0.14) 0%, transparent 42%),
+      radial-gradient(at 82% 88%, rgb(var(--color-cobalt) / 0.06) 0%, transparent 48%);
 
     --mesh-aurora-deep:
-      radial-gradient(at 25% 22%, rgb(var(--color-gold) / 0.18) 0%, transparent 50%),
-      radial-gradient(at 78% 78%, rgb(var(--color-cobalt-soft) / 0.18) 0%, transparent 50%);
+      radial-gradient(at 22% 18%, rgb(var(--color-gold) / 0.18) 0%, transparent 50%),
+      radial-gradient(at 78% 82%, rgb(var(--color-cobalt-soft) / 0.30) 0%, transparent 55%);
+
+    --mesh-night:
+      radial-gradient(at 30% 0%, rgb(var(--color-gold) / 0.10) 0%, transparent 45%),
+      radial-gradient(at 80% 100%, rgb(var(--color-gold) / 0.06) 0%, transparent 50%),
+      linear-gradient(180deg, rgb(var(--color-cobalt-deep)) 0%, rgb(var(--color-cobalt)) 100%);
 
     --conic-gold:
       conic-gradient(from 220deg at 50% 50%,
@@ -59,28 +71,32 @@
 
     --grad-display:
       linear-gradient(115deg,
-        rgb(var(--color-cobalt-deep)) 0%,
-        rgb(var(--color-cobalt)) 38%,
+        rgb(var(--color-paper)) 0%,
+        rgb(var(--color-paper)) 60%,
         rgb(var(--color-gold)) 100%
+      );
+
+    --grad-display-light:
+      linear-gradient(115deg,
+        rgb(var(--color-cobalt-deep)) 0%,
+        rgb(var(--color-cobalt)) 60%,
+        rgb(var(--color-gold-deep)) 100%
       );
 
     --spotlight-radius: 360px;
 
     /* ─── TYPOGRAPHY ─── */
-    /* Display: Cormorant Garamond — eleganza editoriale legale.
-       Sans:    Inter — leggibilità moderna a tutte le dimensioni.
-       Mono:    JetBrains Mono — contrappunto sobrio. */
     --font-display: var(--font-display-google), 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
     --font-sans: var(--font-sans-google), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
-    /* Type scale (fluido, mobile-first) */
-    --fs-display-xxl: clamp(3.5rem, 7.5vw + 1rem, 7.5rem);
-    --fs-display-xl: clamp(3rem, 5.5vw + 1rem, 5.75rem);
-    --fs-display-l: clamp(2.5rem, 4.5vw + 0.5rem, 4.25rem);
-    --fs-display-m: clamp(2rem, 3.5vw + 0.5rem, 3rem);
-    --fs-h1: clamp(1.875rem, 3vw + 0.5rem, 2.5rem);
-    --fs-h2: clamp(1.5rem, 2vw + 0.5rem, 1.875rem);
+    --fs-display-xxxl: clamp(4rem, 12vw + 1rem, 11rem);
+    --fs-display-xxl: clamp(3.5rem, 9vw + 1rem, 9rem);
+    --fs-display-xl: clamp(3rem, 6vw + 1rem, 6.5rem);
+    --fs-display-l: clamp(2.5rem, 4.5vw + 0.5rem, 4.5rem);
+    --fs-display-m: clamp(2rem, 3.5vw + 0.5rem, 3.25rem);
+    --fs-h1: clamp(1.875rem, 3vw + 0.5rem, 2.75rem);
+    --fs-h2: clamp(1.5rem, 2vw + 0.5rem, 2rem);
     --fs-h3: 1.375rem;
     --fs-h4: 1.125rem;
     --fs-body-l: 1.125rem;
@@ -89,12 +105,12 @@
     --fs-micro: 0.75rem;
     --fs-counter: clamp(2.5rem, 5vw, 4rem);
 
-    --lh-tight: 1.04;
+    --lh-tight: 1.02;
     --lh-snug: 1.18;
     --lh-normal: 1.55;
     --lh-relaxed: 1.7;
 
-    /* ─── SPACING (8pt) ─── */
+    /* ─── SPACING ─── */
     --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;
@@ -121,12 +137,13 @@
     --radius-lg: 18px;
     --radius-pill: 999px;
 
-    /* ─── SHADOWS ─── (sobrie, mai pesanti) */
-    --shadow-card: 0 1px 2px rgb(23 33 43 / 0.04), 0 6px 16px rgb(23 33 43 / 0.04);
-    --shadow-card-hover: 0 2px 6px rgb(23 33 43 / 0.06), 0 18px 40px rgb(30 42 56 / 0.08);
-    --shadow-card-spotlight: 0 6px 18px rgb(184 150 90 / 0.12), 0 22px 56px rgb(30 42 56 / 0.08);
-    --shadow-modal: 0 12px 28px rgb(23 33 43 / 0.14), 0 32px 80px rgb(23 33 43 / 0.18);
-    --shadow-floating: 0 4px 14px rgb(30 42 56 / 0.18), 0 18px 36px rgb(184 150 90 / 0.14);
+    /* ─── SHADOWS ─── */
+    --shadow-card: 0 1px 2px rgb(11 37 58 / 0.06), 0 6px 16px rgb(11 37 58 / 0.06);
+    --shadow-card-hover: 0 2px 6px rgb(11 37 58 / 0.08), 0 18px 40px rgb(11 37 58 / 0.10);
+    --shadow-card-spotlight: 0 6px 18px rgb(198 168 107 / 0.22), 0 22px 56px rgb(11 37 58 / 0.20);
+    --shadow-modal: 0 12px 28px rgb(6 22 36 / 0.20), 0 32px 80px rgb(6 22 36 / 0.30);
+    --shadow-floating: 0 4px 14px rgb(6 22 36 / 0.30), 0 18px 36px rgb(198 168 107 / 0.20);
+    --shadow-glow-gold: 0 0 0 1px rgb(198 168 107 / 0.32), 0 8px 30px rgb(198 168 107 / 0.20);
 
     /* ─── MOTION ─── */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
