@@ -104,36 +104,35 @@ export function Territory() {
         }}
       />
 
-      <div className="container-page relative py-28 md:py-36">
-        <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12">
+      <div className="container-page relative py-20 md:py-28">
+        <div className="grid grid-cols-12 items-start gap-x-[var(--gutter)] gap-y-10">
           {/* Sx */}
           <div className="col-span-12 md:col-span-5 lg:col-span-4">
             <span
               data-terr-head
-              className="inline-flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.28em]"
+              className="inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em]"
               style={{ color: 'rgb(var(--color-gold))' }}
             >
-              <span aria-hidden className="h-px w-12 bg-gold" />
+              <span aria-hidden className="h-px w-10 bg-gold" />
               Capitolo III · Territorio
             </span>
             <h2
               id="terr-title"
               data-terr-head
-              className="mt-6 font-display"
+              className="mt-5 font-display"
               style={{
-                fontSize: 'var(--fs-display-l)',
-                lineHeight: 1.05,
-                letterSpacing: '-0.02em',
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+                lineHeight: 1.08,
+                letterSpacing: '-0.018em',
                 color: 'rgb(var(--color-paper))',
               }}
             >
-              San Bonifacio.
-              <br />
+              San Bonifacio.{' '}
               <em className="not-italic text-gold">Operatività reale.</em>
             </h2>
             <p
               data-terr-head
-              className="mt-7 max-w-md text-[1.0625rem]"
+              className="mt-5 max-w-md text-[0.9375rem]"
               style={{ color: 'rgb(var(--color-paper) / 0.78)', lineHeight: 1.6 }}
             >
               Uno studio fisico nella provincia di Verona, con un’organizzazione
@@ -142,7 +141,7 @@ export function Territory() {
 
             <ul
               data-terr-head
-              className="mt-8 divide-y"
+              className="mt-6 divide-y"
               style={{ borderColor: 'rgb(244 242 238 / 0.12)' }}
             >
               <TerrRow icon={<Building2 size={13} />} label="Sede operativa" value={`${SITE_DATA.address.street} · ${SITE_DATA.address.cap} ${SITE_DATA.address.city}`} />
@@ -303,9 +302,9 @@ function TerrRow({
   href?: string;
 }) {
   const inner = (
-    <div className="flex flex-col gap-1.5 py-4">
+    <div className="flex flex-col gap-1 py-3">
       <span
-        className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]"
+        className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.22em]"
         style={{ color: 'rgb(var(--color-paper) / 0.55)' }}
       >
         {icon}
@@ -313,7 +312,7 @@ function TerrRow({
       </span>
       <span
         className="font-display"
-        style={{ fontSize: '1rem', lineHeight: 1.35, color: 'rgb(var(--color-paper))' }}
+        style={{ fontSize: '0.9375rem', lineHeight: 1.35, color: 'rgb(var(--color-paper))' }}
       >
         {value}
       </span>

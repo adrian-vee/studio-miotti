@@ -42,7 +42,7 @@ export function SiteFooter() {
         }}
       />
 
-      <div className="container-page relative pt-24 pb-12 md:pt-28">
+      <div className="container-page relative pt-16 pb-10 md:pt-20">
         <div className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12">
           {/* Identità studio */}
           <div className="col-span-12 md:col-span-4">
@@ -152,27 +152,37 @@ export function SiteFooter() {
           </div>
         </div>
 
-        {/* Wordmark texture */}
-        <div className="mt-20 hidden md:block">
+        {/* Wordmark elegante (non dominante) */}
+        <div
+          className="mt-12 flex items-baseline justify-between gap-6 border-t pt-6"
+          style={{ borderColor: 'rgb(244 242 238 / 0.10)' }}
+        >
           <p
             aria-hidden
-            className="text-stroke-paper font-display"
+            className="font-display"
             style={{
-              fontSize: 'clamp(4rem, 14vw, 13rem)',
-              lineHeight: 0.92,
-              letterSpacing: '-0.04em',
+              fontSize: 'clamp(1.25rem, 2.4vw, 2rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.015em',
               fontStyle: 'italic',
               fontWeight: 500,
+              color: 'rgb(var(--color-paper) / 0.85)',
             }}
           >
-            Miotti — Studio Legale.
+            Miotti — <span style={{ color: 'rgb(var(--color-gold))' }}>Studio Legale.</span>
           </p>
+          <span
+            className="hidden font-mono text-[10px] uppercase tracking-[0.28em] md:inline"
+            style={{ color: 'rgb(var(--color-paper) / 0.45)' }}
+          >
+            San Bonifacio · Verona · MMXXVI
+          </span>
         </div>
 
         {/* Bottom row */}
         <div
-          className="mt-12 grid grid-cols-1 gap-6 border-t pt-8 md:grid-cols-2"
-          style={{ borderColor: 'rgb(244 242 238 / 0.12)' }}
+          className="mt-6 grid grid-cols-1 gap-4 border-t pt-5 md:grid-cols-2"
+          style={{ borderColor: 'rgb(244 242 238 / 0.10)' }}
         >
           <div className="flex flex-col gap-2 text-xs" style={{ color: 'rgb(var(--color-paper) / 0.55)' }}>
             <span>

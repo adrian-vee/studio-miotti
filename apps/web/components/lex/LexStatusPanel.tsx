@@ -1,17 +1,18 @@
 'use client';
 
 /**
- * LexStatusPanel — sidebar dashboard LEX.
+ * LexStatusPanel — sidebar minimal "timeline".
  *
  * Mostra:
- *  · Stato richiesta (in bozza / inviata / presa in carico).
- *  · Contatore documenti caricati.
- *  · Prossimi passi (3 step ordinati).
- *  · Contatto studio diretto.
+ *  · Stato richiesta (in bozza / inviata / presa in carico)
+ *  · Conteggio documenti caricati
+ *  · Prossimi passi (3 step)
+ *
+ * NON mostra contatti diretti dello studio: LEX è un filtro, non
+ * un sostituto del canale telefonico/sede.
  */
 
-import { Phone, MapPin, Clock4, ChevronRight, Files } from 'lucide-react';
-import { SITE_DATA } from '@/lib/site-data';
+import { Files } from 'lucide-react';
 
 export function LexStatusPanel({
   documentsCount,
@@ -27,133 +28,97 @@ export function LexStatusPanel({
         ? 'Inviata · in attesa studio'
         : 'Presa in carico';
 
-  const statusTone =
-    status === 'draft' ? 'graphite' : status === 'sent' ? 'gold' : 'success';
-
-  const toneColor =
-    statusTone === 'gold'
-      ? 'rgb(var(--color-gold))'
-      : statusTone === 'success'
-        ? 'rgb(var(--color-success))'
-        : 'rgb(var(--color-graphite))';
+  const tone =
+    status === 'draft'
+      ? 'rgb(var(--color-graphite))'
+      : status === 'sent'
+        ? 'rgb(var(--color-gold))'
+        : 'rgb(var(--color-success))';
 
   return (
-    <aside className="flex flex-col gap-4">
-      {/* Stato richiesta */}
-      <section
-        className="rounded-[4px] border bg-vellum p-4"
-        style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
-      >
-        <h4 className="font-mono text-[10px] uppercase tracking-[0.28em]" style={{ color: 'rgb(var(--color-graphite))' }}>
+    <aside className="flex flex-col gap-5">
+      {/* Stato */}
+      <section>
+        <h4 className="font-mono text-[9.5px] uppercase tracking-[0.28em] text-graphite">
           Stato richiesta
         </h4>
-        <div className="mt-3 flex items-center gap-2">
-          <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: toneColor }} />
+        <div className="mt-2 flex items-center gap-2">
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: tone }} />
           <span
             className="font-display"
-            style={{ fontSize: '1rem', lineHeight: 1.2, color: 'rgb(var(--color-cobalt-deep))' }}
+            style={{ fontSize: '0.875rem', lineHeight: 1.2, color: 'rgb(var(--color-cobalt-deep))' }}
           >
             {statusLabel}
           </span>
         </div>
-        <p className="mt-2 text-[0.8125rem] leading-[1.5] text-graphite">
-          La presa in carico avviene solo dopo conferma dello studio.
-        </p>
       </section>
 
-      {/* Documenti caricati */}
-      <section
-        className="rounded-[4px] border bg-vellum p-4"
-        style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
-      >
-        <h4 className="font-mono text-[10px] uppercase tracking-[0.28em]" style={{ color: 'rgb(var(--color-graphite))' }}>
+      {/* Documenti */}
+      <section>
+        <h4 className="font-mono text-[9.5px] uppercase tracking-[0.28em] text-graphite">
           Documenti
         </h4>
-        <div className="mt-3 flex items-center gap-2.5">
+        <div className="mt-2 flex items-center gap-2.5">
           <span
             aria-hidden
-            className="inline-flex h-8 w-8 items-center justify-center rounded-[3px]"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-[3px]"
             style={{ background: 'rgb(var(--color-paper-warm) / 0.5)', color: 'rgb(var(--color-cobalt))' }}
           >
-            <Files size={14} strokeWidth={1.6} />
+            <Files size={12} strokeWidth={1.6} />
           </span>
-          <div>
-            <span
-              className="block font-display"
-              style={{ fontSize: '1rem', lineHeight: 1.2, color: 'rgb(var(--color-cobalt-deep))' }}
-            >
-              {documentsCount} {documentsCount === 1 ? 'file caricato' : 'file caricati'}
-            </span>
-            <span className="block text-[0.75rem] text-graphite">
-              {documentsCount === 0 ? 'Aggiungili dal pannello sopra' : 'Pronti per la trasmissione'}
-            </span>
-          </div>
+          <span
+            className="font-display"
+            style={{ fontSize: '0.875rem', lineHeight: 1.2, color: 'rgb(var(--color-cobalt-deep))' }}
+          >
+            {documentsCount} {documentsCount === 1 ? 'file' : 'file'} pronti
+          </span>
         </div>
       </section>
 
-      {/* Prossimi passi */}
-      <section
-        className="rounded-[4px] border bg-vellum p-4"
-        style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
-      >
-        <h4 className="font-mono text-[10px] uppercase tracking-[0.28em]" style={{ color: 'rgb(var(--color-graphite))' }}>
+      {/* Prossimi passi — timeline minimal */}
+      <section>
+        <h4 className="font-mono text-[9.5px] uppercase tracking-[0.28em] text-graphite">
           Prossimi passi
         </h4>
-        <ol className="mt-3 space-y-2.5 text-[0.8125rem]">
-          <Step n="1" text="Descrivi il caso e carica documenti utili." />
-          <Step n="2" text="Invia la richiesta allo studio." />
-          <Step n="3" text="Conferma in 24–48 h, con stima costi." />
+        <ol className="relative mt-3 space-y-3 pl-5">
+          <span
+            aria-hidden
+            className="absolute left-1.5 top-1 bottom-1 w-px"
+            style={{ background: 'rgb(var(--color-rule) / 0.18)' }}
+          />
+          <Step n="1" text="Descrivi il caso o carica documenti utili." active={status === 'draft'} />
+          <Step n="2" text="Invia la richiesta strutturata allo studio." active={status === 'sent'} />
+          <Step n="3" text="Conferma in 24–48 h con stima costi." active={status === 'taken'} />
         </ol>
-      </section>
-
-      {/* Contatto studio */}
-      <section
-        className="rounded-[4px] border bg-cobalt-deep p-4 text-paper"
-        style={{ borderColor: 'rgb(var(--color-cobalt))' }}
-      >
-        <h4 className="font-mono text-[10px] uppercase tracking-[0.28em]" style={{ color: 'rgb(var(--color-gold))' }}>
-          Contatta direttamente
-        </h4>
-        <ul className="mt-3 space-y-2.5 text-[0.875rem]">
-          <li className="flex items-center gap-2">
-            <Phone size={13} style={{ color: 'rgb(var(--color-gold))' }} />
-            <a href={`tel:${SITE_DATA.phoneTel}`} className="hover:underline">
-              {SITE_DATA.phoneDisplay}
-            </a>
-          </li>
-          <li className="flex items-start gap-2">
-            <MapPin size={13} className="mt-0.5" style={{ color: 'rgb(var(--color-gold))' }} />
-            <span style={{ color: 'rgb(var(--color-paper) / 0.85)' }}>
-              {SITE_DATA.address.street}, {SITE_DATA.address.cap} {SITE_DATA.address.city}
-            </span>
-          </li>
-          <li className="flex items-center gap-2">
-            <Clock4 size={13} style={{ color: 'rgb(var(--color-gold))' }} />
-            <span style={{ color: 'rgb(var(--color-paper) / 0.85)' }}>{SITE_DATA.hours.short}</span>
-          </li>
-        </ul>
       </section>
     </aside>
   );
 }
 
-function Step({ n, text }: { n: string; text: string }) {
+function Step({ n, text, active }: { n: string; text: string; active?: boolean }) {
   return (
-    <li className="flex items-start gap-2.5">
+    <li className="relative">
       <span
         aria-hidden
-        className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full font-mono text-[10px]"
+        className="absolute -left-5 top-1.5 inline-block h-2 w-2 rounded-full"
         style={{
-          background: 'rgb(var(--color-cobalt))',
-          color: 'rgb(var(--color-gold))',
+          background: active ? 'rgb(var(--color-gold))' : 'rgb(var(--color-paper))',
+          border: `1px solid ${active ? 'rgb(var(--color-gold))' : 'rgb(var(--color-rule) / 0.4)'}`,
+          boxShadow: active ? '0 0 0 3px rgb(198 168 107 / 0.18)' : 'none',
         }}
+      />
+      <span
+        className="block font-mono text-[9.5px] uppercase tracking-[0.22em]"
+        style={{ color: active ? 'rgb(var(--color-gold-deep))' : 'rgb(var(--color-graphite))' }}
       >
-        {n}
+        Step {n}
       </span>
-      <span className="text-ink-soft" style={{ lineHeight: 1.45 }}>
+      <span
+        className="mt-0.5 block text-[0.8125rem] leading-[1.45]"
+        style={{ color: active ? 'rgb(var(--color-cobalt-deep))' : 'rgb(var(--color-ink-soft))' }}
+      >
         {text}
       </span>
-      <ChevronRight size={11} className="ml-auto mt-1 text-graphite" />
     </li>
   );
 }

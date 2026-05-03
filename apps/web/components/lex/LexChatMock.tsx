@@ -140,13 +140,13 @@ export function LexChatMock({
 
       {/* Suggerimenti chips */}
       {messages.length === 1 && (
-        <div className="mb-2 flex flex-wrap gap-2 px-1">
+        <div className="mb-2 flex flex-wrap gap-1.5 px-1">
           {SUGGESTIONS.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setDraft(s)}
-              className="rounded-[3px] border bg-vellum px-3 py-1.5 text-[0.8125rem] text-ink-soft transition-colors hover:border-[rgb(var(--color-gold)/0.5)] hover:text-[rgb(var(--color-cobalt-deep))]"
+              className="rounded-[3px] border bg-vellum px-2.5 py-1 text-[0.75rem] text-ink-soft transition-colors hover:border-[rgb(var(--color-gold)/0.5)] hover:text-[rgb(var(--color-cobalt-deep))]"
               style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
             >
               {s}

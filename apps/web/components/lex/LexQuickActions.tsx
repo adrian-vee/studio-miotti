@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * LexQuickActions — 5 card di scelta rapida nel dashboard LEX.
+ * LexQuickActions — chip compatte di scelta rapida.
  *
- * Cliccando una card, vengono prefilled chat / upload / form
- * (gestito tramite onSelect callback).
+ * Stile minimal: bordo sottile, padding ridotto, icona piccola.
+ * Niente card pesanti — sembra un menu di scelta veloce, non un grid hero.
  */
 
 import { MessageSquare, FilePlus2, FileText, Send, CalendarCheck2, type LucideIcon } from 'lucide-react';
@@ -19,15 +19,14 @@ export type QuickActionKey =
 export interface QuickAction {
   key: QuickActionKey;
   label: string;
-  description: string;
 }
 
 const ACTIONS: ReadonlyArray<QuickAction & { icon: LucideIcon }> = [
-  { key: 'ask', label: 'Fai una domanda', description: 'Orientamento iniziale, in italiano semplice.', icon: MessageSquare },
-  { key: 'upload', label: 'Carica documenti', description: 'Contratti, lettere, estratti conto.', icon: FilePlus2 },
-  { key: 'describe', label: 'Descrivi il tuo caso', description: 'Cosa è successo, cosa ti aspetti.', icon: FileText },
-  { key: 'request', label: 'Prepara una richiesta', description: 'Strutturiamola insieme prima dello studio.', icon: Send },
-  { key: 'book', label: 'Prenota consulenza', description: 'Appuntamento in studio o video-call.', icon: CalendarCheck2 },
+  { key: 'ask', label: 'Fai una domanda', icon: MessageSquare },
+  { key: 'upload', label: 'Carica documenti', icon: FilePlus2 },
+  { key: 'describe', label: 'Descrivi il caso', icon: FileText },
+  { key: 'request', label: 'Prepara richiesta', icon: Send },
+  { key: 'book', label: 'Prenota consulenza', icon: CalendarCheck2 },
 ];
 
 export function LexQuickActions({
@@ -36,7 +35,7 @@ export function LexQuickActions({
   onSelect: (key: QuickActionKey) => void;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+    <div className="flex flex-wrap gap-1.5">
       {ACTIONS.map((a) => {
         const Icon = a.icon;
         return (
@@ -45,34 +44,14 @@ export function LexQuickActions({
             type="button"
             onClick={() => onSelect(a.key)}
             data-lex-action
-            className="group flex items-start gap-3.5 rounded-[3px] border bg-vellum p-3.5 text-left transition-all duration-300 hover:border-[rgb(var(--color-gold)/0.5)]"
-            style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
+            className="group inline-flex items-center gap-2 rounded-[3px] border bg-vellum px-2.5 py-1.5 text-[0.8125rem] transition-all duration-300 hover:border-[rgb(var(--color-gold)/0.5)] hover:bg-paper-warm/30"
+            style={{
+              borderColor: 'rgb(var(--color-rule) / 0.14)',
+              color: 'rgb(var(--color-cobalt-deep))',
+            }}
           >
-            <span
-              aria-hidden
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] transition-colors duration-300 group-hover:bg-[rgb(var(--color-gold)/0.12)] group-hover:text-[rgb(var(--color-gold-deep))]"
-              style={{
-                color: 'rgb(var(--color-cobalt))',
-                background: 'rgb(var(--color-paper-warm) / 0.5)',
-              }}
-            >
-              <Icon size={15} strokeWidth={1.6} />
-            </span>
-            <div className="min-w-0">
-              <span
-                className="block font-display"
-                style={{
-                  fontSize: '0.9375rem',
-                  lineHeight: 1.2,
-                  color: 'rgb(var(--color-cobalt-deep))',
-                }}
-              >
-                {a.label}
-              </span>
-              <span className="mt-1 block text-[0.8125rem] leading-[1.45] text-graphite">
-                {a.description}
-              </span>
-            </div>
+            <Icon size={12} strokeWidth={1.7} className="text-graphite transition-colors group-hover:text-[rgb(var(--color-gold-deep))]" />
+            <span>{a.label}</span>
           </button>
         );
       })}

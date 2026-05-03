@@ -96,7 +96,7 @@ export function DigitalStudio() {
       className="relative bg-paper text-ink"
       aria-labelledby="ds-title"
     >
-      <div className="container-page relative py-28 md:py-36">
+      <div className="container-page relative py-20 md:py-28">
         <header className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-6">
           <div className="col-span-12 md:col-span-5">
             <span
@@ -109,64 +109,63 @@ export function DigitalStudio() {
             <h2
               id="ds-title"
               data-ds-head
-              className="mt-6 font-display"
+              className="mt-5 font-display"
               style={{
-                fontSize: 'var(--fs-display-l)',
-                lineHeight: 1.04,
-                letterSpacing: '-0.02em',
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+                lineHeight: 1.08,
+                letterSpacing: '-0.018em',
                 color: 'rgb(var(--color-cobalt-deep))',
               }}
             >
-              Tecnologia dove serve.
-              <br />
+              Tecnologia dove serve,{' '}
               <em className="not-italic" style={{ color: 'rgb(var(--color-gold-deep))' }}>
-                Avvocato dove conta.
+                avvocato dove conta.
               </em>
             </h2>
           </div>
         </header>
 
-        <div className="mt-16 grid grid-cols-12 gap-x-[var(--gutter)] gap-y-12 md:mt-20">
+        <div className="mt-12 grid grid-cols-12 gap-x-[var(--gutter)] gap-y-10 md:mt-16">
           {/* Sx: features */}
           <div className="col-span-12 md:col-span-5">
             <p
               data-ds-head
-              className="max-w-md text-[1.0625rem] text-ink-soft"
+              className="max-w-md text-[0.9375rem] text-ink-soft"
               style={{ lineHeight: 1.6 }}
             >
-              Un’infrastruttura digitale costruita sul lavoro reale: meno
-              email perse, meno documenti rincorsi, più tempo dedicato al
-              merito della pratica.
+              Un’infrastruttura digitale costruita sul lavoro reale: meno email
+              perse, meno documenti rincorsi, più tempo dedicato al merito della
+              pratica.
             </p>
 
-            <ul data-ds-features className="mt-9 space-y-2.5">
+            <ul data-ds-features className="mt-7 space-y-2">
               {FEATURES.map((f) => {
                 const Icon = f.icon;
                 return (
                   <li
                     key={f.label}
                     data-ds-feature
-                    className="group flex items-start gap-4 rounded-[3px] border bg-vellum p-4 transition-all duration-500 hover:border-[rgb(var(--color-gold)/0.5)]"
+                    className="group flex items-start gap-3 rounded-[3px] border bg-vellum px-3.5 py-3 transition-all duration-500 hover:border-[rgb(var(--color-gold)/0.5)]"
                     style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
                   >
                     <span
                       aria-hidden
-                      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors duration-500 group-hover:bg-[rgb(var(--color-gold)/0.12)]"
+                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[3px] transition-colors duration-500 group-hover:bg-[rgb(var(--color-gold)/0.12)]"
                       style={{
                         color: 'rgb(var(--color-cobalt))',
                         background: 'rgb(var(--color-paper-warm) / 0.4)',
                       }}
                     >
-                      <Icon size={15} strokeWidth={1.6} />
+                      <Icon size={13} strokeWidth={1.6} />
                     </span>
                     <div className="min-w-0">
                       <span
                         className="font-display"
-                        style={{ fontSize: '0.9375rem', lineHeight: 1.25, color: 'rgb(var(--color-cobalt-deep))' }}
+                        style={{ fontSize: '0.9375rem', lineHeight: 1.2, color: 'rgb(var(--color-cobalt-deep))' }}
                       >
                         {f.label}
                       </span>
-                      <p className="mt-1 text-[0.8125rem] leading-[1.5] text-graphite">{f.body}</p>
+                      <p className="mt-0.5 text-[0.75rem] leading-[1.45] text-graphite">{f.body}</p>
                     </div>
                   </li>
                 );

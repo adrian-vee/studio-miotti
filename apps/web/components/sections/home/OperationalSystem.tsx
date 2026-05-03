@@ -143,7 +143,7 @@ export function OperationalSystem() {
       className="relative bg-paper text-ink"
       aria-labelledby="os-title"
     >
-      <div className="container-page relative py-28 md:py-36">
+      <div className="container-page relative py-20 md:py-28">
         {/* Header */}
         <header className="grid grid-cols-12 gap-x-[var(--gutter)] gap-y-6">
           <div className="col-span-12 md:col-span-5">
@@ -157,37 +157,33 @@ export function OperationalSystem() {
             <h2
               id="os-title"
               data-os-head
-              className="mt-6 font-display"
+              className="mt-5 font-display"
               style={{
-                fontSize: 'var(--fs-display-l)',
-                lineHeight: 1.04,
-                letterSpacing: '-0.02em',
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+                lineHeight: 1.08,
+                letterSpacing: '-0.018em',
                 color: 'rgb(var(--color-cobalt-deep))',
               }}
             >
-              Metodo operativo,
-              <br />
+              Metodo operativo,{' '}
               <em className="not-italic" style={{ color: 'rgb(var(--color-gold-deep))' }}>
                 non promesse.
               </em>
             </h2>
           </div>
           <div className="col-span-12 md:col-span-6 md:col-start-7" data-os-head>
-            <p className="mt-2 max-w-md text-[1.0625rem] text-ink-soft md:mt-0" style={{ lineHeight: 1.6 }}>
-              Sei fasi visibili, ognuna con un risultato concreto. Vedi cosa
-              è già stato fatto, cosa è in corso, cosa succede dopo. Niente
-              parcelle che arrivano insieme alla notizia.
+            <p className="mt-2 max-w-md text-[0.9375rem] text-ink-soft md:mt-0" style={{ lineHeight: 1.6 }}>
+              Sei fasi visibili, ognuna con un risultato concreto. Vedi cosa è
+              già stato fatto, cosa è in corso, cosa succede dopo.
             </p>
-            <dl
-              className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.22em] text-graphite"
-            >
+            <dl className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
               <div className="flex items-center gap-2">
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: 'rgb(var(--color-success))' }} />
-                <span>live · in corso</span>
+                <span>live</span>
               </div>
               <div className="flex items-center gap-2">
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: 'rgb(var(--color-gold))' }} />
-                <span>cliente · azione richiesta</span>
+                <span>azione cliente</span>
               </div>
               <div className="flex items-center gap-2">
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: 'rgb(var(--color-rule) / 0.4)' }} />
@@ -198,7 +194,7 @@ export function OperationalSystem() {
         </header>
 
         {/* Frame dashboard */}
-        <div className="relative mt-16 md:mt-24" data-os-grid>
+        <div className="relative mt-12 md:mt-16" data-os-grid>
           <svg
             aria-hidden
             className="pointer-events-none absolute inset-0 h-full w-full"
@@ -235,13 +231,13 @@ export function OperationalSystem() {
           <div className="relative hidden md:block">
             <div
               aria-hidden
-              className="absolute left-0 right-0 top-[2.4rem] h-px"
+              className="absolute left-0 right-0 top-[1.85rem] h-px"
               style={{ background: 'rgb(var(--color-rule) / 0.18)' }}
             />
             <div
               data-os-line
               aria-hidden
-              className="absolute left-0 right-0 top-[2.4rem] h-px"
+              className="absolute left-0 right-0 top-[1.85rem] h-px"
               style={{
                 background:
                   'linear-gradient(90deg, rgb(11 37 58) 0%, rgb(198 168 107) 100%)',
@@ -251,20 +247,20 @@ export function OperationalSystem() {
             />
             <div className="grid grid-cols-6">
               {PHASES.map((p, i) => (
-                <article key={p.code} data-os-card className="px-3 pt-0 pb-6">
+                <article key={p.code} data-os-card className="px-3 pt-0 pb-5">
                   <div className="flex justify-start">
                     <span
                       data-os-dot
                       aria-hidden
-                      className="relative z-10 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full"
+                      className="relative z-10 inline-flex h-3 w-3 items-center justify-center rounded-full"
                       style={{
                         background: 'rgb(var(--color-paper))',
                         border: `1px solid ${i === 0 ? 'rgb(var(--color-success))' : i < 3 ? 'rgb(var(--color-gold))' : 'rgb(var(--color-cobalt))'}`,
-                        marginTop: '1.7rem',
+                        marginTop: '1.35rem',
                       }}
                     >
                       <span
-                        className="h-1.5 w-1.5 rounded-full"
+                        className="h-1 w-1 rounded-full"
                         style={{
                           background:
                             i === 0
@@ -276,25 +272,25 @@ export function OperationalSystem() {
                       />
                     </span>
                   </div>
-                  <div className="mt-6">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+                  <div className="mt-5">
+                    <span className="font-mono text-[9.5px] uppercase tracking-[0.22em] text-graphite">
                       {p.code}
                     </span>
                     <h3
-                      className="mt-2 font-display"
+                      className="mt-1.5 font-display"
                       style={{
-                        fontSize: '1.0625rem',
+                        fontSize: '0.9375rem',
                         lineHeight: 1.25,
                         color: 'rgb(var(--color-cobalt-deep))',
                       }}
                     >
                       {p.title}
                     </h3>
-                    <p className="mt-2 text-[0.8125rem] leading-[1.55] text-graphite">
+                    <p className="mt-1.5 text-[0.75rem] leading-[1.5] text-graphite">
                       {p.body}
                     </p>
                     <div
-                      className="mt-3 inline-flex items-center gap-1.5 rounded-[3px] border px-2 py-1 font-mono text-[9.5px] uppercase tracking-[0.22em]"
+                      className="mt-2 inline-flex items-center rounded-[3px] border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.22em]"
                       style={{
                         borderColor:
                           p.tone === 'live'

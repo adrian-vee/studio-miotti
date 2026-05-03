@@ -1,12 +1,11 @@
 'use client';
 
 /**
- * FileUploadMock — area drag & drop "mock" (UI-only).
+ * FileUploadMock — area drag & drop compatta inline.
  *
- * Mantiene state locale dei file selezionati. Nessun upload reale.
- * Supporta drag&drop, click-to-pick, rimozione singolo file.
- *
- * Mostra placeholder file fittizi finché l'utente non aggiunge nulla.
+ * Stile minimal, alto ~50% rispetto alla v.1 precedente.
+ * Mostra in linea il pulsante "Aggiungi" con dashed border e dropzone.
+ * Nessun upload reale.
  */
 
 import { useCallback, useRef, useState } from 'react';
@@ -59,6 +58,7 @@ export function FileUploadMock({
 
   return (
     <div>
+      {/* Dropzone compatta inline */}
       <div
         role="button"
         tabIndex={0}
@@ -79,7 +79,7 @@ export function FileUploadMock({
           setDrag(false);
           addFiles(e.dataTransfer.files);
         }}
-        className="group flex cursor-pointer flex-col items-center justify-center rounded-[4px] border-2 border-dashed px-6 py-10 text-center transition-colors duration-300"
+        className="group flex cursor-pointer items-center justify-between gap-3 rounded-[3px] border-2 border-dashed px-4 py-3 transition-colors duration-300"
         style={{
           borderColor: drag
             ? 'rgb(var(--color-gold))'
@@ -90,29 +90,32 @@ export function FileUploadMock({
         }}
         aria-label="Area drag and drop per caricare documenti"
       >
-        <span
-          aria-hidden
-          className="inline-flex h-12 w-12 items-center justify-center rounded-full transition-colors duration-300"
-          style={{
-            color: 'rgb(var(--color-cobalt))',
-            background: 'rgb(var(--color-vellum))',
-            border: '1px solid rgb(var(--color-rule) / 0.18)',
-          }}
-        >
-          <UploadCloud size={20} strokeWidth={1.5} />
-        </span>
-        <span
-          className="mt-4 font-display"
-          style={{ fontSize: '1.0625rem', lineHeight: 1.2, color: 'rgb(var(--color-cobalt-deep))' }}
-        >
-          Carica documenti
-        </span>
-        <span className="mt-1.5 max-w-md text-[0.8125rem] leading-[1.5] text-graphite">
-          Trascina qui contratti, lettere, immagini o PDF rilevanti. Oppure clicca
-          per selezionarli dal tuo dispositivo.
-        </span>
-        <span className="mt-3 font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
-          Formati supportati · {SUGGESTED_TYPES}
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden
+            className="inline-flex h-8 w-8 items-center justify-center rounded-[3px]"
+            style={{
+              color: 'rgb(var(--color-cobalt))',
+              background: 'rgb(var(--color-vellum))',
+              border: '1px solid rgb(var(--color-rule) / 0.18)',
+            }}
+          >
+            <UploadCloud size={14} strokeWidth={1.6} />
+          </span>
+          <div>
+            <span
+              className="block font-display"
+              style={{ fontSize: '0.875rem', lineHeight: 1.2, color: 'rgb(var(--color-cobalt-deep))' }}
+            >
+              Trascina o clicca per caricare
+            </span>
+            <span className="block font-mono text-[9.5px] uppercase tracking-[0.22em] text-graphite">
+              {SUGGESTED_TYPES}
+            </span>
+          </div>
+        </div>
+        <span className="font-mono text-[9.5px] uppercase tracking-[0.22em] text-graphite">
+          max 8 file
         </span>
 
         <input
@@ -125,50 +128,49 @@ export function FileUploadMock({
         />
       </div>
 
-      {/* File list */}
+      {/* File list (più sottile) */}
       {files.length > 0 && (
-        <ul className="mt-4 space-y-2">
+        <ul className="mt-2 space-y-1.5">
           {files.map((f) => (
             <li
               key={f.id}
-              className="flex items-center gap-3 rounded-[3px] border bg-vellum px-3.5 py-2.5"
+              className="flex items-center gap-2 rounded-[3px] border bg-vellum px-2.5 py-2"
               style={{ borderColor: 'rgb(var(--color-rule) / 0.12)' }}
             >
               <span
                 aria-hidden
-                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[3px]"
+                className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[3px]"
                 style={{
                   color: 'rgb(var(--color-cobalt))',
                   background: 'rgb(var(--color-paper-warm) / 0.5)',
                 }}
               >
-                <FileText size={14} strokeWidth={1.6} />
+                <FileText size={12} strokeWidth={1.6} />
               </span>
               <div className="min-w-0 flex-1">
-                <span className="block truncate text-[0.875rem] text-ink">{f.name}</span>
-                <span className="block font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
-                  {formatSize(f.size)} · pronto per l’invio
+                <span className="block truncate text-[0.8125rem] text-ink">{f.name}</span>
+                <span className="block font-mono text-[9.5px] uppercase tracking-[0.22em] text-graphite">
+                  {formatSize(f.size)}
                 </span>
               </div>
               <span
                 aria-hidden
-                className="inline-flex items-center gap-1 rounded-[3px] border px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.22em]"
+                className="inline-flex items-center gap-1 rounded-[3px] border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.22em]"
                 style={{
                   borderColor: 'rgb(var(--color-success) / 0.4)',
                   color: 'rgb(var(--color-success))',
-                  background: 'rgb(var(--color-success) / 0.06)',
                 }}
               >
-                <FileCheck2 size={11} strokeWidth={1.6} />
+                <FileCheck2 size={10} strokeWidth={1.6} />
                 pronto
               </span>
               <button
                 type="button"
                 onClick={() => removeFile(f.id)}
                 aria-label={`Rimuovi ${f.name}`}
-                className="ml-1 inline-flex h-7 w-7 items-center justify-center rounded-full text-graphite transition-colors hover:text-ink"
+                className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full text-graphite transition-colors hover:text-ink"
               >
-                <X size={13} />
+                <X size={11} />
               </button>
             </li>
           ))}

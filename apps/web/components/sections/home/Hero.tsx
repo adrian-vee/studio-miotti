@@ -149,7 +149,7 @@ export function Hero() {
     <section
       ref={root}
       id="hero"
-      className="relative flex min-h-[100dvh] items-center overflow-hidden bg-night text-paper pt-32 pb-20 md:pt-40 md:pb-24"
+      className="relative flex min-h-[88vh] items-center overflow-hidden bg-night text-paper pt-28 pb-16 md:pt-32 md:pb-20"
       aria-labelledby="hero-title"
     >
       {/* Mesh + grain */}
@@ -198,26 +198,26 @@ export function Hero() {
 
             <h1
               id="hero-title"
-              className="relative mt-10 font-display"
+              className="relative mt-8 font-display"
               style={{
                 fontWeight: 500,
-                letterSpacing: '-0.025em',
+                letterSpacing: '-0.022em',
                 color: 'rgb(var(--color-paper))',
               }}
             >
               <span
                 data-hero-line
                 className="block"
-                style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', lineHeight: 1.02 }}
+                style={{ fontSize: 'clamp(2rem, 4.6vw, 4rem)', lineHeight: 1.04 }}
               >
                 Soluzioni legali concrete,
               </span>
               <span
                 data-hero-line
-                className="mt-1 block italic md:mt-2"
+                className="block italic"
                 style={{
-                  fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-                  lineHeight: 1.02,
+                  fontSize: 'clamp(2rem, 4.6vw, 4rem)',
+                  lineHeight: 1.04,
                   color: 'rgb(var(--color-gold))',
                 }}
               >
@@ -227,15 +227,15 @@ export function Hero() {
 
             <p
               data-hero-meta
-              className="mt-8 max-w-xl text-[1.0625rem]"
-              style={{ color: 'rgb(var(--color-paper) / 0.78)', lineHeight: 1.6 }}
+              className="mt-6 max-w-xl text-[1rem]"
+              style={{ color: 'rgb(var(--color-paper) / 0.78)', lineHeight: 1.65 }}
             >
               Lo Studio Legale Miotti affianca imprese, professionisti e privati
               con un metodo chiaro, digitale e orientato alla soluzione.
             </p>
 
             {/* CTA cluster */}
-            <div data-hero-meta className="mt-9 flex flex-wrap items-center gap-3">
+            <div data-hero-meta className="mt-7 flex flex-wrap items-center gap-2.5">
               <button
                 ref={ctaPrimary}
                 type="button"
@@ -245,24 +245,24 @@ export function Hero() {
                     'Posso aiutarti a descrivere la tua situazione prima di parlare con l’avvocato. Iniziamo dal motivo per cui ti serve consulenza?',
                   )
                 }
-                className="group relative inline-flex items-center gap-2.5 px-7 py-4 font-medium tracking-[0.005em] transition-all duration-500"
+                className="group relative inline-flex items-center gap-2 px-5 py-3 font-medium transition-all duration-500"
                 style={{
                   background: 'rgb(var(--color-gold))',
                   color: 'rgb(var(--color-cobalt-deep))',
                   borderRadius: '4px',
                   boxShadow: 'var(--shadow-glow-gold)',
-                  fontSize: '0.9375rem',
+                  fontSize: '0.875rem',
                 }}
               >
                 <span className="relative z-10">Richiedi consulenza</span>
                 <ArrowRight
-                  size={15}
-                  className="relative z-10 transition-transform duration-500 group-hover:translate-x-1"
+                  size={14}
+                  className="relative z-10 transition-transform duration-500 group-hover:translate-x-0.5"
                 />
               </button>
               <a
                 href="#metodo"
-                className="inline-flex items-center gap-2 px-5 py-4 text-[0.9375rem] font-medium transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-3 text-[0.875rem] font-medium transition-colors"
                 style={{
                   border: '1px solid rgb(244 242 238 / 0.22)',
                   color: 'rgb(var(--color-paper))',
@@ -270,14 +270,14 @@ export function Hero() {
                 }}
               >
                 Scopri il metodo
-                <ArrowRight size={14} />
+                <ArrowRight size={13} />
               </a>
             </div>
 
             {/* Trust micro-row */}
             <div
               data-hero-meta
-              className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-[10.5px] uppercase tracking-[0.22em]"
+              className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2.5 font-mono text-[10px] uppercase tracking-[0.22em]"
               style={{ color: 'rgb(var(--color-paper) / 0.55)' }}
             >
               <span className="inline-flex items-center gap-2">
@@ -289,12 +289,12 @@ export function Hero() {
                 Studio operativo · {SITE_DATA.hours.short}
               </span>
               <span className="inline-flex items-center gap-2">
-                <ShieldCheck size={12} strokeWidth={1.6} />
+                <ShieldCheck size={11} strokeWidth={1.6} />
                 Riservatezza assoluta
               </span>
               <span className="inline-flex items-center gap-2">
-                <Clock4 size={12} strokeWidth={1.6} />
-                Risposta in 24–48 ore lavorative
+                <Clock4 size={11} strokeWidth={1.6} />
+                Risposta in 24–48 h lavorative
               </span>
             </div>
           </div>
@@ -313,26 +313,25 @@ export function Hero() {
             >
               {/* Top bar dashboard */}
               <div
-                className="flex items-center justify-between border-b px-5 py-3"
+                className="flex items-center justify-between border-b px-4 py-2.5"
                 style={{ borderColor: 'rgb(244 242 238 / 0.10)' }}
               >
                 <div className="flex items-center gap-2">
                   <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: 'rgb(var(--color-gold))' }} />
-                  <span className="font-mono text-[10px] uppercase tracking-[0.28em]" style={{ color: 'rgb(var(--color-paper) / 0.7)' }}>
-                    Pratica · iter standard
+                  <span className="font-mono text-[9.5px] uppercase tracking-[0.24em]" style={{ color: 'rgb(var(--color-paper) / 0.7)' }}>
+                    Iter standard
                   </span>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: 'rgb(var(--color-gold))' }}>
+                <span className="font-mono text-[9.5px] uppercase tracking-[0.22em]" style={{ color: 'rgb(var(--color-gold))' }}>
                   live
                 </span>
               </div>
 
               {/* Workflow steps */}
-              <ol className="relative px-5 py-6 md:px-6 md:py-7">
-                {/* Linea verticale background */}
+              <ol className="relative px-4 py-4 md:px-5 md:py-5">
                 <span
                   aria-hidden
-                  className="absolute left-[1.95rem] top-9 bottom-9 w-px md:left-[2.2rem]"
+                  className="absolute left-[1.6rem] top-7 bottom-7 w-px md:left-[1.85rem]"
                   style={{
                     background:
                       'linear-gradient(180deg, rgb(198 168 107 / 0.5) 0%, rgb(244 242 238 / 0.16) 100%)',
@@ -343,16 +342,16 @@ export function Hero() {
                   <li
                     key={s.n}
                     data-hero-card-row
-                    className="relative flex items-start gap-4 py-4"
+                    className="relative flex items-start gap-3 py-3"
                   >
                     <span
                       aria-hidden
-                      className="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display italic font-medium"
+                      className="relative inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-display italic font-medium"
                       style={{
                         background: 'rgb(11 37 58)',
                         border: '1px solid rgb(198 168 107)',
                         color: 'rgb(var(--color-gold))',
-                        fontSize: '0.875rem',
+                        fontSize: '0.75rem',
                       }}
                     >
                       {s.n}
@@ -362,7 +361,7 @@ export function Hero() {
                         <span
                           className="font-display"
                           style={{
-                            fontSize: '1.0625rem',
+                            fontSize: '0.95rem',
                             lineHeight: 1.2,
                             color: 'rgb(var(--color-paper))',
                           }}
@@ -370,15 +369,15 @@ export function Hero() {
                           {s.title}
                         </span>
                         <span
-                          className="shrink-0 font-mono text-[10px] uppercase tracking-[0.22em]"
-                          style={{ color: 'rgb(var(--color-paper) / 0.55)' }}
+                          className="shrink-0 font-mono text-[9px] uppercase tracking-[0.22em]"
+                          style={{ color: 'rgb(var(--color-paper) / 0.5)' }}
                         >
                           {s.duration}
                         </span>
                       </div>
                       <p
-                        className="mt-1.5 text-[0.875rem]"
-                        style={{ color: 'rgb(var(--color-paper) / 0.65)', lineHeight: 1.5 }}
+                        className="mt-1 text-[0.8125rem]"
+                        style={{ color: 'rgb(var(--color-paper) / 0.62)', lineHeight: 1.5 }}
                       >
                         {s.body}
                       </p>
@@ -389,14 +388,14 @@ export function Hero() {
 
               {/* Footer card */}
               <div
-                className="flex items-center justify-between border-t px-5 py-3.5"
+                className="flex items-center justify-between border-t px-4 py-2.5"
                 style={{ borderColor: 'rgb(198 168 107 / 0.4)' }}
               >
-                <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: 'rgb(var(--color-gold))' }}>
-                  <Sparkles size={11} strokeWidth={1.6} />
+                <span className="inline-flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.22em]" style={{ color: 'rgb(var(--color-gold))' }}>
+                  <Sparkles size={10} strokeWidth={1.6} />
                   Avvio guidato con LEX
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: 'rgb(var(--color-paper) / 0.6)' }}>
+                <span className="font-mono text-[9.5px] uppercase tracking-[0.22em]" style={{ color: 'rgb(var(--color-paper) / 0.6)' }}>
                   → consulenza
                 </span>
               </div>
@@ -405,10 +404,10 @@ export function Hero() {
             {/* Caption */}
             <p
               data-hero-meta
-              className="mt-4 max-w-xs font-mono text-[10.5px] uppercase tracking-[0.22em]"
+              className="mt-3 max-w-xs font-mono text-[10px] uppercase tracking-[0.22em]"
               style={{ color: 'rgb(var(--color-paper) / 0.5)' }}
             >
-              Esempio di iter · Studio Miotti · pratica civile
+              Esempio di iter · pratica civile
             </p>
           </div>
         </div>
